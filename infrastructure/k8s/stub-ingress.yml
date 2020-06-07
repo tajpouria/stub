@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: stub-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: stub.dev
+      http:
+        paths:
+          - path: /api/user/?(.*)
+            backend:
+              serviceName: auth-clusterip
+              servicePort: 4000
