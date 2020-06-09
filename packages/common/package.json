@@ -1,0 +1,26 @@
+{
+  "name": "@tajpouria/stub-common",
+  "version": "0.1.1",
+  "main": "dist/",
+  "license": "MIT",
+  "author": "Pouria Tajdivand<tajpouria.dev@gmail.com>",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "build": "rimraf dist/ && tsc"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "class-validator": "^0.12.2",
+    "winston": "^3.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tajpouria/stub-common.git"
+  }
+}
