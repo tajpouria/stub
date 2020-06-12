@@ -17,7 +17,6 @@ export class UsersController {
   @ApiInternalServerErrorResponse()
   @Post('signup')
   async create(@Body() createUserDto: CreateUserDto) {
-    const createdUser = await this.usersService.create(createUserDto);
-    return createdUser;
+    return await this.usersService.create(createUserDto);
   }
 }
