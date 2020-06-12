@@ -1,6 +1,6 @@
 {
   "name": "@tajpouria/stub-common",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "main": "dist/",
   "license": "MIT",
   "author": "Pouria Tajdivand<tajpouria.dev@gmail.com>",

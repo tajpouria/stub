@@ -26,6 +26,8 @@ spec:
               value: "development"
             - name: PORT
               value: "4000"
+            - name: DB_URL
+              value: 'mongodb://auth-mongo-clusterip/auth'
 ---
 apiVersion: v1
 kind: Service

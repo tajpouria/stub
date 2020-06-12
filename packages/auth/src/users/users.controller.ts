@@ -16,8 +16,8 @@ export class UsersController {
   @ApiBadRequestResponse()
   @ApiInternalServerErrorResponse()
   @Post('signup')
-  create(@Body() createUserDto: CreateUserDto) {
-    this.usersService.logger.info('User Logger');
-    throw new BadRequestException();
+  async create(@Body() createUserDto: CreateUserDto) {
+    const createdUser = await this.usersService.create(createUserDto);
+    return createdUser;
   }
 }
