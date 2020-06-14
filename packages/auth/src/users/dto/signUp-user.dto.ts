@@ -1,8 +1,8 @@
-import { IsEmail, Matches, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsString, MinLength, IsAlphanumeric } from 'class-validator';
 import { Match } from '@tajpouria/stub-common/dist/class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class SignUpUserDto {
   @ApiProperty()
   @IsEmail()
   email: string;
@@ -10,12 +10,12 @@ export class CreateUserDto {
   @ApiProperty()
   @IsString()
   @MinLength(7)
-  @Matches(/^(?=.*\d)(?=.*[a-zA-Z]).{7,}$/, {
-    message: 'password too weak',
-  })
+  @IsAlphanumeric()
   password: string;
 
   @ApiProperty()
-  @Match('password', { message: 'confirm password doest not match' })
+  @Match('password', {
+    message: 'Confirm password does not matching the password',
+  })
   passwordConfirm: string;
 }

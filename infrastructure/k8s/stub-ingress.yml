@@ -10,7 +10,7 @@ spec:
     - host: stub.dev
       http:
         paths:
-          - path: /api/user/?(.*)
+          - path: /api/auth/?(.*)
             backend:
               serviceName: auth-clusterip
               servicePort: 4000
