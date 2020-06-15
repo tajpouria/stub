@@ -30,6 +30,23 @@ spec:
               value: "mongodb://auth-mongo-clusterip/auth"
             - name: SESSION_NAME
               value: session
+            - name: GOOGLE_CALLBACK_URL
+              value: "https://stub.dev/api/auth/google/callback"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: stub-secret
+                  key: JWT_SECRET
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: stub-secret
+                  key: GOOGLE_CLIENT_ID
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: stub-secret
+                  key: GOOGLE_CLIENT_SECRET
 ---
 apiVersion: v1
 kind: Service

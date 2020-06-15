@@ -2,20 +2,24 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Logger } from '@tajpouria/stub-common/dist/logger';
 import { Model, MongooseFilterQuery } from 'mongoose';
 
-import { Users } from 'src/users/constants';
+import { usersConstants } from 'src/users/constants';
 import { User } from 'src/users/interfaces/user.interface';
 import { SignUpUserDto } from 'src/users/dto/signUp-user.dto';
 import { isEmail } from 'class-validator';
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject(Users.Model) private readonly UserModel: Model<User>) {}
+  constructor(
+    @Inject(usersConstants.model) private readonly UserModel: Model<User>,
+  ) {}
 
   get logger() {
     return Logger(`${process.cwd()}/logs/users`);
   }
 
-  async create(signUpUserDto: SignUpUserDto) {
+  async create(
+    signUpUserDto: Omit<SignUpUserDto, 'password' | 'passwordConfirm'>,
+  ) {
     const userTemp = new this.UserModel(signUpUserDto);
     return await userTemp.save();
   }

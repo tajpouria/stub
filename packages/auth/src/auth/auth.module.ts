@@ -6,7 +6,8 @@ import { AuthService } from 'src/auth/auth.service';
 import { UsersModule } from 'src/users/users.module';
 import { LocalStrategy } from 'src/auth/local.strategy';
 import { jwtConstants } from 'src/auth/constants';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from 'src/auth/jwt.strategy';
+import { GoogleStrategy } from 'src/auth/google.strategy';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { JwtStrategy } from './jwt.strategy';
       secret: jwtConstants.secret,
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

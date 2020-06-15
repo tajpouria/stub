@@ -11,7 +11,18 @@ async function bootstrap() {
   try {
     objectContainsAll(
       process.env,
-      ['NODE_ENV', 'NAME', 'VERSION', 'PORT', 'DB_URL', 'SESSION_NAME'],
+      [
+        'NODE_ENV',
+        'NAME',
+        'VERSION',
+        'PORT',
+        'DB_URL',
+        'SESSION_NAME',
+        'JWT_SECRET',
+        'GOOGLE_CLIENT_ID',
+        'GOOGLE_CLIENT_SECRET',
+        'GOOGLE_CALLBACK_URL',
+      ],
       'Does not exists on process.env',
     );
 

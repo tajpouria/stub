@@ -30,3 +30,6 @@ package-lock.json
 **/.settings/
 **/*.sublime-workspace
 **/.vscode
+
+# Secret
+**/*.secret*

@@ -24,8 +24,8 @@ import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { AuthService } from 'src/auth/auth.service';
 import { SessionObj } from './interfaces/session';
 import { User } from './users/interfaces/user.interface';
-import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { GoogleAuthGuard } from './auth/google-auth.guard';
 
 @Controller('/api/auth')
 export class AppController {
@@ -89,5 +89,33 @@ export class AppController {
   async logout(@Request() req: Express.Request) {
     req.session = null;
     return;
+  }
+
+  @Get('google/signin')
+  @UseGuards(GoogleAuthGuard)
+  async googleSignIn() {}
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/callback')
+  async googleCallback(@Request() req: Express.Request & { user: User }) {
+    const { usersService, authService } = this;
+    const { email, username } = req.user;
+
+    let targetUser = await usersService.findOne({
+      $or: [
+        {
+          email,
+        },
+        {
+          username,
+        },
+      ],
+    });
+
+    if (!targetUser) targetUser = await usersService.create(req.user);
+
+    const session = authService.generateSession(req.user);
+    req.session = { session } as SessionObj;
+    return { session };
   }
 }

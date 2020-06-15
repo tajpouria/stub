@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import { Cipher } from '@tajpouria/stub-common/dist/crypto';
 
 import { User } from '../interfaces/user.interface';
+import { usersConstants } from '../constants';
 
 export const UserSchema = new mongoose.Schema<User>(
   {
@@ -17,10 +18,12 @@ export const UserSchema = new mongoose.Schema<User>(
       unique: true,
     },
 
-    password: {
+    pictureURL: {
       type: String,
-      required: true,
+      default: usersConstants.defaultPictureURL,
     },
+
+    password: String,
   },
   {
     timestamps: true,

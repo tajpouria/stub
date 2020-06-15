@@ -1,7 +1,8 @@
 ## Auth
 
 [] Email signUp nodeMailer
-[] Google OAuth2
+[] Random/Related algorithm in order to create username
+[] Enhance swagger docs
 
 
 ## Common
@@ -9,5 +10,3 @@
 [] i18n
 
 ## Models
-
-[] User model should contains password validation and user already exists logic

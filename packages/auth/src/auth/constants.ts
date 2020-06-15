@@ -1,3 +1,3 @@
 export const jwtConstants = {
-  secret: 'temporary_secret', // TODO: K8S secret
+  secret: process.env.JWT_SECRET,
 };

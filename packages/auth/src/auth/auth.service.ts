@@ -19,7 +19,7 @@ export class AuthService {
     );
 
     if (
-      currentUser &&
+      currentUser?.password &&
       (await Cipher.compare(currentUser.password, password, {}))
     ) {
       return currentUser;
