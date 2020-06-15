@@ -1,13 +1,13 @@
 ## Auth
-[] Are we need a generic is logged in middleware and are we need req.currentUser?
-[] Are we need a generic reject if req.currentUser not defined?
+
+[] Email signUp nodeMailer
+[] Google OAuth2
+
 
 ## Common
 
-[] Normal/consistence Response Error
 [] i18n
 
 ## Models
 
-[] Normal/consistence models e.g. in terms of mongoose user use toJSON to just includes id _not \_id_ and email _delete \_\_v and password_
 [] User model should contains password validation and user already exists logic

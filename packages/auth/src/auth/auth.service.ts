@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/interfaces/user.interface';
+import { JwtPayload } from 'src/interfaces/session';
 
 @Injectable()
 export class AuthService {
@@ -12,21 +13,32 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string) {
-    const user = await this.userService.findOne({ email });
+  async validateUser(usernameOrEmail: string, password: string) {
+    let currentUser = await this.userService.findOneByUsernameOrEmail(
+      usernameOrEmail,
+    );
 
-    if (user && (await Cipher.compare(user.password, password, {}))) {
-      return user;
+    if (
+      currentUser &&
+      (await Cipher.compare(currentUser.password, password, {}))
+    ) {
+      return currentUser;
     }
 
     return null;
   }
 
-  signIn(user: User) {
-    const payload = { email: user.email, sub: user._id };
-
-    return {
-      accessToken: this.jwtService.sign(payload),
+  generateSession(user: User) {
+    const payload: JwtPayload = {
+      username: user.username,
+      sub: user._id,
+      iat: Date.now(),
     };
+
+    return this.jwtService.sign(payload);
+  }
+
+  async findUserByJwtPayload(payload: JwtPayload) {
+    return await this.userService.findOne({ username: payload.username });
   }
 }

@@ -11,6 +11,12 @@ export const UserSchema = new mongoose.Schema<User>(
       unique: true,
     },
 
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
     password: {
       type: String,
       required: true,
@@ -24,8 +30,8 @@ export const UserSchema = new mongoose.Schema<User>(
         const id = doc._id;
         ret.id = id;
         delete ret._id;
-        delete ret.createdAt
-        delete ret.updatedAt
+        delete ret.createdAt;
+        delete ret.updatedAt;
         delete ret.password;
       },
     },

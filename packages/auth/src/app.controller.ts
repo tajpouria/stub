@@ -7,12 +7,14 @@ import {
   UseGuards,
   HttpCode,
   Request,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
   ApiOkResponse,
+  ApiNoContentResponse,
 } from '@nestjs/swagger';
 
 import { AppService } from 'src/app.service';
@@ -20,6 +22,10 @@ import { UsersService } from 'src/users/users.service';
 import { SignUpUserDto } from 'src/users/dto/signUp-user.dto';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { AuthService } from 'src/auth/auth.service';
+import { SessionObj } from './interfaces/session';
+import { User } from './users/interfaces/user.interface';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('/api/auth')
 export class AppController {
@@ -42,7 +48,14 @@ export class AppController {
     const { usersService } = this;
 
     const existingUser = await usersService.findOne({
-      email: signUpUserDto.email,
+      $or: [
+        {
+          email: signUpUserDto.email,
+        },
+        {
+          username: signUpUserDto.username,
+        },
+      ],
     });
     if (existingUser) throw new BadRequestException();
 
@@ -54,8 +67,27 @@ export class AppController {
   @ApiInternalServerErrorResponse()
   @UseGuards(LocalAuthGuard)
   @Post('signin')
-  @HttpCode(200)
-  async signIn(@Request() req) {
-    return this.authService.signIn(req.user);
+  @HttpCode(HttpStatus.OK)
+  async signIn(@Request() req: Express.Request & { user: User }) {
+    const session = this.authService.generateSession(req.user);
+
+    req.session = { session } as SessionObj;
+
+    return { session };
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async me(@Request() req: Express.Request & { user: User }) {
+    return req.user;
+  }
+
+  @ApiNoContentResponse()
+  @ApiInternalServerErrorResponse()
+  @Get('signout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(@Request() req: Express.Request) {
+    req.session = null;
+    return;
   }
 }

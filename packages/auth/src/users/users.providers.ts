@@ -1,8 +1,9 @@
 import { Provider } from '@nestjs/common';
 import { Connection } from 'mongoose';
 
-import { UserSchema } from './schemas/user.schema';
-import { Users, DataBase } from 'src/constants';
+import { UserSchema } from 'src/users/schemas/user.schema';
+import { Users } from 'src/users/constants';
+import { DataBase } from 'src/database/constants';
 
 export const usersProvider: Provider[] = [
   {

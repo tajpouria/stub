@@ -2,9 +2,10 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Logger } from '@tajpouria/stub-common/dist/logger';
 import { Model, MongooseFilterQuery } from 'mongoose';
 
-import { Users } from 'src/constants';
+import { Users } from 'src/users/constants';
 import { User } from 'src/users/interfaces/user.interface';
 import { SignUpUserDto } from 'src/users/dto/signUp-user.dto';
+import { isEmail } from 'class-validator';
 
 @Injectable()
 export class UsersService {
@@ -25,5 +26,13 @@ export class UsersService {
   ): Promise<User | null> {
     const result = this.UserModel.findOne(conditions, projection);
     return result;
+  }
+
+  async findOneByUsernameOrEmail(usernameOrEmail: string) {
+    if (isEmail(usernameOrEmail)) {
+      return await this.UserModel.findOne({ email: usernameOrEmail });
+    }
+
+    return await this.UserModel.findOne({ username: usernameOrEmail });
   }
 }

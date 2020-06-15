@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { objectContainsAll } from '@tajpouria/stub-common/dist/common';
+import cookieSession from 'cookie-session';
 
 import { AppModule } from './app.module';
 
@@ -10,11 +11,11 @@ async function bootstrap() {
   try {
     objectContainsAll(
       process.env,
-      ['NODE_ENV', 'NAME', 'VERSION', 'PORT', 'DB_URL'],
+      ['NODE_ENV', 'NAME', 'VERSION', 'PORT', 'DB_URL', 'SESSION_NAME'],
       'Does not exists on process.env',
     );
 
-    const { NAME, VERSION, PORT } = process.env;
+    const { NAME, VERSION, PORT, SESSION_NAME } = process.env;
 
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
@@ -27,6 +28,13 @@ async function bootstrap() {
 
     app.disable('x-powered-by');
     app.useGlobalPipes(new ValidationPipe());
+    app.use(
+      cookieSession({
+        name: SESSION_NAME,
+        signed: false,
+        httpOnly: true,
+      }),
+    );
 
     await app.listen(PORT);
   } catch (error) {

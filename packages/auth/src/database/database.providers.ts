@@ -1,6 +1,7 @@
 import { Provider } from '@nestjs/common';
-import * as mongoose from 'mongoose';
-import { DataBase } from 'src/constants';
+import mongoose from 'mongoose';
+
+import { DataBase } from 'src/database/constants';
 
 const { DB_URL } = process.env;
 export const databaseProviders: Provider[] = [
