@@ -1,12 +1,23 @@
 ## Auth
-
+[X] Turn off cookie-session secure on test env
 [] Email signUp nodeMailer
+[] Generate session also on signUp maybe refactor create and send { session } process
 [] Random/Related algorithm in order to create username
 [] Enhance swagger docs
-
+[] Test cancel google signIn manually
+[] Figure out how to not download mongoDb memory and other dev-dependency on docker build stage
+[] Setup Test setup to 1. start memory mongo before all 2. delete mongoose collections before each 2. close db connections after all
+[] Should we include refresh token
+[] Forget password implementation
+[X] Are we need a generic is logged in middleware and are we need req.currentUser?
+[X] Are we need a generic reject if req.currentUser not defined?
+[X] Google OAuth2
 
 ## Common
-
+[X] Normal/consistence Response Error
 [] i18n
+[] Add test coverage flag
 
 ## Models
+[X] User model should contains password validation and user already exists logic
+[X] Normal/consistence models e.g. in terms of mongoose user use toJSON to just includes id _not \_id_ and email _delete \_\_v and password_

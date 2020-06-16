@@ -14,6 +14,7 @@ async function bootstrap() {
       [
         'NODE_ENV',
         'NAME',
+        'HOST',
         'VERSION',
         'PORT',
         'DB_URL',
@@ -21,12 +22,13 @@ async function bootstrap() {
         'JWT_SECRET',
         'GOOGLE_CLIENT_ID',
         'GOOGLE_CLIENT_SECRET',
-        'GOOGLE_CALLBACK_URL',
+        'REDIS_URL',
+        'REDIS_EXPIRY_SECONDS',
       ],
       'Does not exists on process.env',
     );
 
-    const { NAME, VERSION, PORT, SESSION_NAME } = process.env;
+    const { NAME, VERSION, PORT, SESSION_NAME, NODE_ENV } = process.env;
 
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
@@ -44,6 +46,7 @@ async function bootstrap() {
         name: SESSION_NAME,
         signed: false,
         httpOnly: true,
+        secure: NODE_ENV === 'production',
       }),
     );
 

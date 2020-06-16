@@ -20,6 +20,8 @@ spec:
           env:
             - name: NAME
               value: "Auth"
+            - name: HOST
+              value: "https://stub.dev"
             - name: VERSION
               value: "0.0.1"
             - name: NODE_ENV
@@ -30,8 +32,10 @@ spec:
               value: "mongodb://auth-mongo-clusterip/auth"
             - name: SESSION_NAME
               value: session
-            - name: GOOGLE_CALLBACK_URL
-              value: "https://stub.dev/api/auth/google/callback"
+            - name: REDIS_URL
+              value: "auth-redis-clusterip:6379"
+            - name: REDIS_EXPIRY_SECONDS
+              value: 86400
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:

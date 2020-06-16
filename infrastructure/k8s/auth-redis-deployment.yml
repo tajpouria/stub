@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: auth-redis-pod
+  template:
+    metadata:
+      name: auth-redis
+      labels:
+        name: auth-redis-pod
+        tier: back-end
+    spec:
+      containers:
+        - name: auth-redis
+          image: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-redis-clusterip
+spec:
+  selector:
+    name: auth-redis-pod
+  ports:
+    - name: auth-redis
+      protocol: TCP
+      targetPort: 6379
+      port: 6379
