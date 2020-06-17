@@ -5,7 +5,7 @@
 [] Generate session also on signUp maybe refactor create and send { session } process
 [] Random/Related algorithm in order to create username
 [] Enhance swagger docs
-[] Test cancel google signIn manually
+[X] Test cancel google signIn manually
 [] Figure out how to not download mongoDb memory and other dev-dependency on docker build stage
 [] Setup Test setup to 1. start memory mongo before all 2. delete mongoose collections before each 2. close db connections after all
 [] Should we include refresh token
