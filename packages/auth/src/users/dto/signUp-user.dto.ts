@@ -1,32 +1,22 @@
-import {
-  IsEmail,
-  IsString,
-  MinLength,
-  IsAlphanumeric,
-  IsNotEmpty,
-} from 'class-validator';
-import { Match } from '@tajpouria/stub-common/dist/class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import Joi from '@hapi/joi';
 
-export class SignUpUserDto {
-  @ApiProperty()
-  @IsEmail()
+export interface ISignUpUserDto {
   email: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
   username: string;
-
-  @ApiProperty()
-  @IsString()
-  @MinLength(7)
-  @IsAlphanumeric()
   password: string;
-
-  @ApiProperty()
-  @Match('password', {
-    message: 'Confirm password does not matching the password',
-  })
-  passwordConfirm: string;
+  repeatPassword: string;
 }
+
+export const signUpUserDto = Joi.object<ISignUpUserDto>({
+  email: Joi.string()
+    .email()
+    .required(),
+  username: Joi.string()
+    .min(3)
+    .max(30)
+    .required(),
+  password: Joi.string()
+    .pattern(new RegExp('^[a-zA-Z0-9]{7,30}$'))
+    .required(),
+  repeatPassword: Joi.ref('password'),
+});

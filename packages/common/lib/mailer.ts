@@ -13,7 +13,7 @@ export const Mailer = (
       transporter.sendMail(sendMailOptions, (error, info) => {
         if (error) logger.error(error);
 
-        logger.info(info);
+        logger.info(JSON.stringify(info));
       }),
   };
 };

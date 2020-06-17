@@ -4,7 +4,7 @@ import { Model, MongooseFilterQuery } from 'mongoose';
 
 import { usersConstants } from 'src/users/constants';
 import { User } from 'src/users/interfaces/user.interface';
-import { SignUpUserDto } from 'src/users/dto/signUp-user.dto';
+import { ISignUpUserDto } from 'src/users/dto/signUp-user.dto';
 import { isEmail } from 'class-validator';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class UsersService {
   }
 
   async create(
-    signUpUserDto: Omit<SignUpUserDto, 'password' | 'passwordConfirm'>,
+    signUpUserDto: ISignUpUserDto | Omit<User, 'password' | 'passwordConfirm'>,
   ) {
     const userTemp = new this.UserModel(signUpUserDto);
     return await userTemp.save();

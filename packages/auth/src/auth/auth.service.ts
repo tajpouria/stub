@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/interfaces/user.interface';
-import { JwtPayload } from 'src/interfaces/session';
+import { JwtPayload, SessionObj } from 'src/interfaces/session';
 
 @Injectable()
 export class AuthService {
@@ -28,14 +28,16 @@ export class AuthService {
     return null;
   }
 
-  generateSession(user: User) {
+  signIn(user: User, req: Express.Request) {
     const payload: JwtPayload = {
       username: user.username,
       sub: user._id,
       iat: Date.now(),
     };
 
-    return this.jwtService.sign(payload);
+    const session = this.jwtService.sign(payload);
+    req.session = { session } as SessionObj;
+    return { session };
   }
 
   async findUserByJwtPayload(payload: JwtPayload) {

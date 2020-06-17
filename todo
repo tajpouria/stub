@@ -1,6 +1,7 @@
 ## Auth
 [X] Turn off cookie-session secure on test env
-[] Email signUp nodeMailer
+[X] Email signUp nodeMailer
+[X] Translate to Joi validation instead of class validators
 [] Generate session also on signUp maybe refactor create and send { session } process
 [] Random/Related algorithm in order to create username
 [] Enhance swagger docs
@@ -21,3 +22,4 @@
 ## Models
 [X] User model should contains password validation and user already exists logic
 [X] Normal/consistence models e.g. in terms of mongoose user use toJSON to just includes id _not \_id_ and email _delete \_\_v and password_
+[] Swagger Joi Docs

@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { objectContainsAll } from '@tajpouria/stub-common/dist/common';
@@ -24,6 +23,7 @@ async function bootstrap() {
         'GOOGLE_CLIENT_SECRET',
         'REDIS_URL',
         'REDIS_EXPIRY_SECONDS',
+        'MAILER',
       ],
       'Does not exists on process.env',
     );
@@ -40,7 +40,6 @@ async function bootstrap() {
     SwaggerModule.setup('api/users/document', app, document);
 
     app.disable('x-powered-by');
-    app.useGlobalPipes(new ValidationPipe());
     app.use(
       cookieSession({
         name: SESSION_NAME,

@@ -35,7 +35,12 @@ spec:
             - name: REDIS_URL
               value: "auth-redis-clusterip:6379"
             - name: REDIS_EXPIRY_SECONDS
-              value: 86400
+              value: "10800" # 3 Hours
+            - name: MAILER
+              valueFrom:
+                secretKeyRef:
+                  name: stub-secret
+                  key: MAILER
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
