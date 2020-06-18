@@ -4,7 +4,6 @@ import request from 'supertest';
 
 import { AppModule } from 'src/app.module';
 import { signUpUser, redis } from '../.jest/utils';
-import { async } from 'rxjs/internal/scheduler/async';
 
 describe('app.controller (e2e)', () => {
   let app: INestApplication;
@@ -42,14 +41,14 @@ describe('app.controller (e2e)', () => {
         .expect({ email });
     });
 
-    it('POST invalid body-Empty request body: 400', async () => {
+    it('POST Empty request body: 400', async () => {
       await request(app.getHttpServer())
         .post('/api/auth/signup')
         .send({})
         .expect(400);
     });
 
-    it('POST invalid body-Invalid email: 400', async () => {
+    it('POST Invalid email: 400', async () => {
       await request(app.getHttpServer())
         .post('/api/auth/signup')
         .send({
@@ -61,7 +60,7 @@ describe('app.controller (e2e)', () => {
         .expect(400);
     });
 
-    it('POST invalid body-Weak password: 400', async () => {
+    it('POST Weak password: 400', async () => {
       await request(app.getHttpServer())
         .post('/api/auth/signup')
         .send({
@@ -73,7 +72,7 @@ describe('app.controller (e2e)', () => {
         .expect(400);
     });
 
-    it('POST invalid body-Not match repeatPassword: 400', async () => {
+    it('POST Not match repeatPassword: 400', async () => {
       await request(app.getHttpServer())
         .post('/api/auth/signup')
         .send({
@@ -201,6 +200,85 @@ describe('app.controller (e2e)', () => {
       await request(app.getHttpServer())
         .get(`/api/auth/signup/${token}`)
         .expect(400);
+    });
+  });
+
+  describe('SignIn Local (/api/auth/signin)', () => {
+    it('POST Username signIn: 200', async () => {
+      const user = {
+        email: 'abc@abc.com',
+        username: 'abc123',
+        password: 'abc1234',
+        repeatPassword: 'abc1234',
+      };
+
+      await signUpUser(user);
+
+      await request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .send({
+          usernameOrEmail: 'abc123',
+          password: 'abc1234',
+        })
+        .expect(200);
+    });
+
+    it('POST Email signIn: 200', async () => {
+      const user = {
+        email: 'abc@abc.com',
+        username: 'abc123',
+        password: 'abc1234',
+        repeatPassword: 'abc1234',
+      };
+
+      await signUpUser(user);
+
+      await request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .send({
+          usernameOrEmail: 'abc@abc.com',
+          password: 'abc1234',
+        })
+        .expect(200);
+    });
+
+    it('POST: Send session', async () => {
+      const user = {
+        email: 'abc@abc.com',
+        username: 'abc123',
+        password: 'abc1234',
+        repeatPassword: 'abc1234',
+      };
+
+      await signUpUser(user);
+
+      const response = await request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .send({
+          usernameOrEmail: 'abc@abc.com',
+          password: 'abc1234',
+        });
+
+      expect(response.body.session).toBeDefined();
+    });
+
+    it('POST Invalid body: 401', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .send({
+          usernameOrEmail: 'abc@abc.com',
+        })
+        .expect(401);
+    });
+
+    it('POST Unauthorized: 401', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .send({
+          usernameOrEmail: 'abc@abc.com',
+          password: 'abc1234',
+        })
+        .expect(401);
     });
   });
 
