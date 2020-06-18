@@ -34,7 +34,7 @@ import { enTempProvider } from 'src/shared/mail-template';
 import { ValidationPipe } from 'src/shared/validationPipe';
 import { ISignInUserDto } from 'src/users/dto/signIn-user.dto';
 
-const { HOST, REDIS_EXPIRY_SECONDS } = process.env;
+const { HOST, REDIS_EXPIRY_SECONDS, NODE_ENV } = process.env;
 
 @Controller('/api/auth')
 export class AppController {
@@ -97,9 +97,11 @@ export class AppController {
 
     const { error } = signUpUserDto.validate(data);
     if (error) {
-      logger.error(JSON.stringify(error));
+      NODE_ENV !== 'test' && logger.error(JSON.stringify(error));
       throw new BadRequestException();
     }
+
+    if (await usersService.existingUser(data)) throw new BadRequestException();
 
     await appService.redisDeleteTokenData(token);
 

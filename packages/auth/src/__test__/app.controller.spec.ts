@@ -3,7 +3,8 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
 import { AppModule } from 'src/app.module';
-import { signUpUser } from '../.jest/utils';
+import { signUpUser, redis } from '../.jest/utils';
+import { async } from 'rxjs/internal/scheduler/async';
 
 describe('app.controller (e2e)', () => {
   let app: INestApplication;
@@ -97,6 +98,108 @@ describe('app.controller (e2e)', () => {
       await request(app.getHttpServer())
         .post('/api/auth/signup')
         .send(user)
+        .expect(400);
+    });
+  });
+
+  describe('SignUp Local (/api/auth/signup/:token)', () => {
+    const token = 'token';
+
+    afterEach(async () => {
+      await redis.del(token);
+    });
+
+    it('GET: 201', async () => {
+      const user = {
+        email: 'abc@abc.com',
+        username: 'abc123',
+        password: 'abc1234',
+        repeatPassword: 'abc1234',
+      };
+
+      await redis.set(token, JSON.stringify(user));
+
+      await request(app.getHttpServer()).get(`/api/auth/signup/${token}`);
+      expect(201);
+    });
+
+    it('GET: Send session', async () => {
+      const user = {
+        email: 'abc@abc.com',
+        username: 'abc123',
+        password: 'abc1234',
+        repeatPassword: 'abc1234',
+      };
+
+      await redis.set(token, JSON.stringify(user));
+
+      const response = await request(app.getHttpServer()).get(
+        `/api/auth/signup/${token}`,
+      );
+
+      expect(response.body.session).toBeDefined();
+    });
+
+    it('GET: Delete redis token user', async () => {
+      const user = {
+        email: 'abc@abc.com',
+        username: 'abc123',
+        password: 'abc1234',
+        repeatPassword: 'abc1234',
+      };
+
+      await redis.set(token, JSON.stringify(user));
+
+      await request(app.getHttpServer()).get(`/api/auth/signup/${token}`);
+
+      expect(await redis.get(token)).toBeNull();
+    });
+
+    it('GET Invalid store user: 400', async () => {
+      const user = {
+        email: 'abc@abc.com',
+        username: 'abc123',
+        password: 'abc1234',
+        repeatPassword: 'abc1234',
+      };
+
+      await signUpUser(user);
+
+      await redis.set(token, JSON.stringify(user));
+
+      await request(app.getHttpServer())
+        .get(`/api/auth/signup/${token}`)
+        .expect(400);
+    });
+
+    it('GET Invalid token: 400', async () => {
+      const user = {
+        email: 'abc@abc.com',
+        username: 'abc123',
+        password: 'abc1234',
+        repeatPassword: 'abc1234',
+      };
+
+      await signUpUser(user);
+
+      await redis.set(token, JSON.stringify(user));
+
+      await request(app.getHttpServer())
+        .get(`/api/auth/signup/${token}_Invalid`)
+        .expect(400);
+    });
+
+    it('GET User already exists: 400', async () => {
+      const user = {
+        email: 'abc@abc.com', // Invalid User do not contain username
+        password: 'abc1234',
+        repeatPassword: 'abc1234',
+      };
+
+      await redis.set(token, JSON.stringify(user));
+
+      await request(app.getHttpServer())
+        .get(`/api/auth/signup/${token}`)
         .expect(400);
     });
   });
