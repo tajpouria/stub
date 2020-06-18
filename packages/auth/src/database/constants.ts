@@ -1,3 +1,3 @@
-export enum DataBase {
-  Connection = 'DATABASE_CONNECTION',
-}
+export const dataBaseConstants = {
+  connection: 'DATABASE_CONNECTION',
+};

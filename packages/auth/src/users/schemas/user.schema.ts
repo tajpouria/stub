@@ -1,10 +1,10 @@
-import * as mongoose from 'mongoose';
+import { Schema } from 'mongoose';
 import { Cipher } from '@tajpouria/stub-common/dist/crypto';
 
-import { User } from '../interfaces/user.interface';
-import { usersConstants } from '../constants';
+import { User } from 'src/users/interfaces/user.interface';
+import { usersConstants } from 'src/users/constants';
 
-export const UserSchema = new mongoose.Schema<User>(
+export const UserSchema = new Schema<User>(
   {
     email: {
       type: String,

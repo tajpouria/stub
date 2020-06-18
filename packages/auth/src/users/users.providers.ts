@@ -2,7 +2,7 @@ import { Provider } from '@nestjs/common';
 import { Connection } from 'mongoose';
 
 import { UserSchema } from 'src/users/schemas/user.schema';
-import { DataBase } from 'src/database/constants';
+import { dataBaseConstants } from 'src/database/constants';
 import { usersConstants } from 'src/users/constants';
 
 export const usersProvider: Provider[] = [
@@ -10,6 +10,6 @@ export const usersProvider: Provider[] = [
     provide: usersConstants.model,
     useFactory: (connection: Connection) =>
       connection.model('User', UserSchema),
-    inject: [DataBase.Connection],
+    inject: [dataBaseConstants.connection],
   },
 ];

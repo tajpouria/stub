@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Cipher } from '@tajpouria/stub-common/dist/crypto';
 
 import { redis } from 'src/shared/redis';
-import { mailer } from './shared/mailer';
+import { mailer } from 'src/shared/mailer';
 
 const { HOST, REDIS_EXPIRY_SECONDS } = process.env;
 

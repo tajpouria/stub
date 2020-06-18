@@ -4,7 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { objectContainsAll } from '@tajpouria/stub-common/dist/common';
 import cookieSession from 'cookie-session';
 
-import { AppModule } from './app.module';
+import { AppModule } from 'src/app.module';
 
 async function bootstrap() {
   try {

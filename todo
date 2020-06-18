@@ -2,6 +2,7 @@
 [X] Turn off cookie-session secure on test env
 [X] Email signUp nodeMailer
 [X] Translate to Joi validation instead of class validators
+[] Do not import whole third party module
 [] Generate session also on signUp maybe refactor create and send { session } process
 [] Random/Related algorithm in order to create username
 [] Enhance swagger docs
@@ -18,6 +19,7 @@
 [X] Normal/consistence Response Error
 [] i18n
 [] Add test coverage flag
+[] README
 
 ## Models
 [X] User model should contains password validation and user already exists logic
