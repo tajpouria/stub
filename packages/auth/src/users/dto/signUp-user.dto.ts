@@ -16,7 +16,7 @@ export const signUpUserDto = Joi.object<ISignUpUserDto>({
     .max(30)
     .required(),
   password: Joi.string()
-    .pattern(new RegExp('^[a-zA-Z0-9]{7,30}$'))
+    .pattern(/^(?=.*\d)(?=.*[a-zA-Z])(?!.*\s).{6,12}$/) // Password contains between 6 and 12 characters, and contains at least one number.
     .required(),
   repeatPassword: Joi.ref('password'),
 });

@@ -9,12 +9,12 @@ import { JwtPayload, SessionObj } from 'src/interfaces/session';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UsersService,
+    private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
 
   async validateUser(usernameOrEmail: string, password: string) {
-    let currentUser = await this.userService.findOneByUsernameOrEmail(
+    let currentUser = await this.usersService.findOneByUsernameOrEmail(
       usernameOrEmail,
     );
 
@@ -41,6 +41,6 @@ export class AuthService {
   }
 
   async findUserByJwtPayload(payload: JwtPayload) {
-    return await this.userService.findOne({ username: payload.username });
+    return await this.usersService.findOne({ username: payload.username });
   }
 }

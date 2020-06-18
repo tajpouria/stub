@@ -50,20 +50,12 @@ export class AppController {
   @ApiInternalServerErrorResponse()
   @UsePipes(new ValidationPipe(signUpUserDto))
   @Post('signup')
+  @HttpCode(HttpStatus.OK)
   async signUp(@Body() signUpUserDto: ISignUpUserDto) {
     const { usersService, appService } = this;
 
-    const existingUser = await usersService.findOne({
-      $or: [
-        {
-          email: signUpUserDto.email,
-        },
-        {
-          username: signUpUserDto.username,
-        },
-      ],
-    });
-    if (existingUser) throw new BadRequestException();
+    if (await usersService.existingUser(signUpUserDto))
+      throw new BadRequestException();
 
     const token = await appService.redisStoreTokenData(signUpUserDto),
       confirm_link = await appService.generateConfirmLink('signup', token);
@@ -83,6 +75,7 @@ export class AppController {
   }
 
   @Get('signup/:token')
+  @HttpCode(HttpStatus.CREATED)
   async singUpCallback(
     @Param('token') token: string,
     @Request() req: Express.Request,
@@ -135,19 +128,8 @@ export class AppController {
   @Get('google/callback')
   async googleCallback(@Request() req: Express.Request & { user: User }) {
     const { usersService, authService } = this;
-    const { email, username } = req.user;
 
-    let targetUser = await usersService.findOne({
-      $or: [
-        {
-          email,
-        },
-        {
-          username,
-        },
-      ],
-    });
-
+    let targetUser = await usersService.existingUser(req.user);
     if (!targetUser) targetUser = await usersService.create(req.user);
 
     return authService.signIn(targetUser, req);

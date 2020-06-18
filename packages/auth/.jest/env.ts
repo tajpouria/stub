@@ -12,5 +12,5 @@ process.env = {
   GOOGLE_CLIENT_SECRET: 'secret',
   JWT_SECRET: 'secret',
   MAILER:
-    '{"service": "gmail", "auth": {"user": "tajpouria.dev@gmail.com", "pass": "secret"}}',
+    '{"service": "", "auth": {"user": "", "pass": ""}}',
 };

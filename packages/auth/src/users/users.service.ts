@@ -32,6 +32,19 @@ export class UsersService {
     return result;
   }
 
+  async existingUser(userInfo: { email?: string; username?: string }) {
+    return await this.UserModel.findOne({
+      $or: [
+        {
+          email: userInfo.email,
+        },
+        {
+          username: userInfo.username,
+        },
+      ],
+    });
+  }
+
   async findOneByUsernameOrEmail(usernameOrEmail: string) {
     if (isEmail(usernameOrEmail)) {
       return await this.UserModel.findOne({ email: usernameOrEmail });
