@@ -17,7 +17,10 @@ import {
   ApiInternalServerErrorResponse,
   ApiOkResponse,
   ApiNoContentResponse,
+  ApiBody,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { Logger } from '@tajpouria/stub-common/dist/logger';
 
 import { AppService } from 'src/app.service';
 import { UsersService } from 'src/users/users.service';
@@ -29,8 +32,9 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { GoogleAuthGuard } from 'src/auth/google-auth.guard';
 import { enTempProvider } from 'src/shared/mail-template';
 import { ValidationPipe } from 'src/shared/validationPipe';
+import { ISignInUserDto } from 'src/users/dto/signIn-user.dto';
 
-const { HOST } = process.env;
+const { HOST, REDIS_EXPIRY_SECONDS } = process.env;
 
 @Controller('/api/auth')
 export class AppController {
@@ -40,12 +44,16 @@ export class AppController {
     private readonly authService: AuthService,
   ) {}
 
+  private logger = Logger(`${process.cwd()}/logs/app`);
+
+  @ApiOkResponse()
+  @ApiInternalServerErrorResponse()
   @Get('')
-  getHello(): string {
+  getHello() {
     return this.appService.getHello();
   }
 
-  @ApiCreatedResponse()
+  @ApiOkResponse()
   @ApiBadRequestResponse()
   @ApiInternalServerErrorResponse()
   @UsePipes(new ValidationPipe(signUpUserDto))
@@ -57,10 +65,8 @@ export class AppController {
     if (await usersService.existingUser(signUpUserDto))
       throw new BadRequestException();
 
-    const token = await appService.redisStoreTokenData(signUpUserDto),
-      confirm_link = await appService.generateConfirmLink('signup', token);
-
-    const { REDIS_EXPIRY_SECONDS } = process.env;
+    const token = await appService.redisStoreTokenData(signUpUserDto);
+    const confirm_link = await appService.generateConfirmLink('signup', token);
 
     const template = await enTempProvider({
       forSignUp: true,
@@ -69,35 +75,42 @@ export class AppController {
       host: HOST,
     });
 
-    appService.sendEmail(signUpUserDto.email, template);
+    const { email } = signUpUserDto;
 
-    return { email: signUpUserDto.email };
+    await appService.sendEmail(email, template);
+
+    return { email };
   }
 
+  @ApiCreatedResponse()
+  @ApiBadRequestResponse()
+  @ApiInternalServerErrorResponse()
   @Get('signup/:token')
   @HttpCode(HttpStatus.CREATED)
   async singUpCallback(
     @Param('token') token: string,
     @Request() req: Express.Request,
   ) {
-    const { appService, usersService, authService } = this;
+    const { appService, usersService, authService, logger } = this;
 
     const data = await appService.redisRetrieveTokenData<ISignUpUserDto>(token);
 
     const { error } = signUpUserDto.validate(data);
-    if (error) throw new BadRequestException();
+    if (error) {
+      logger.error(JSON.stringify(error));
+      throw new BadRequestException();
+    }
 
     await appService.redisDeleteTokenData(token);
 
     const user = await usersService.create(data);
-
     return authService.signIn(user, req);
   }
 
   @ApiOkResponse()
   @ApiBadRequestResponse()
   @ApiInternalServerErrorResponse()
-  @UsePipes(new ValidationPipe(signUpUserDto))
+  @ApiBody({ type: ISignInUserDto })
   @UseGuards(LocalAuthGuard)
   @Post('signin')
   @HttpCode(HttpStatus.OK)
@@ -105,6 +118,9 @@ export class AppController {
     return this.authService.signIn(req.user, req);
   }
 
+  @ApiOkResponse()
+  @ApiUnauthorizedResponse()
+  @ApiInternalServerErrorResponse()
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async me(@Request() req: Express.Request & { user: User }) {
@@ -120,10 +136,14 @@ export class AppController {
     return;
   }
 
+  @ApiOkResponse()
+  @ApiInternalServerErrorResponse()
   @Get('google/signin')
   @UseGuards(GoogleAuthGuard)
   async googleSignIn() {}
 
+  @ApiOkResponse()
+  @ApiInternalServerErrorResponse()
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   async googleCallback(@Request() req: Express.Request & { user: User }) {

@@ -1,8 +1,8 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  setupFiles: ['<rootDir>/.jest/env.ts'],
-  setupFilesAfterEnv: ['<rootDir>/.jest/mongo.ts'],
+  setupFiles: ['<rootDir>/src/.jest/env.ts', '<rootDir>/src/.jest/utils.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/.jest/mongo.ts'],
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },

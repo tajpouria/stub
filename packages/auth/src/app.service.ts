@@ -4,12 +4,12 @@ import { Cipher } from '@tajpouria/stub-common/dist/crypto';
 import { redis } from 'src/shared/redis';
 import { mailer } from 'src/shared/mailer';
 
-const { HOST, REDIS_EXPIRY_SECONDS } = process.env;
+const { NAME, HOST, REDIS_EXPIRY_SECONDS } = process.env;
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello Auth!';
+  getHello() {
+    return { hello: NAME };
   }
 
   async redisStoreTokenData(data: Record<string, any>): Promise<string> {
@@ -28,7 +28,7 @@ export class AppService {
     return await redis.del(token);
   }
 
-  generateConfirmLink(linkFor: 'signup' | 'forgotPassword', token: string) {
+  generateConfirmLink(linkFor: 'signup' | 'forgotpassword', token: string) {
     return `${HOST}/api/auth/${linkFor}/${token}`;
   }
 

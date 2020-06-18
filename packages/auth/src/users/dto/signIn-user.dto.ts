@@ -1,7 +1,10 @@
 import Joi from '@hapi/joi';
+import { ApiProperty } from '@nestjs/swagger';
 
-export interface ISignInUserDto {
+export class ISignInUserDto {
+  @ApiProperty()
   usernameOrEmail: string;
+  @ApiProperty()
   password: string;
 }
 

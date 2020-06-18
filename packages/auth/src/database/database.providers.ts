@@ -3,7 +3,7 @@ import { connect } from 'mongoose';
 
 import { dataBaseConstants } from 'src/database/constants';
 
-const { DB_URL } = process.env;
+const { NODE_ENV, DB_URL } = process.env;
 export const databaseProviders: Provider[] = [
   {
     provide: dataBaseConstants.connection,
@@ -15,7 +15,9 @@ export const databaseProviders: Provider[] = [
           useUnifiedTopology: true,
           useNewUrlParser: true,
         },
-        () => console.info(`Connected to mongo on ${DB_URL}`),
+        () =>
+          NODE_ENV !== 'test' &&
+          console.info(`Connected to mongo on ${DB_URL}`),
       ),
   },
 ];

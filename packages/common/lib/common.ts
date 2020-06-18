@@ -1,5 +1,5 @@
 /**
- * Check of target contains all specified items
+ * Check if target contains all specified items
  * @param target
  * @param items
  * @param message

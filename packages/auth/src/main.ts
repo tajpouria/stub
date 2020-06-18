@@ -37,7 +37,7 @@ async function bootstrap() {
       .setVersion(VERSION)
       .build();
     const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup('api/users/document', app, document);
+    SwaggerModule.setup('api/auth/document', app, document);
 
     app.disable('x-powered-by');
     app.use(
