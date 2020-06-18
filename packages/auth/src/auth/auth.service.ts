@@ -40,6 +40,11 @@ export class AuthService {
     return { session };
   }
 
+  signOut(req: Express.Request) {
+    req.session = null;
+    return;
+  }
+
   async findUserByJwtPayload(payload: JwtPayload) {
     return await this.usersService.findOne({ username: payload.username });
   }

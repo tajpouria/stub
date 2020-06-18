@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
+import cookieSession from 'cookie-session';
 
 import { AppModule } from 'src/app.module';
 import { signUpUser, redis } from '../.jest/utils';
@@ -8,12 +9,20 @@ import { signUpUser, redis } from '../.jest/utils';
 describe('app.controller (e2e)', () => {
   let app: INestApplication;
 
+  const { SESSION_NAME } = process.env;
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.use(
+      cookieSession({
+        name: SESSION_NAME,
+        signed: false,
+        httpOnly: true,
+      }),
+    );
     await app.init();
   });
 
@@ -242,6 +251,26 @@ describe('app.controller (e2e)', () => {
         .expect(200);
     });
 
+    it('POST: Set cookie session', async () => {
+      const user = {
+        email: 'abc@abc.com',
+        username: 'abc123',
+        password: 'abc1234',
+        repeatPassword: 'abc1234',
+      };
+
+      await signUpUser(user);
+
+      const response = await request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .send({
+          usernameOrEmail: 'abc@abc.com',
+          password: 'abc1234',
+        });
+
+      expect(response.get('Set-Cookie')[0]).toBeDefined();
+    });
+
     it('POST: Send session', async () => {
       const user = {
         email: 'abc@abc.com',
@@ -263,7 +292,7 @@ describe('app.controller (e2e)', () => {
     });
 
     it('POST Invalid body: 401', async () => {
-      const response = await request(app.getHttpServer())
+      await request(app.getHttpServer())
         .post('/api/auth/signin')
         .send({
           usernameOrEmail: 'abc@abc.com',
@@ -272,7 +301,7 @@ describe('app.controller (e2e)', () => {
     });
 
     it('POST Unauthorized: 401', async () => {
-      const response = await request(app.getHttpServer())
+      await request(app.getHttpServer())
         .post('/api/auth/signin')
         .send({
           usernameOrEmail: 'abc@abc.com',
@@ -282,11 +311,83 @@ describe('app.controller (e2e)', () => {
     });
   });
 
+  describe('UserInfo (/api/auth/me)', () => {
+    const user = {
+      email: 'abc@abc.com',
+      username: 'abc123',
+      password: 'abc1234',
+      repeatPassword: 'abc1234',
+    };
+
+    const generateSignInSession = async () => {
+      await signUpUser(user);
+
+      const response = await request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .send({
+          usernameOrEmail: 'abc@abc.com',
+          password: 'abc1234',
+        });
+
+      return response.get('Set-Cookie')[0];
+    };
+
+    it('GET: 200', async () => {
+      const session = await generateSignInSession();
+
+      await request(app.getHttpServer())
+        .get('/api/auth/me')
+        .set('Cookie', session)
+        .send()
+        .expect(200);
+    });
+
+    it('GET: Send user', async () => {
+      const session = await generateSignInSession();
+
+      const response = await request(app.getHttpServer())
+        .get('/api/auth/me')
+        .set('Cookie', session)
+        .send();
+
+      const { email, username } = response.body;
+      expect(email).toEqual(user.email);
+      expect(username).toEqual(user.username);
+    });
+
+    it('GET Unauthorized: 401', async () => {
+      await request(app.getHttpServer())
+        .get('/api/auth/me')
+        .send()
+        .expect(401);
+    });
+
+    it('GET Invalid session: 401', async () => {
+      const session = await generateSignInSession();
+
+      await request(app.getHttpServer())
+        .get('/api/auth/me')
+        .set('Cookie', `${session.split('').join('.')}`)
+        .send()
+        .expect(401);
+    });
+  });
+
   describe('SignOut (/api/auth/signout)', () => {
     it('GET: 204', async () => {
       await request(app.getHttpServer())
         .get('/api/auth/signout')
         .expect(204);
+    });
+
+    it('GET: Destroy session', async () => {
+      const response = await request(app.getHttpServer()).get(
+        '/api/auth/signout',
+      );
+
+      expect(response.get('Set-Cookie')[0]).toEqual(
+        'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly',
+      );
     });
   });
 });

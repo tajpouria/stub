@@ -123,8 +123,8 @@ export class AppController {
   @ApiOkResponse()
   @ApiUnauthorizedResponse()
   @ApiInternalServerErrorResponse()
-  @Get('me')
   @UseGuards(JwtAuthGuard)
+  @Get('me')
   async me(@Request() req: Express.Request & { user: User }) {
     return req.user;
   }
@@ -134,8 +134,7 @@ export class AppController {
   @Get('signout')
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Request() req: Express.Request) {
-    req.session = null;
-    return;
+    return this.authService.signOut(req);
   }
 
   @ApiOkResponse()
