@@ -5,8 +5,8 @@ services:
   - docker
 install:
   - npm i
-  - npm lerna bootstrap
+  - npm run bootstrap
 before_script:
   - docker-compose up
 script:
-  - npm lerna run test
+  - npm run test

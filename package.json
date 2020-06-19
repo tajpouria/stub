@@ -4,6 +4,10 @@
   "main": "index.js",
   "author": "tajpouria <tajpouria.dev@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "test": "lerna run test"
+  },
   "devDependencies": {
     "lerna": "^3.22.0"
   }
