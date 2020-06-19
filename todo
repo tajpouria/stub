@@ -1,5 +1,5 @@
 ## Auth
-[] Add CI pipe
+[X] Add CI pipe
 [X] Turn off cookie-session secure on test env
 [X] Email signUp nodeMailer
 [X] Translate to Joi validation instead of class validators
@@ -19,7 +19,7 @@
 ## Common
 [X] Normal/consistence Response Error
 [] i18n
-[] Add test coverage flag
+[X] Add test coverage flag
 [] README
 
 ## Models
