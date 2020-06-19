@@ -9,3 +9,5 @@ beforeEach(async () => {
       await collection.deleteMany({});
     }
 });
+
+afterAll(() => setTimeout(() => process.exit(), 1000));
