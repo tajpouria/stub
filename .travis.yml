@@ -1,11 +1,10 @@
-sudo: required
 language: node_js
 node_js:
   - "stable"
 services:
   - docker
 install:
-  - npm
+  - npm i
   - npm lerna bootstrap
 before_script:
   - docker-compose up
