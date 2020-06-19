@@ -10,6 +10,7 @@ import {
   HttpStatus,
   Param,
   UsePipes,
+  Put,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -33,6 +34,11 @@ import { GoogleAuthGuard } from 'src/auth/google-auth.guard';
 import { enTempProvider } from 'src/shared/mail-template';
 import { ValidationPipe } from 'src/shared/validationPipe';
 import { ISignInUserDto } from 'src/users/dto/signIn-user.dto';
+import {
+  forgotPasswordDto,
+  IForgotPasswordDto,
+} from 'src/users/dto/forgot-password.dto';
+import { JwtUpdateGuard } from 'src/auth/jwt-update.guard';
 
 const { HOST, REDIS_EXPIRY_SECONDS, NODE_ENV } = process.env;
 
@@ -125,8 +131,28 @@ export class AppController {
   @ApiInternalServerErrorResponse()
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async me(@Request() req: Express.Request & { user: User }) {
+  @HttpCode(HttpStatus.CREATED)
+  async getMe(@Request() req: Express.Request & { user: User }) {
     return req.user;
+  }
+
+  @ApiCreatedResponse()
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
+  @ApiInternalServerErrorResponse()
+  @UseGuards(JwtUpdateGuard)
+  @UsePipes(new ValidationPipe(signUpUserDto))
+  @Put('me')
+  async updateMe(
+    @Request() req: Express.Request & { user: User },
+    @Body() signUpUserDto: ISignUpUserDto,
+  ) {
+    const { usersService } = this;
+
+    if (await usersService.existingUser(signUpUserDto))
+      throw new BadRequestException();
+
+    return await usersService.updateOne(req.user, signUpUserDto);
   }
 
   @ApiNoContentResponse()
@@ -135,6 +161,69 @@ export class AppController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Request() req: Express.Request) {
     return this.authService.signOut(req);
+  }
+
+  @ApiOkResponse()
+  @ApiBadRequestResponse()
+  @ApiInternalServerErrorResponse()
+  @UsePipes(new ValidationPipe(forgotPasswordDto))
+  @Post('forgotPassword')
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(@Body() { usernameOrEmail }: IForgotPasswordDto) {
+    const { usersService, appService } = this;
+
+    const existingUser = await usersService.findOneByUsernameOrEmail(
+      usernameOrEmail,
+    );
+
+    if (!existingUser) throw new BadRequestException();
+
+    const token = await appService.redisStoreTokenData({ usernameOrEmail });
+    const confirm_link = await appService.generateConfirmLink(
+      'forgotpassword',
+      token,
+    );
+
+    const template = await enTempProvider({
+      forSignUp: false,
+      confirm_link,
+      hours_to_expire: Math.round(+REDIS_EXPIRY_SECONDS / 60 ** 2),
+      host: HOST,
+    });
+
+    const { email } = existingUser;
+
+    await appService.sendEmail(email, template);
+
+    return { email };
+  }
+
+  @ApiNoContentResponse()
+  @ApiBadRequestResponse()
+  @ApiInternalServerErrorResponse()
+  @Get('forgotPassword/:token')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async forgotPasswordCallback(
+    @Param('token') token: string,
+    @Request() req: Express.Request,
+  ) {
+    const { appService, logger, authService, usersService } = this;
+
+    const data = await appService.redisRetrieveTokenData<IForgotPasswordDto>(
+      token,
+    );
+
+    const { error } = forgotPasswordDto.validate(data);
+    if (error) {
+      NODE_ENV !== 'test' && logger.error(JSON.stringify(error));
+      throw new BadRequestException();
+    }
+
+    return authService.signToUpdateUser(
+      await usersService.findOneByUsernameOrEmail(data.usernameOrEmail),
+      token,
+      req,
+    );
   }
 
   @ApiOkResponse()

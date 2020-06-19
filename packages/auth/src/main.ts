@@ -24,6 +24,7 @@ async function bootstrap() {
         'REDIS_URL',
         'REDIS_EXPIRY_SECONDS',
         'MAILER',
+        'UPDATE_JWT_EXPIRES_IN',
       ],
       'Does not exists on process.env',
     );

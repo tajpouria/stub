@@ -3,6 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ISignUpUserDto {
   @ApiProperty()
+  pictureUrl?: string;
+  @ApiProperty()
   email: string;
   @ApiProperty()
   username: string;
@@ -20,6 +22,9 @@ export const signUpUserDto = Joi.object<ISignUpUserDto>({
     .min(3)
     .max(30)
     .required(),
+  pictureUrl: Joi.string()
+    .min(3)
+    .max(1000),
   password: Joi.string()
     .pattern(/^(?=.*\d)(?=.*[a-zA-Z])(?!.*\s).{6,12}$/) // Password contains between 6 and 12 characters, and contains at least one number.
     .required(),

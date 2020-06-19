@@ -36,6 +36,8 @@ spec:
               value: "auth-redis-clusterip:6379"
             - name: REDIS_EXPIRY_SECONDS
               value: "10800" # 3 Hours
+            - name: UPDATE_JWT_EXPIRES_IN
+              value: "1h"
             - name: MAILER
               valueFrom:
                 secretKeyRef:

@@ -1,4 +1,6 @@
 ## Auth
+[] Get rid of redis stuff in app.service maybe??
+[] For sake of update profile add satisfying on of JwtUpdateGuard or JwtAuthGuard to be enough
 [X] Add CI pipe
 [X] Turn off cookie-session secure on test env
 [X] Email signUp nodeMailer

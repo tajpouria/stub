@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Logger } from '@tajpouria/stub-common/dist/logger';
-import { Model, MongooseFilterQuery } from 'mongoose';
+import { Model, MongooseFilterQuery, UpdateQuery } from 'mongoose';
 
 import { usersConstants } from 'src/users/constants';
 import { User } from 'src/users/interfaces/user.interface';
@@ -12,10 +11,6 @@ export class UsersService {
   constructor(
     @Inject(usersConstants.model) private readonly UserModel: Model<User>,
   ) {}
-
-  get logger() {
-    return Logger(`${process.cwd()}/logs/users`);
-  }
 
   async create(
     signUpUserDto: ISignUpUserDto | Omit<User, 'password' | 'passwordConfirm'>,
@@ -51,5 +46,12 @@ export class UsersService {
     }
 
     return await this.UserModel.findOne({ username: usernameOrEmail });
+  }
+
+  async updateOne(
+    conditions: MongooseFilterQuery<User>,
+    doc: UpdateQuery<User>,
+  ) {
+    return await this.UserModel.updateOne(conditions, doc);
   }
 }

@@ -4,10 +4,10 @@ import { Injectable } from '@nestjs/common';
 
 import { jwtConstants } from 'src/auth/constants';
 import { JwtPayload } from 'src/interfaces/session';
-import { AuthService } from './auth.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class JwtUpdateStrategy extends PassportStrategy(Strategy, 'jwt-auth') {
   constructor(private readonly authService: AuthService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -19,10 +19,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload) {
-    return await this.authService.findUserByJwtPayload(payload);
+    const { authService } = this;
+
+    if (!(await authService.canUpdateByJwtPayload(payload))) return null;
+
+    return await authService.findUserByJwtPayload(payload);
   }
 }
 
 function PassportCookieSessionExtractor(req: Express.Request) {
-  return req?.session?.session ?? null;
+  return req?.session?.updateUserSession ?? null;
 }

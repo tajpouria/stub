@@ -8,6 +8,7 @@ import { LocalStrategy } from 'src/auth/local.strategy';
 import { jwtConstants } from 'src/auth/constants';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { GoogleStrategy } from 'src/auth/google.strategy';
+import { JwtUpdateGuard } from 'src/auth/jwt-update.guard';
 
 @Module({
   imports: [
@@ -17,7 +18,13 @@ import { GoogleStrategy } from 'src/auth/google.strategy';
       secret: jwtConstants.secret,
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    JwtUpdateGuard,
+    GoogleStrategy,
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}
