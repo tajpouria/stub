@@ -14,7 +14,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test:ci": "jest --coverage && cat ./coverage/lcov.info | coveralls",
+    "test:ci": "jest --coverage --watchAll=false && cat ./coverage/lcov.info | coveralls",
     "test:watch": "jest --watch --no-cache"
   },
   "dependencies": {
