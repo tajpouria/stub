@@ -4,7 +4,7 @@ import request from 'supertest';
 import cookieSession from 'cookie-session';
 
 import { AppModule } from 'src/app.module';
-import { signUpUser, redis } from '../.jest/utils';
+import { signUpUser, redis } from 'src/.jest/utils';
 
 describe('app.controller (e2e)', () => {
   let app: INestApplication;

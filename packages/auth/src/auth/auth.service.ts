@@ -28,10 +28,13 @@ export class AuthService {
     return null;
   }
 
-  signIn(user: User, req: Express.Request) {
+  signIn(
+    { username, _id }: Pick<User, '_id' | 'username'>,
+    req: Express.Request,
+  ) {
     const payload: JwtPayload = {
-      username: user.username,
-      sub: user._id,
+      sub: _id,
+      username,
       iat: Date.now(),
     };
 
@@ -45,7 +48,7 @@ export class AuthService {
     return;
   }
 
-  async findUserByJwtPayload(payload: JwtPayload) {
-    return await this.usersService.findOne({ username: payload.username });
+  async findUserByJwtPayload({ username }: Pick<JwtPayload, 'username'>) {
+    return await this.usersService.findOne({ username });
   }
 }

@@ -1,4 +1,5 @@
 ## Auth
+[] Add CI pipe
 [X] Turn off cookie-session secure on test env
 [X] Email signUp nodeMailer
 [X] Translate to Joi validation instead of class validators

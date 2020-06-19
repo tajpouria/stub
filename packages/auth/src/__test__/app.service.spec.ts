@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AppService } from 'src/app.service';
-import { redis } from '../.jest/utils';
+import { redis } from 'src/.jest/utils';
 
 describe('app.service (unit)', () => {
   let service: AppService;
