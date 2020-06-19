@@ -1,10 +1,13 @@
 sudo: required
+language: node_js
+node_js:
+  - "stable"
 services:
   - docker
-before_install:
+install:
+  - npm
+  - npm lerna bootstrap
+before_script:
   - docker-compose up
 script:
-  - yarn
-  - yarn lerna bootstrap
-  - yarn lerna run test
-
+  - npm lerna run test
