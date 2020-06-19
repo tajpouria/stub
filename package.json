@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "test": "lerna run test:ci --stream"
+    "test": "lerna run test --stream",
+    "coveralls": "lerna run coveralls --stream"
   },
   "devDependencies": {
     "coveralls": "^3.1.0",

@@ -14,8 +14,9 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test:ci": "jest --detectOpenHandles --coverage --forceExit && cat ./coverage/lcov.info | coveralls",
-    "test:watch": "jest --watch --no-cache"
+    "test": "jest --detectOpenHandles --coverage --forceExit",
+    "test:watch": "jest --watch --no-cache",
+    "coveralls": "cat coverage/lcov.info | coveralls"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",

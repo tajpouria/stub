@@ -12,3 +12,5 @@ before_script:
   - docker-compose up -d
 script:
   - npm run test
+after_success:
+  - npm run coveralls
