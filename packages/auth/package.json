@@ -14,7 +14,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest --no-cache",
+    "test": "jest --coverage --watchAll=false",
     "test:watch": "jest --watch --no-cache",
     "test:cov": "jest --coverage --no-cache"
   },
