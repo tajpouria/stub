@@ -9,3 +9,7 @@ beforeEach(async () => {
       await collection.deleteMany({});
     }
 });
+
+afterAll(async () => {
+  await connection.close();
+});

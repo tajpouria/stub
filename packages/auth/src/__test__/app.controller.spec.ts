@@ -26,6 +26,10 @@ describe('app.controller (e2e)', () => {
     await app.init();
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   describe('Hello Auth! (/api/auth)', () => {
     it('GET: 200', async () => {
       await request(app.getHttpServer())
