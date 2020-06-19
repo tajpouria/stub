@@ -7,6 +7,6 @@ install:
   - npm i
   - npm run bootstrap
 before_script:
-  - docker-compose up
+  - docker-compose up -d
 script:
   - npm run test
