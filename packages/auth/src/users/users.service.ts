@@ -2,27 +2,27 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Model, MongooseFilterQuery, UpdateQuery } from 'mongoose';
 
 import { usersConstants } from 'src/users/constants';
-import { User } from 'src/users/interfaces/user.interface';
+import { IUser } from 'src/users/interfaces/user.interface';
 import { ISignUpUserDto } from 'src/users/dto/signUp-user.dto';
 import { isEmail } from 'class-validator';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject(usersConstants.model) private readonly UserModel: Model<User>,
+    @Inject(usersConstants.model) private readonly UserModel: Model<IUser>,
   ) {}
 
   async create(
-    signUpUserDto: ISignUpUserDto | Omit<User, 'password' | 'passwordConfirm'>,
+    signUpUserDto: ISignUpUserDto | Omit<IUser, 'password' | 'passwordConfirm'>,
   ) {
     const userTemp = new this.UserModel(signUpUserDto);
     return await userTemp.save();
   }
 
   async findOne(
-    conditions?: MongooseFilterQuery<User>,
+    conditions?: MongooseFilterQuery<IUser>,
     projection = null,
-  ): Promise<User | null> {
+  ): Promise<IUser | null> {
     const result = this.UserModel.findOne(conditions, projection);
     return result;
   }
@@ -48,10 +48,13 @@ export class UsersService {
     return await this.UserModel.findOne({ username: usernameOrEmail });
   }
 
-  async updateOne(
-    conditions: MongooseFilterQuery<User>,
-    doc: UpdateQuery<User>,
-  ) {
-    return await this.UserModel.updateOne(conditions, doc);
+  async findByIdAndUpdate(id: string, doc: UpdateQuery<IUser>): Promise<IUser> {
+    return await this.UserModel.findByIdAndUpdate(
+      id,
+      { $set: doc },
+      {
+        new: true,
+      },
+    );
   }
 }

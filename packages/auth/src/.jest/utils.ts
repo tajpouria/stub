@@ -6,7 +6,7 @@ export async function signUpUser(signUpUserDto: ISignUpUserDto) {
   try {
     const User = model('User', UserSchema);
 
-    await new User(signUpUserDto).save();
+    return await new User(signUpUserDto).save();
   } catch (error) {
     console.error(error);
     process.exit(1);

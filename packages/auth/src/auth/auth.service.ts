@@ -3,11 +3,8 @@ import { Cipher } from '@tajpouria/stub-common/dist/crypto';
 import { JwtService } from '@nestjs/jwt';
 
 import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/interfaces/user.interface';
+import { IUser } from 'src/users/interfaces/user.interface';
 import { JwtPayload, SessionObj } from 'src/interfaces/session';
-import { redis } from 'src/shared/redis';
-
-const { UPDATE_JWT_EXPIRES_IN } = process.env;
 
 @Injectable()
 export class AuthService {
@@ -32,7 +29,7 @@ export class AuthService {
   }
 
   signIn(
-    { username, _id }: Pick<User, '_id' | 'username'>,
+    { username, _id }: Pick<IUser, '_id' | 'username'>,
     req: Express.Request,
   ) {
     const payload: JwtPayload = {
@@ -51,34 +48,7 @@ export class AuthService {
     return;
   }
 
-  signToUpdateUser(
-    { username, _id }: Pick<User, '_id' | 'username'>,
-    token: string,
-    req: Express.Request,
-  ) {
-    const payload: JwtPayload = {
-      sub: _id,
-      username,
-      iat: Date.now(),
-      token,
-    };
-
-    const updateUserSession = this.jwtService.sign(payload, {
-      expiresIn: UPDATE_JWT_EXPIRES_IN,
-    });
-    req.session = { ...req.session, updateUserSession } as SessionObj;
-    return { updateUserSession };
-  }
-
   async findUserByJwtPayload({ username }: Pick<JwtPayload, 'username'>) {
     return await this.usersService.findOne({ username });
-  }
-
-  async canUpdateByJwtPayload({ token }: Pick<JwtPayload, 'token'>) {
-    if (!(await redis.get(token))) return false;
-
-    await redis.del(token);
-
-    return true;
   }
 }

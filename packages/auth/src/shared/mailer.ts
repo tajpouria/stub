@@ -1,9 +1,9 @@
 import { Mailer } from '@tajpouria/stub-common/dist/mailer';
 import { Logger } from '@tajpouria/stub-common/dist/logger';
 
-const { MAILER } = process.env;
+const { MAILER, NODE_ENV } = process.env;
 
 export const mailer = Mailer(
   JSON.parse(MAILER),
-  Logger(`${process.cwd()}/logs/mailer`),
+  NODE_ENV !== 'test' ? Logger(`${process.cwd()}/logs/mailer`) : null,
 );

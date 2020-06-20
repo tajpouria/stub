@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from 'src/users/users.service';
 import { DatabaseModule } from 'src/database/database.module';
 import { usersProvider } from 'src/users/users.providers';
+import { signUpUser } from 'src/.jest/utils';
 
 describe('users.service (unit)', () => {
   let service: UsersService;
@@ -82,5 +83,16 @@ describe('users.service (unit)', () => {
       expect(email).toEqual(user.email);
       expect(username).toEqual(user.username);
     });
+  });
+
+  it('existingUser(): Update and retrieve updated user', async () => {
+    const { _id } = await signUpUser(user);
+
+    const updates = { email: 'newEmail@newEmail.com', username: 'newUsername' };
+
+    const { email, username } = await service.findByIdAndUpdate(_id, updates);
+
+    expect(email).toEqual(updates.email);
+    expect(username).toEqual(updates.username);
   });
 });

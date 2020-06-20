@@ -2,7 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   setupFiles: ['<rootDir>/src/.jest/env.ts', '<rootDir>/src/.jest/utils.ts'],
-  setupFilesAfterEnv: ['<rootDir>/src/.jest/mongo.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/.jest/mongo-redis-setup.ts'],
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },

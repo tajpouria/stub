@@ -1,6 +1,5 @@
 export interface SessionObj {
   session?: string;
-  updateUserSession?: string;
   isChanged: boolean;
   isNew: boolean;
   isPopulated: boolean;

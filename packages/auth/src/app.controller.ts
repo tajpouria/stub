@@ -28,7 +28,7 @@ import { UsersService } from 'src/users/users.service';
 import { ISignUpUserDto, signUpUserDto } from 'src/users/dto/signUp-user.dto';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { AuthService } from 'src/auth/auth.service';
-import { User } from 'src/users/interfaces/user.interface';
+import { IUser, userValidator } from 'src/users/interfaces/user.interface';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { GoogleAuthGuard } from 'src/auth/google-auth.guard';
 import { enTempProvider } from 'src/shared/mail-template';
@@ -38,7 +38,7 @@ import {
   forgotPasswordDto,
   IForgotPasswordDto,
 } from 'src/users/dto/forgot-password.dto';
-import { JwtUpdateGuard } from 'src/auth/jwt-update.guard';
+import { updateUserDto, IUpdateUserDto } from 'src/users/dto/update-user.dto';
 
 const { HOST, REDIS_EXPIRY_SECONDS, NODE_ENV } = process.env;
 
@@ -122,7 +122,7 @@ export class AppController {
   @UseGuards(LocalAuthGuard)
   @Post('signin')
   @HttpCode(HttpStatus.OK)
-  async signIn(@Request() req: Express.Request & { user: User }) {
+  async signIn(@Request() req: Express.Request & { user: IUser }) {
     return this.authService.signIn(req.user, req);
   }
 
@@ -131,8 +131,7 @@ export class AppController {
   @ApiInternalServerErrorResponse()
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  @HttpCode(HttpStatus.CREATED)
-  async getMe(@Request() req: Express.Request & { user: User }) {
+  async getMe(@Request() req: Express.Request & { user: IUser }) {
     return req.user;
   }
 
@@ -140,19 +139,25 @@ export class AppController {
   @ApiUnauthorizedResponse()
   @ApiBadRequestResponse()
   @ApiInternalServerErrorResponse()
-  @UseGuards(JwtUpdateGuard)
-  @UsePipes(new ValidationPipe(signUpUserDto))
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe(updateUserDto))
   @Put('me')
+  @HttpCode(HttpStatus.CREATED)
   async updateMe(
-    @Request() req: Express.Request & { user: User },
-    @Body() signUpUserDto: ISignUpUserDto,
+    @Request() req: Express.Request & { user: IUser },
+    @Body() updateUserDto: IUpdateUserDto,
   ) {
-    const { usersService } = this;
+    const { usersService, authService } = this;
 
-    if (await usersService.existingUser(signUpUserDto))
+    if (await usersService.existingUser(updateUserDto))
       throw new BadRequestException();
 
-    return await usersService.updateOne(req.user, signUpUserDto);
+    const newUser = await usersService.findByIdAndUpdate(
+      req.user.id,
+      updateUserDto,
+    );
+
+    return authService.signIn(newUser, req);
   }
 
   @ApiNoContentResponse()
@@ -167,7 +172,7 @@ export class AppController {
   @ApiBadRequestResponse()
   @ApiInternalServerErrorResponse()
   @UsePipes(new ValidationPipe(forgotPasswordDto))
-  @Post('forgotPassword')
+  @Post('forgotpassword')
   @HttpCode(HttpStatus.OK)
   async forgotPassword(@Body() { usernameOrEmail }: IForgotPasswordDto) {
     const { usersService, appService } = this;
@@ -178,7 +183,7 @@ export class AppController {
 
     if (!existingUser) throw new BadRequestException();
 
-    const token = await appService.redisStoreTokenData({ usernameOrEmail });
+    const token = await appService.redisStoreTokenData(existingUser);
     const confirm_link = await appService.generateConfirmLink(
       'forgotpassword',
       token,
@@ -198,32 +203,27 @@ export class AppController {
     return { email };
   }
 
-  @ApiNoContentResponse()
+  @ApiOkResponse()
   @ApiBadRequestResponse()
   @ApiInternalServerErrorResponse()
-  @Get('forgotPassword/:token')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @Get('forgotpassword/:token')
   async forgotPasswordCallback(
     @Param('token') token: string,
     @Request() req: Express.Request,
   ) {
-    const { appService, logger, authService, usersService } = this;
+    const { appService, logger, authService } = this;
 
-    const data = await appService.redisRetrieveTokenData<IForgotPasswordDto>(
-      token,
-    );
+    const data = await appService.redisRetrieveTokenData<IUser>(token);
 
-    const { error } = forgotPasswordDto.validate(data);
+    const { error } = userValidator.validate(data);
     if (error) {
       NODE_ENV !== 'test' && logger.error(JSON.stringify(error));
       throw new BadRequestException();
     }
 
-    return authService.signToUpdateUser(
-      await usersService.findOneByUsernameOrEmail(data.usernameOrEmail),
-      token,
-      req,
-    );
+    await appService.redisDeleteTokenData(token);
+
+    return authService.signIn(data, req);
   }
 
   @ApiOkResponse()
@@ -236,7 +236,7 @@ export class AppController {
   @ApiInternalServerErrorResponse()
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
-  async googleCallback(@Request() req: Express.Request & { user: User }) {
+  async googleCallback(@Request() req: Express.Request & { user: IUser }) {
     const { usersService, authService } = this;
 
     let targetUser = await usersService.existingUser(req.user);

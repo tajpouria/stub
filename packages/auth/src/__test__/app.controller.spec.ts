@@ -375,6 +375,69 @@ describe('app.controller (e2e)', () => {
         .send()
         .expect(401);
     });
+
+    it('PUT: 201', async () => {
+      const session = await generateSignInSession();
+
+      await request(app.getHttpServer())
+        .put('/api/auth/me')
+        .set('Cookie', session)
+        .send({ username: 'newUser', email: 'newEmail@newEmail.com' })
+        .expect(201);
+    });
+
+    it('PUT: Send session', async () => {
+      const session = await generateSignInSession();
+
+      const response = await request(app.getHttpServer())
+        .put('/api/auth/me')
+        .set('Cookie', session)
+        .send({ username: 'newUser', email: 'newEmail@newEmail.com' });
+
+      expect(response.body.session).toBeDefined();
+    });
+
+    it('PUT: Set cookie session', async () => {
+      const session = await generateSignInSession();
+
+      const response = await request(app.getHttpServer())
+        .put('/api/auth/me')
+        .set('Cookie', session)
+        .send({ username: 'newUser', email: 'newEmail@newEmail.com' });
+
+      expect(response.get('Set-Cookie')).toBeDefined();
+    });
+
+    it('PUT Unauthorized: 401', async () => {
+      await request(app.getHttpServer())
+        .put('/api/auth/me')
+        .send({ username: 'newUser', email: 'newEmail@newEmail.com' })
+        .expect(401);
+    });
+
+    it('PUT Bad body request: 400', async () => {
+      const session = await generateSignInSession();
+
+      await request(app.getHttpServer())
+        .put('/api/auth/me')
+        .set('Cookie', session)
+        .send({
+          username: 'newUser',
+          email: 'newEmail@newEmail.com',
+          link: 'hello', // We do not have such link property in updateUser dto
+        })
+        .expect(400);
+    });
+
+    it('PUT Current user info or user already exists: 400', async () => {
+      const session = await generateSignInSession();
+
+      await request(app.getHttpServer())
+        .put('/api/auth/me')
+        .set('Cookie', session)
+        .send({ user: user.email })
+        .expect(400);
+    });
   });
 
   describe('SignOut (/api/auth/signout)', () => {
@@ -392,6 +455,121 @@ describe('app.controller (e2e)', () => {
       expect(response.get('Set-Cookie')[0]).toEqual(
         'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly',
       );
+    });
+  });
+
+  describe('ForgotPassword (/api/auth/forgotpassword)', () => {
+    const user = {
+      email: 'abc@abc.com',
+      username: 'abc123',
+      password: 'abc1234',
+      repeatPassword: 'abc1234',
+    };
+
+    it('POST: 200', async () => {
+      await signUpUser(user);
+
+      await request(app.getHttpServer())
+        .post('/api/auth/forgotpassword')
+        .send({ usernameOrEmail: user.username })
+        .expect(200);
+    });
+
+    it('POST: Send email', async () => {
+      await signUpUser(user);
+
+      await request(app.getHttpServer())
+        .post('/api/auth/forgotpassword')
+        .send({ usernameOrEmail: user.username })
+        .expect({ email: user.email });
+    });
+
+    it('POST Bad request body: 400', async () => {
+      await request(app.getHttpServer())
+        .post('/api/auth/forgotpassword')
+        .expect(400);
+    });
+
+    it('POST User does not exist: 400', async () => {
+      await request(app.getHttpServer())
+        .post('/api/auth/forgotpassword')
+        .send({ usernameOrEmail: user.username })
+        .expect(400);
+    });
+  });
+
+  describe('ForgotPassword (/api/auth/forgotpassword/:token)', () => {
+    const token = 'token';
+
+    afterEach(async () => {
+      await redis.del(token);
+    });
+
+    it('GET: 200', async () => {
+      const user = {
+        id: '1',
+        email: 'abc@abc.com',
+        username: 'abc123',
+        pictureURL: '123abc',
+      };
+
+      await redis.set(token, JSON.stringify(user));
+
+      await request(app.getHttpServer())
+        .get(`/api/auth/forgotpassword/${token}`)
+        .expect(200);
+    });
+
+    it('GET: Send session', async () => {
+      const user = {
+        id: '1',
+        email: 'abc@abc.com',
+        username: 'abc123',
+        pictureURL: '123abc',
+      };
+
+      await redis.set(token, JSON.stringify(user));
+
+      const response = await request(app.getHttpServer()).get(
+        `/api/auth/forgotpassword/${token}`,
+      );
+
+      expect(response.body.session).toBeDefined();
+    });
+
+    it('GET: Set cookie session', async () => {
+      const user = {
+        id: '1',
+        email: 'abc@abc.com',
+        username: 'abc123',
+        pictureURL: '123abc',
+      };
+
+      await redis.set(token, JSON.stringify(user));
+
+      const response = await request(app.getHttpServer()).get(
+        `/api/auth/forgotpassword/${token}`,
+      );
+
+      expect(response.get('Set-Cookie')).toBeDefined();
+    });
+
+    it('GET Token value does not exist or value is not valid: 400', async () => {
+      await request(app.getHttpServer())
+        .get(`/api/auth/forgotpassword/${token}`)
+        .expect(400);
+
+      const user = {
+        id: '1', // Invalid user doesn't contains username
+        email: 'abc@abc.com',
+        pictureURL: '123abc',
+      };
+
+      await redis.set(token, JSON.stringify(user));
+
+      await request(app.getHttpServer())
+        .get(`/api/auth/forgotpassword/${token}`)
+        .expect(400);
     });
   });
 });

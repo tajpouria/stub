@@ -36,11 +36,9 @@ describe('auth.service (unit)', () => {
       repeatPassword: 'abc123',
     };
 
-    beforeEach(async () => {
-      await signUpUser(user);
-    });
-
     it('Valid credentials: Retrieve user', async () => {
+      await signUpUser(user);
+
       const { email, username } = await service.validateUser(
         user.email,
         user.password,
@@ -51,6 +49,8 @@ describe('auth.service (unit)', () => {
     });
 
     it('Invalid credentials: Return null', async () => {
+      await signUpUser(user);
+
       expect(
         await service.validateUser(user.email, 'Invalid Password'),
       ).toBeNull();

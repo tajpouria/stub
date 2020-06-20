@@ -1,10 +1,10 @@
 import { Schema } from 'mongoose';
 import { Cipher } from '@tajpouria/stub-common/dist/crypto';
 
-import { User } from 'src/users/interfaces/user.interface';
+import { IUser } from 'src/users/interfaces/user.interface';
 import { usersConstants } from 'src/users/constants';
 
-export const UserSchema = new Schema<User>(
+export const UserSchema = new Schema<IUser>(
   {
     email: {
       type: String,
@@ -41,7 +41,7 @@ export const UserSchema = new Schema<User>(
   },
 );
 
-UserSchema.pre<User>('save', async function() {
+UserSchema.pre<IUser>('save', async function() {
   if (this.isModified('password'))
     this.password = await Cipher.hash(this.password, {});
 });

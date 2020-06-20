@@ -1,6 +1,7 @@
 ## Auth
-[] Get rid of redis stuff in app.service maybe??
-[] For sake of update profile add satisfying on of JwtUpdateGuard or JwtAuthGuard to be enough
+[-] Get rid of redis stuff in app.service maybe??
+[-] For sake of update profile add satisfying on of JwtUpdateGuard or JwtAuthGuard to be enough
+[X] In order to update me request body should not have to satisfy signUp user Dto
 [X] Add CI pipe
 [X] Turn off cookie-session secure on test env
 [X] Email signUp nodeMailer
@@ -11,12 +12,15 @@
 [X] Enhance swagger docs
 [X] Test cancel google signIn manually
 [X] Figure out how to not download mongoDb memory and other dev-dependency on docker build stage
-[X] Setup Test setup to 1. start memory mongo before all 2. delete mongoose collections before each 2. close db connections after all
+[X] Setup Test setup to 1. start memory mongo before all 2.delete mongoose collections before each 2. close db connections after all
 [] Should we include refresh token
-[] Forget password implementation
+[X] Forget password implementation
 [X] Are we need a generic is logged in middleware and are we need req.currentUser?
 [X] Are we need a generic reject if req.currentUser not defined?
 [X] Google OAuth2
+[] Handle multiple singUp forgotPassword for same user at the same time
+[] Dto validation message content is really bad "\"repeatPassword\" must be [ref:password]"
+
 
 ## Common
 [X] Normal/consistence Response Error

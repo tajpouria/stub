@@ -14,6 +14,7 @@ export const databaseProviders: Provider[] = [
           useCreateIndex: true,
           useUnifiedTopology: true,
           useNewUrlParser: true,
+          useFindAndModify: false,
         },
         () =>
           NODE_ENV !== 'test' &&
