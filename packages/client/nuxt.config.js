@@ -16,18 +16,18 @@ export default {
    ** See https://nuxtjs.org/api/configuration-head
    */
   head: {
-    title: NAME || env.package.name,
+    title: NAME || '',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       {
-        hid: DESCRIPTION || env.package.name,
-        name: DESCRIPTION || env.package.name,
-        content: DESCRIPTION || env.package.name,
+        hid: DESCRIPTION || '',
+        name: DESCRIPTION || '',
+        content: DESCRIPTION || '',
       },
       { name: 'apple-mobile-web-app-capable', content: 'yes' },
       { name: 'apple-mobile-web-app-status-bar-style', content: 'white' },
-      { name: 'apple-mobile-web-app-title', content: NAME || env.package.name },
+      { name: 'apple-mobile-web-app-title', content: NAME || '' },
       {
         rel: 'apple-touch-icon',
         href: '/apple-touch-icon.png',
@@ -73,6 +73,26 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
+    [
+      'nuxt-i18n',
+      {
+        defaultLocale: 'en',
+        langDir: 'locales/',
+        locales: [
+          {
+            name: 'English',
+            code: 'en',
+            file: 'en-US.js',
+          },
+          {
+            name: 'Farsi',
+            code: 'fa',
+            file: 'fa-FA.js',
+          },
+        ],
+        lazy: true,
+      },
+    ],
   ],
   /*
    ** Axios module configuration
@@ -80,8 +100,8 @@ export default {
    */
   axios: {
     https: true,
-    baseURL: INGRESS_NGINX_HOST,
-    browserBaseURL: HOST,
+    baseURL: INGRESS_NGINX_HOST || '',
+    browserBaseURL: HOST || '',
     retry: { retries: 3 },
   },
   /*
@@ -92,8 +112,8 @@ export default {
 
   pwa: {
     manifest: {
-      name: NAME || env.package.name,
-      short_name: SHORT_NAME || env.package.name,
+      name: NAME || '',
+      short_name: SHORT_NAME || '',
       icons: [
         {
           src: '/android-chrome-192x192.png',
