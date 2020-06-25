@@ -1,9 +1,17 @@
 export default {
-  home: {
-    welcome: 'Welcome',
+  page: {
+    home: { welcome: 'Welcome' },
+    auth: {},
   },
-  links: {
-    english: 'En',
-    farsi: 'فارسی',
+
+  layout: {
+    default: {
+      'sign in': 'Sign in',
+      'my tickets': 'My tickets',
+      sell: 'Sell',
+      english: 'en',
+      farsi: 'فا',
+      'stub-logo-alt': 'stub',
+    },
   },
 };

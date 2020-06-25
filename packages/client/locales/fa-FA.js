@@ -1,9 +1,18 @@
 export default {
-  home: {
-    welcome: 'خوش آمدید',
+  page: {
+    home: {
+      welcome: 'خوش آمدید',
+    },
+    auth: {},
   },
-  links: {
-    english: 'En',
-    farsi: 'فارسی',
+
+  layout: {
+    default: {
+      'sign in': 'ورود/ثبت نام',
+      'my tickets': 'بلیط های من',
+      sell: 'فروش',
+      english: 'en',
+      farsi: 'فا',
+    },
   },
 };

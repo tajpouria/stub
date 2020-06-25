@@ -73,6 +73,7 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
+    'nuxt-lazy-load',
     [
       'nuxt-i18n',
       {
