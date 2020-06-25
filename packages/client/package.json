@@ -1,0 +1,43 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt-ts build",
+    "start": "nuxt-ts start",
+    "export": "nuxt-ts export",
+    "serve": "nuxt-ts serve",
+    "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "lint": "yarn lint:js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@nuxt/typescript-runtime": "^0.4.10",
+    "@nuxtjs/axios": "^5.11.0",
+    "@nuxtjs/pwa": "^3.0.0-beta.20",
+    "ant-design-vue": "^1.6.2",
+    "nuxt": "^2.13.0",
+    "nuxt-i18n": "^6.12.2",
+    "nuxt-lazy-load": "^1.2.4",
+    "vee-validate": "^3.3.5"
+  },
+  "devDependencies": {
+    "@nuxt/typescript-build": "^1.0.3",
+    "@nuxtjs/eslint-config": "^3.0.0",
+    "@nuxtjs/eslint-config-typescript": "^2.0.0",
+    "@nuxtjs/eslint-module": "^2.0.0",
+    "@vue/test-utils": "^1.0.3",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.0.1",
+    "eslint": "^7.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-nuxt": "^1.0.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest": "^26.0.1",
+    "prettier": "^2.0.5",
+    "ts-jest": "^26.1.0",
+    "vue-jest": "^3.0.4"
+  }
+}

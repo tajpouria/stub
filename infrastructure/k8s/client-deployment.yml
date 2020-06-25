@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: client-pod
+  template:
+    metadata:
+      name: client
+      labels:
+        name: client-pod
+        tier: front-end
+    spec:
+      containers:
+        - name: stub-client
+          image: tajpouria/stub-client
+          env:
+            - name: NAME
+              value: "Stub"
+            - name: SHORT_NAME
+              value: "Stub"
+            - name: DESCRIPTION
+              value: "Buy and sell sports tickets, concert tickets, theater tickets on Stub!"
+            - name: VERSION
+              value: "0.0.1"
+            - name: NODE_ENV
+              value: "development"
+            - name: NUXT_HOST
+              value: "0.0.0.0"
+            - name: NUXT_PORT
+              value: "3000"
+            - name: HOST
+              value: "stub.dev"
+            - name: INGRESS_NGINX_HOST
+              value: "ingress-nginx-controller.ingress-nginx.svc.cluster.local"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-clusterip
+spec:
+  selector:
+    name: client-pod
+  ports:
+    - name: client
+      protocol: TCP
+      targetPort: 3000
+      port: 3000

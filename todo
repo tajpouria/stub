@@ -32,3 +32,10 @@
 [X] User model should contains password validation and user already exists logic
 [X] Normal/consistence models e.g. in terms of mongoose user use toJSON to just includes id _not \_id_ and email _delete \_\_v and password_
 [X] Swagger Joi Docs
+
+## Client
+[-] MAYBE Fix next finicky file change detection
+[-] Next SSG and other (function running on client or server)
+[X] Configure k8s cross nameSpace request to ingress-nginx service
+[-] Set Host header to stub.dev in case of client server side request (use next req.headers)
+[-] If we going with component.getInitialProps; Handle execution of child components getInitialProps and inject associated props
