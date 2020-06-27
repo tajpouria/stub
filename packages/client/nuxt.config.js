@@ -56,6 +56,7 @@ export default {
     '~assets/scss/_typography.scss',
     '~assets/scss/_colors.scss',
     '~assets/scss/_mixins.scss',
+    '~assets/scss/_space.scss',
     'ant-design-vue/dist/antd.css',
   ],
   /**

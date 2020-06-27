@@ -69,12 +69,6 @@ export default Vue.extend({
   &__logo {
     width: 10rem;
 
-    &::before {
-      content: '';
-      display: block;
-      padding-top: 56.25%;
-    }
-
     @include respond(phone) {
       display: none;
     }

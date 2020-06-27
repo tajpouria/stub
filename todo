@@ -41,3 +41,4 @@
 [-] If we going with component.getInitialProps; Handle execution of child components getInitialProps and inject associated props
 [] Prevent from image loading resizing
 [] User agreement and privacy notice signUp real links
+[] Fix SignUp mobile view
