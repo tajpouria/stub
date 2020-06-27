@@ -1,25 +1,22 @@
 <template>
   <header class="header-default">
-    <div class="header-default__announce">
-      Coronavirus Update: Visit My tickets for your event's status or click here
-      to learn more about our impacted event policy
-    </div>
     <div class="header-default__container">
-      <picture>
-        <source
-          media="(max-width: 768px)"
-          srcset="~/static/pics/layout/stub_logo_1x.png"
-        />
-        <source
-          media="(min-width: 769px)"
-          srcset="~/static/pics/layout/stub_logo_2x.png"
-        />
-        <img
-          src="~/static/pics/layout/stub_logo_2x.png"
-          :alt="$t('layout.default.stub-logo-alt')"
-          class="header-default__logo"
-        />
-      </picture>
+      <nuxt-link :to="links.index">
+        <picture>
+          <source
+            media="(max-width: 768px)"
+            srcset="~/static/pics/layout/stub_logo_1x.png"
+          />
+          <source
+            media="(min-width: 769px)"
+            srcset="~/static/pics/layout/stub_logo_2x.png"
+          />
+          <img
+            src="~/static/pics/layout/stub_logo_2x.png"
+            :alt="$t('layout.default.stub-logo-alt')"
+            class="header-default__logo"
+          /> </picture
+      ></nuxt-link>
 
       <a-input-search
         placeholder="input search text"
@@ -41,16 +38,22 @@
     </div>
   </header>
 </template>
+
+<script>
+import Vue from 'vue';
+
+import links from '~/constants/links';
+
+export default Vue.extend({
+  data() {
+    return {
+      links,
+    };
+  },
+});
+</script>
 <style lang="scss" scoped>
 .header-default {
-  &__announce {
-    width: 100%;
-    text-align: center;
-    font-size: 1.6rem;
-    background-color: var(--primary);
-    color: var(--light);
-  }
-
   &__container {
     display: flex;
     flex-wrap: nowrap;
@@ -65,6 +68,12 @@
 
   &__logo {
     width: 10rem;
+
+    &::before {
+      content: '';
+      display: block;
+      padding-top: 56.25%;
+    }
 
     @include respond(phone) {
       display: none;

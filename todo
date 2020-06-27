@@ -39,3 +39,5 @@
 [X] Configure k8s cross nameSpace request to ingress-nginx service
 [-] Set Host header to stub.dev in case of client server side request (use next req.headers)
 [-] If we going with component.getInitialProps; Handle execution of child components getInitialProps and inject associated props
+[] Prevent from image loading resizing
+[] User agreement and privacy notice signUp real links

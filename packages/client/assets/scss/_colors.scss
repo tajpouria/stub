@@ -1,17 +1,34 @@
 :root {
-  --primary: #12abc2;
-  --primary-light: #12abc2ba;
-  --primary-dark: #149cb0;
-  --light: #faf9f9;
-  --grey-light: #f4f2f2;
-  --grey-light-1: #f0eeee;
-  --grey-light-2: #ccc;
-  --grey-dark: #333;
-  --grey-dark-1: #777;
-  --grey-dark-2: #999;
+  // Background
+  --bg-primary: #60b6bf;
+  --bg-primary-light: #8fcbd9;
+  --bg-primary-dark: #03a6a6;
+  --bg-primary-darker: #027386;
+  --bg-light: #f2f2f2;
+  --bg-grey-light: #f4f2f2;
+  --bg-grey-light-1: #f0eeee;
+  --bg-grey-light-2: #ccc;
+  --bg-grey-dark: #333;
+  --bg-grey-dark-1: #777;
+  --bg-grey-dark-2: #999;
 
+  // Text
+  --txt-primary: #05aff2;
+  --txt-primary-light: #8fcbd9;
+  --txt-primary-dark: #03a6a6;
+  --txt-primary-darker: #027386;
+  --txt-dark: #333;
+  --txt-light: #f2f2f2;
+  --txt-grey-light: #f4f2f2;
+  --txt-grey-light-1: #f0eeee;
+  --txt-grey-light-2: #ccc;
+  --txt-grey-dark-1: #777;
+  --txt-grey-dark-2: #999;
+
+  // Shadow
   --shadow-light: 0 2rem 5rem rgba(0, 0, 0, 0.03);
   --shadow-dark: 0 2rem 8rem rgba(0, 0, 0, 0.3);
 
+  // Line
   --line: 1px solid var(--grey-light-4);
 }
