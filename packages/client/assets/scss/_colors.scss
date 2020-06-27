@@ -1,0 +1,17 @@
+:root {
+  --primary: #12abc2;
+  --primary-light: #12abc2ba;
+  --primary-dark: #149cb0;
+  --light: #faf9f9;
+  --grey-light: #f4f2f2;
+  --grey-light-1: #f0eeee;
+  --grey-light-2: #ccc;
+  --grey-dark: #333;
+  --grey-dark-1: #777;
+  --grey-dark-2: #999;
+
+  --shadow-light: 0 2rem 5rem rgba(0, 0, 0, 0.03);
+  --shadow-dark: 0 2rem 8rem rgba(0, 0, 0, 0.3);
+
+  --line: 1px solid var(--grey-light-4);
+}

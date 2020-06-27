@@ -39,7 +39,7 @@ export default {
       {
         rel: 'stylesheet',
         type: 'text/css',
-        href: 'https://fonts.googleapis.com/css?family=Quicksand&display=swap',
+        href: 'https://fonts.googleapis.com/css?family=Prompt&display=swap',
       },
       {
         rel: 'stylesheet',
@@ -51,7 +51,19 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['ant-design-vue/dist/antd.css'],
+  css: [
+    '~assets/scss/_base.scss',
+    '~assets/scss/_typography.scss',
+    '~assets/scss/_colors.scss',
+    '~assets/scss/_mixins.scss',
+    'ant-design-vue/dist/antd.css',
+  ],
+  /**
+   * Load style recourses
+   */
+  styleResources: {
+    scss: ['./assets/scss/*.scss'],
+  },
   /*
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
@@ -74,6 +86,7 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     'nuxt-lazy-load',
+    '@nuxtjs/style-resources',
     [
       'nuxt-i18n',
       {
@@ -110,7 +123,9 @@ export default {
    ** See https://nuxtjs.org/api/configuration-build/
    */
   build: {},
-
+  /**
+   * PWA configuration
+   */
   pwa: {
     manifest: {
       name: NAME || '',
