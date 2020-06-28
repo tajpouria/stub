@@ -2,8 +2,6 @@
   <a-layout class="default-layout">
     <Announce />
 
-    <DefaultHeader />
-
     <a-layout-content class="default-layout__content-container">
       <Nuxt />
     </a-layout-content>
@@ -20,7 +18,6 @@ import DefaultFooter from '~/components/footer/DefaultFooter';
 export default Vue.extend({
   components: {
     Announce,
-    DefaultHeader,
     DefaultFooter,
   },
 });

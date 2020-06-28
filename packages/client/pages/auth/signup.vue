@@ -1,40 +1,63 @@
 <template>
   <a-card class="signup">
     <div class="signup__card">
-      <picture>
-        <source
-          media="(max-width: 768px)"
-          srcset="~/static/pics/layout/stub_logo_1x.png"
-        />
-        <source
-          media="(min-width: 769px)"
-          srcset="~/static/pics/layout/stub_logo_2x.png"
-        />
-        <img
-          src="~/static/pics/layout/stub_logo_2x.png"
-          :alt="$t('page.auth.signup.stub-logo-alt')"
-          class="signup__logo"
-        />
-      </picture>
+      <nuxt-link :to="links.index">
+        <picture>
+          <source
+            media="(max-width: 768px)"
+            srcset="~/static/pics/layout/stub_logo_1x.png"
+          />
+          <source
+            media="(min-width: 769px)"
+            srcset="~/static/pics/layout/stub_logo_2x.png"
+          />
+          <img
+            src="~/static/pics/layout/stub_logo_2x.png"
+            :alt="$t('page.auth.signup.stub-logo-alt')"
+            class="signup__logo"
+          />
+        </picture>
+      </nuxt-link>
       <h1>
         <b>{{ $t('page.auth.signup.sign up for stub') }}</b>
       </h1>
-      <form class="signup__form">
-        <a-input :placeholder="$t('page.auth.signup.email')">
-          <a-icon slot="prefix" type="mail" />
-        </a-input>
-        <a-input-password :placeholder="$t('page.auth.signup.password')">
-          <a-icon slot="prefix" type="lock" />
-        </a-input-password>
-        <a-input-password
-          :placeholder="$t('page.auth.signup.confirm password')"
-        >
-          <a-icon slot="prefix" type="lock" />
-        </a-input-password>
-        <a-button type="primary" :loading="loading">
-          {{ $t('page.auth.signup.signup-btn') }}
-        </a-button>
-      </form>
+
+      <ValidationObserver v-slot="{ invalid }">
+        <a-form @submit.prevent="onSubmit" class="signup__form">
+          <a-form-item>
+            <a-input
+              v-model="values.email"
+              v-decorator="[
+                'values.email',
+                {
+                  rules: [
+                    { required: true, message: 'Please input your note!' },
+                  ],
+                },
+              ]"
+              :placeholder="$t('page.auth.signup.email')"
+            >
+              <a-icon slot="prefix" type="mail" />
+            </a-input>
+          </a-form-item>
+          <a-input-password
+            v-model="values.password"
+            :placeholder="$t('page.auth.signup.password')"
+          >
+            <a-icon slot="prefix" type="lock" />
+          </a-input-password>
+          <a-input-password
+            v-model="values.confirmPassword"
+            :placeholder="$t('page.auth.signup.confirm password')"
+          >
+            <a-icon slot="prefix" type="lock" />
+          </a-input-password>
+          <a-button :loading="loading" html-type="submit" type="primary">
+            {{ $t('page.auth.signup.signup-btn') }}
+          </a-button>
+        </a-form>
+      </ValidationObserver>
+
       <small class="mt1">
         {{ $t('page.auth.signup.user agreement') }}
       </small>
@@ -59,20 +82,39 @@
     </div>
   </a-card>
 </template>
+
 <script>
 import Vue from 'vue';
+import { ValidationObserver, ValidationProvider } from 'vee-validate';
 
 import links from '~/constants/links';
 
 export default Vue.extend({
+  layout: 'no-header-default',
   data() {
     return {
       links,
       loading: false,
+      values: {
+        email: null,
+        password: null,
+        confirmPassword: null,
+      },
     };
+  },
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
+  methods: {
+    onSubmit() {
+      const { email, password, confirmPassword } = this.values;
+      console.log(email, password, confirmPassword);
+    },
   },
 });
 </script>
+
 <style lang="scss" scoped>
 .signup {
   @include absolute-center;
@@ -90,12 +132,13 @@ export default Vue.extend({
 
   &__logo {
     width: 10rem;
+    @include btn-effect;
   }
 
   &__form {
     margin-top: 3%;
 
-    > span {
+    > span > span {
       margin-bottom: 2%;
     }
 

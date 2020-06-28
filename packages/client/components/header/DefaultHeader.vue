@@ -69,6 +69,7 @@ export default Vue.extend({
   &__logo {
     width: 10rem;
 
+    @include btn-effect;
     @include respond(phone) {
       display: none;
     }
