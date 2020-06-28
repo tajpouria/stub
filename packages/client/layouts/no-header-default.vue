@@ -1,7 +1,5 @@
 <template>
   <a-layout class="default-layout">
-    <Announce />
-
     <a-layout-content class="default-layout__content-container">
       <Nuxt />
     </a-layout-content>

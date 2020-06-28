@@ -69,7 +69,7 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ['~/plugins/vee-validate.js', '@/plugins/antd-ui'],
+  plugins: ['@/plugins/antd-ui'],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -123,9 +123,7 @@ export default {
    ** Build configuration
    ** See https://nuxtjs.org/api/configuration-build/
    */
-  build: {
-    transpile: ['vee-validate/dist/rules'],
-  },
+  build: {},
   /**
    * PWA configuration
    */

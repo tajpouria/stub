@@ -22,41 +22,61 @@
         <b>{{ $t('page.auth.signup.sign up for stub') }}</b>
       </h1>
 
-      <ValidationObserver v-slot="{ invalid }">
-        <a-form @submit.prevent="onSubmit" class="signup__form">
-          <a-form-item>
-            <a-input
-              v-model="values.email"
-              v-decorator="[
-                'values.email',
-                {
-                  rules: [
-                    { required: true, message: 'Please input your note!' },
-                  ],
-                },
-              ]"
-              :placeholder="$t('page.auth.signup.email')"
-            >
-              <a-icon slot="prefix" type="mail" />
-            </a-input>
-          </a-form-item>
+      <a-form @submit.prevent="handleSubmit" :form="form" class="signup__form">
+        <a-form-item>
+          <a-input
+            v-decorator="[
+              'email',
+              {
+                rules: [
+                  { required: true, message: $t('page.auth.signup.email') },
+                ],
+              },
+            ]"
+            :placeholder="$t('page.auth.signup.email')"
+          >
+            <a-icon slot="prefix" type="mail" />
+          </a-input>
+        </a-form-item>
+        <a-form-item>
           <a-input-password
-            v-model="values.password"
+            v-decorator="[
+              'password',
+              {
+                rules: [
+                  { required: true, message: 'Please input your Password!' },
+                ],
+              },
+            ]"
             :placeholder="$t('page.auth.signup.password')"
           >
             <a-icon slot="prefix" type="lock" />
           </a-input-password>
+        </a-form-item>
+        <a-form-item>
           <a-input-password
-            v-model="values.confirmPassword"
-            :placeholder="$t('page.auth.signup.confirm password')"
+            v-decorator="[
+              'repeatPassword',
+              {
+                rules: [
+                  { required: true, message: 'Please input your Password!' },
+                ],
+              },
+            ]"
+            :placeholder="$t('page.auth.signup.repeat password')"
           >
             <a-icon slot="prefix" type="lock" />
           </a-input-password>
-          <a-button :loading="loading" html-type="submit" type="primary">
-            {{ $t('page.auth.signup.signup-btn') }}
-          </a-button>
-        </a-form>
-      </ValidationObserver>
+        </a-form-item>
+        <a-button
+          :disabled="hasErrors(form.getFieldsError())"
+          :loading="loading"
+          html-type="submit"
+          type="primary"
+        >
+          {{ $t('page.auth.signup.signup-btn') }}
+        </a-button>
+      </a-form>
 
       <small class="mt1">
         {{ $t('page.auth.signup.user agreement') }}
@@ -85,7 +105,6 @@
 
 <script>
 import Vue from 'vue';
-import { ValidationObserver, ValidationProvider } from 'vee-validate';
 
 import links from '~/constants/links';
 
@@ -93,23 +112,22 @@ export default Vue.extend({
   layout: 'no-header-default',
   data() {
     return {
+      form: this.$form.createForm(this, { name: 'signup-form' }),
+      hasErrors(fieldsError) {
+        // TODO: Utils
+        return Object.keys(fieldsError).some((field) => fieldsError[field]);
+      },
       links,
       loading: false,
-      values: {
-        email: null,
-        password: null,
-        confirmPassword: null,
-      },
     };
   },
-  components: {
-    ValidationObserver,
-    ValidationProvider,
-  },
   methods: {
-    onSubmit() {
-      const { email, password, confirmPassword } = this.values;
-      console.log(email, password, confirmPassword);
+    handleSubmit() {
+      this.form.validateFields((error, values) => {
+        if (error) return;
+
+        console.log('Received values of form: ', values);
+      });
     },
   },
 });
@@ -137,6 +155,7 @@ export default Vue.extend({
 
   &__form {
     margin-top: 3%;
+    width: 100%;
 
     > span > span {
       margin-bottom: 2%;

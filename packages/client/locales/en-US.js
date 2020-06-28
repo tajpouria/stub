@@ -7,7 +7,7 @@ export default {
         'stub-logo-alt': 'stub',
         email: 'Email',
         password: 'Password',
-        'confirm password': 'Confirm password',
+        'repeat password': 'Repeat password',
         'signup-btn': 'Sign up',
         'user agreement':
           'By purchasing or signing in, you agree to our user agreement and acknowledge our privacy notice.',
