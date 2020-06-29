@@ -3,7 +3,21 @@ export default {
     home: {
       welcome: 'خوش آمدید',
     },
-    auth: {},
+    auth: {
+      signup: {
+        'sign up for stub': 'ثبت نام در استاب',
+        'stub-logo-alt': 'استاب',
+        email: 'ایمیل',
+        password: 'رمز عبور',
+        'repeat password': 'تکرار رمز عبور',
+        'signup-btn': 'ثبت نام',
+        'user agreement':
+          'ثبت نام یا ورود به منزله ‌پذیرفتن و آگاهی از, توافقنامه ی کاربر و حریم شخصی این مجموعه میباشد',
+        'contact with friends': 'در استاب به دوستانتان بپیوندید',
+        'have a stub account': 'هم اکنون عضو هستید؟',
+        signin: 'ورود',
+      },
+    },
   },
 
   layout: {
@@ -13,6 +27,12 @@ export default {
       sell: 'فروش',
       english: 'en',
       farsi: 'فا',
+      'stub-logo-alt': 'استاب',
     },
+  },
+
+  validation: {
+    required: 'وارد کردن این فیلد احباری است',
+    email: 'ایمیل معتبر نمی باشد',
   },
 };

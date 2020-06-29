@@ -7,6 +7,8 @@ export default {
         'stub-logo-alt': 'stub',
         email: 'Email',
         password: 'Password',
+        'password-info':
+          'Password Has to be at least 6 characters long, Must contain at least one digit',
         'repeat password': 'Repeat password',
         'signup-btn': 'Sign up',
         'user agreement':
@@ -27,5 +29,12 @@ export default {
       farsi: 'فا',
       'stub-logo-alt': 'stub',
     },
+  },
+
+  validation: {
+    required: 'This field is required',
+    email: 'Email is not valid',
+    password: 'At least 6 characters, At least one digit',
+    'repeat-password-not-match': 'Should match with password',
   },
 };

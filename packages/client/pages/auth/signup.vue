@@ -29,7 +29,9 @@
               'email',
               {
                 rules: [
-                  { required: true, message: $t('page.auth.signup.email') },
+                  {
+                    validator: validationRules.email($t('validation.email')),
+                  },
                 ],
               },
             ]"
@@ -44,13 +46,22 @@
               'password',
               {
                 rules: [
-                  { required: true, message: 'Please input your Password!' },
+                  {
+                    validator: validationRules.password(
+                      $t('validation.password'),
+                    ),
+                  },
                 ],
               },
             ]"
             :placeholder="$t('page.auth.signup.password')"
           >
-            <a-icon slot="prefix" type="lock" />
+            <a-tooltip
+              slot="prefix"
+              :title="$t('page.auth.signup.password-info')"
+            >
+              <a-icon type="lock" />
+            </a-tooltip>
           </a-input-password>
         </a-form-item>
         <a-form-item>
@@ -59,7 +70,12 @@
               'repeatPassword',
               {
                 rules: [
-                  { required: true, message: 'Please input your Password!' },
+                  {
+                    validator: validationRules.matchTogether(
+                      $t('validation.repeat-password-not-match'),
+                      form.getFieldValue('password'),
+                    ),
+                  },
                 ],
               },
             ]"
@@ -78,7 +94,7 @@
         </a-button>
       </a-form>
 
-      <small class="mt1">
+      <small class="mt1 text-center">
         {{ $t('page.auth.signup.user agreement') }}
       </small>
       <p class="m1">
@@ -107,16 +123,17 @@
 import Vue from 'vue';
 
 import links from '~/constants/links';
+import { hasErrors, validationRules } from '~/utils/form';
 
 export default Vue.extend({
   layout: 'no-header-default',
+  beforeCreate() {
+    this.form = this.$form.createForm(this, { name: 'signup-form' });
+  },
   data() {
     return {
-      form: this.$form.createForm(this, { name: 'signup-form' }),
-      hasErrors(fieldsError) {
-        // TODO: Utils
-        return Object.keys(fieldsError).some((field) => fieldsError[field]);
-      },
+      hasErrors,
+      validationRules,
       links,
       loading: false,
     };
@@ -130,6 +147,7 @@ export default Vue.extend({
       });
     },
   },
+  mounted() {},
 });
 </script>
 

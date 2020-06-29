@@ -20,6 +20,7 @@
 [X] Google OAuth2
 [] Handle multiple singUp forgotPassword for same user at the same time
 [] Dto validation message content is really bad "\"repeatPassword\" must be [ref:password]"
+[] Password regex env var
 
 
 ## Common
@@ -42,3 +43,4 @@
 [] Prevent from image loading resizing
 [] User agreement and privacy notice signUp real links
 [X] Fix SignUp mobile view
+[] Password regex env var
