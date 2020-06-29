@@ -28,5 +28,9 @@ build:
             dest: .
           - src: "**/*.vue"
             dest: .
+          - src: "assets/**/*.*"
+            dest: .
+          - src: "static/**/*.*"
+            dest: .
           - src: "locales/*.json"
             dest: .

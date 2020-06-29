@@ -1,3 +1,5 @@
+import api from './constants/api';
+
 const { NAME, SHORT_NAME, DESCRIPTION, HOST, INGRESS_NGINX_HOST } = process.env;
 
 export default {
@@ -69,7 +71,7 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ['@/plugins/antd-ui'],
+  plugins: ['~/plugins/antd-ui', '~/plugins/axios'],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -86,6 +88,7 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
+    '@nuxtjs/auth',
     'nuxt-lazy-load',
     '@nuxtjs/style-resources',
     [
@@ -146,6 +149,24 @@ export default {
       theme_color: '#ffffff',
       background_color: '#ffffff',
       display: 'standalone',
+    },
+  },
+  /**
+   * Authentication configuration
+   */
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: api.auth.signin, method: 'post' },
+          logout: { url: api.auth.signout, method: 'post' },
+          user: { url: api.auth.user, method: 'get', propertyName: 'user' },
+        },
+        tokenRequired: false,
+        // tokenType: 'bearer',
+        // globalToken: true,
+        // autoFetchUser: true
+      },
     },
   },
 };

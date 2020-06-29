@@ -35,6 +35,6 @@ export default {
     required: 'This field is required',
     email: 'Email is not valid',
     password: 'At least 6 characters, At least one digit',
-    'repeat-password-not-match': 'Should match with password',
+    'repeat-password-not-match': 'Make sure passwords match',
   },
 };

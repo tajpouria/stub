@@ -1,13 +1,11 @@
 <template>
   <a-layout class="default-layout">
     <Announce />
-
     <DefaultHeader />
-
+    <LineProgress :loading="loading" />
     <a-layout-content class="default-layout__content-container">
       <Nuxt />
     </a-layout-content>
-
     <DefaultFooter />
   </a-layout>
 </template>
@@ -16,12 +14,19 @@ import Vue from 'vue';
 import Announce from '~/components/Announce';
 import DefaultHeader from '~/components/header/DefaultHeader';
 import DefaultFooter from '~/components/footer/DefaultFooter';
+import LineProgress from '~/components/progress/LineProgress';
 
 export default Vue.extend({
   components: {
     Announce,
     DefaultHeader,
     DefaultFooter,
+    LineProgress,
+  },
+  computed: {
+    loading() {
+      return !!this.$store.state.loading.isLoading;
+    },
   },
 });
 </script>

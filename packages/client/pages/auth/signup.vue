@@ -127,9 +127,6 @@ import { hasErrors, validationRules } from '~/utils/form';
 
 export default Vue.extend({
   layout: 'no-header-default',
-  beforeCreate() {
-    this.form = this.$form.createForm(this, { name: 'signup-form' });
-  },
   data() {
     return {
       hasErrors,
@@ -147,7 +144,9 @@ export default Vue.extend({
       });
     },
   },
-  mounted() {},
+  beforeCreate() {
+    this.form = this.$form.createForm(this, { name: 'signup-form' });
+  },
 });
 </script>
 

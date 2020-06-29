@@ -1,12 +1,9 @@
-FROM node:current-slim
+FROM node:alpine
 
-ENV APP_DIR /app/
-WORKDIR ${APP_DIR}
+WORKDIR /app/
 
 COPY . ./
-RUN yarn install
-
-ENV HOST 0.0.0.0
+RUN yarn
 
 EXPOSE 3000
 
