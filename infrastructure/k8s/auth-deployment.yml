@@ -15,8 +15,8 @@ spec:
         tier: back-end
     spec:
       containers:
-        - name: stub-auth
-          image: tajpouria/stub-auth
+        - name: stub-auth-service
+          image: tajpouria/stub-auth-service
           env:
             - name: NAME
               value: "Auth"

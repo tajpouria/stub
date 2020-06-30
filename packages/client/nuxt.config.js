@@ -159,7 +159,7 @@ export default {
       local: {
         endpoints: {
           login: { url: api.auth.signin, method: 'post' },
-          logout: { url: api.auth.signout, method: 'post' },
+          logout: { url: api.auth.signout, method: 'get' },
           user: { url: api.auth.user, method: 'get', propertyName: 'user' },
         },
         tokenRequired: false,

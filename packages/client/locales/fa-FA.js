@@ -22,7 +22,7 @@ export default {
 
   layout: {
     default: {
-      'sign in': 'ورود/ثبت نام',
+      'sign in': 'ورود',
       'my tickets': 'بلیط های من',
       sell: 'فروش',
       english: 'en',

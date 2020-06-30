@@ -15,8 +15,8 @@ spec:
         tier: front-end
     spec:
       containers:
-        - name: stub-client
-          image: tajpouria/stub-client
+        - name: stub-client-service
+          image: tajpouria/stub-client-service
           env:
             - name: NAME
               value: "Stub"

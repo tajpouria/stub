@@ -24,16 +24,42 @@
       />
 
       <a-menu mode="horizontal" class="header-default__menu-container">
-        <a-menu-item key="3">
+        <a-menu-item key="1">
           {{ $t('layout.default.sell') }}
         </a-menu-item>
         <a-menu-item key="2">
           {{ $t('layout.default.my tickets') }}
         </a-menu-item>
-        <a-menu-item key="1">
-          {{ $t('layout.default.sign in') }}
+        <a-menu-item key="3">
+          <nuxt-link v-if="!$auth.user" :to="links.signin">
+            {{ $t('layout.default.sign in') }}
+          </nuxt-link>
         </a-menu-item>
-        <a-icon type="user" />
+        <a-menu-item key="4">
+          <a-popover
+            v-if="$auth.user"
+            :title="$auth.user.email"
+            trigger="click"
+            placement="bottomLeft"
+            class="header-default__user-avatar"
+          >
+            <template slot="content">
+              <p>
+                <nuxt-link :to="links.profile">
+                  {{ $t('layout.default.profile') }}
+                </nuxt-link>
+              </p>
+              <p>
+                <a v-on:click="handleSignOut">
+                  {{ $t('layout.default.sign out') }}
+                </a>
+              </p>
+            </template>
+            <img :src="$auth.user.pictureURL" :alt="$auth.user.email" />
+          </a-popover>
+
+          <a-icon v-else type="user" />
+        </a-menu-item>
       </a-menu>
     </div>
   </header>
@@ -43,6 +69,7 @@
 import Vue from 'vue';
 
 import links from '~/constants/links';
+import { errorParser } from '~/utils/notification';
 
 export default Vue.extend({
   data() {
@@ -50,8 +77,20 @@ export default Vue.extend({
       links,
     };
   },
+  methods: {
+    async handleSignOut() {
+      const { status, data } = await this.$auth.logout();
+
+      if (status !== 204) this.$notification.error(errorParser(data));
+
+      this.$router.push({
+        path: links.index,
+      });
+    },
+  },
 });
 </script>
+
 <style lang="scss" scoped>
 .header-default {
   &__container {
@@ -99,6 +138,12 @@ export default Vue.extend({
       height: 3%;
       flex: 1;
     }
+  }
+
+  &__user-avatar {
+    width: 5rem;
+    @include avatar-border;
+    @include btn-effect;
   }
 }
 </style>

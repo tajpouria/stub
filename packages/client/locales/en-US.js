@@ -18,7 +18,7 @@ export default {
         'contact with friends': 'Connect with friends on Stub',
         'have a stub account': 'Have a Stub account?',
         signin: 'Sign in',
-        'email-sent': 'Validation email sent to:',
+        'email-sent': 'Validation email sent:',
         'credential validation': 'Credential Validation',
         'try again': 'Try again',
       },
@@ -33,6 +33,8 @@ export default {
       english: 'en',
       farsi: 'فا',
       'stub-logo-alt': 'stub',
+      profile: 'Profile',
+      'sign out': 'Sign out',
     },
   },
 

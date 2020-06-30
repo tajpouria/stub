@@ -1,24 +1,14 @@
-// Position
-@mixin clear-fix {
-  &::after {
-    content: '';
-    display: table;
-    clear: both;
-  }
-}
-
-@mixin absolute-center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+//Borders
+@mixin avatar-border {
+  border: 2px solid var(--bg-grey-light-1);
+  border-radius: 3px;
+  padding: 1px;
 }
 
 // Effects
 @mixin btn-effect {
   &:hover {
     cursor: pointer;
-    transform: translateY(-0.2rem);
     opacity: 0.9;
     transition: all 0.2s;
   }
@@ -26,7 +16,6 @@
   &:active {
     transition: all 0.1s;
     opacity: 1;
-    transform: translateY(0);
   }
 
   &:focus {
@@ -35,7 +24,7 @@
 }
 
 /* 
- MEDIA QUERIES MANAGER
+ Media queries manager
  0 - 600px phone
  600px - 900px tab-port
  900px - 1200px tab-land
@@ -63,4 +52,20 @@
       @content;
     }
   }
+}
+
+// Position
+@mixin clear-fix {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin absolute-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }

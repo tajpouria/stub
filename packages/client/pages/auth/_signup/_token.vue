@@ -4,7 +4,7 @@
       {{ this.$t('page.auth.signup.credential validation') }}
     </span>
     <a-button
-      v-on:click="paramTokenSignup"
+      v-on:click="handleParamTokenSignup"
       :loading="loading"
       type="primary"
       class="signup-token__try-again-btn"
@@ -22,7 +22,7 @@ import { errorParser } from '~/utils/notification';
 
 export default Vue.extend({
   methods: {
-    async paramTokenSignup() {
+    async handleParamTokenSignup() {
       const token = this.$route.params.token;
       const { status, data } = await this.$axios.get(
         api.auth.signupToken(token),
@@ -43,7 +43,7 @@ export default Vue.extend({
     },
   },
   async mounted() {
-    await this.paramTokenSignup();
+    await this.handleParamTokenSignup();
   },
 });
 </script>

@@ -8,8 +8,20 @@ build:
   local:
     push: false
   artifacts:
-    - image: tajpouria/stub-client
-      context: ./packages/client
+    - image: tajpouria/stub-auth-service
+      context: packages/auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+          - src: "src/**/*.html"
+            dest: .
+    - image: tajpouria/stub-client-service
+      context: packages/client
+      docker:
+        dockerfile: Dockerfile
       sync:
         manual:
           - src: "**/*.js"
@@ -23,11 +35,4 @@ build:
           - src: "static/**/*.*"
             dest: .
           - src: "locales/*.json"
-            dest: .
-
-    - image: tajpouria/stub-auth
-      context: ./packages/auth
-      sync:
-        manual:
-          - src: "src/**/*.ts"
             dest: .

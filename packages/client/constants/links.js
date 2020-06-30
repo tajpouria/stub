@@ -5,4 +5,6 @@ export default {
   signup: '/auth/signup',
   signin: '/auth/signin',
   signinGoogle: '/auth/google',
+
+  profile: '/user/profile',
 };

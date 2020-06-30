@@ -6,10 +6,7 @@
 [X] Turn off cookie-session secure on test env
 [X] Email signUp nodeMailer
 [X] Translate to Joi validation instead of class validators
-[X] Do not import whole third party module
-[X] Generate session also on signUp maybe refactor create and send { session } process
-[] Random/Related algorithm in order to create username
-[X] Enhance swagger docs
+[X] Do not import whole third party module [X] Generate session also on signUp maybe refactor create and send { session } process [] Random/Related algorithm in order to create username [X] Enhance swagger docs
 [X] Test cancel google signIn manually
 [X] Figure out how to not download mongoDb memory and other dev-dependency on docker build stage
 [X] Setup Test setup to 1. start memory mongo before all 2.delete mongoose collections before each 2. close db connections after all
@@ -44,3 +41,5 @@
 [] User agreement and privacy notice signUp real links
 [X] Fix SignUp mobile view
 [] Username and Password regex env var
+[] Not Receiving email? try again page
+[] A better default header
