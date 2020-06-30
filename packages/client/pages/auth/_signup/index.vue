@@ -47,7 +47,9 @@
               {
                 rules: [
                   {
-                    validator: validationRules.username($t('validation.username')),
+                    validator: validationRules.username(
+                      $t('validation.username'),
+                    ),
                   },
                 ],
               },
@@ -149,6 +151,7 @@ import { mapState } from 'vuex';
 import links from '~/constants/links';
 import api from '~/constants/api';
 import { hasErrors, validationRules } from '~/utils/form';
+import { errorParser } from '~/utils/notification';
 
 export default Vue.extend({
   data() {
@@ -163,12 +166,16 @@ export default Vue.extend({
       this.form.validateFields(async (error, values) => {
         if (error) return;
 
-        const response = await this.$axios.post(api.auth.signup, values);
+        const { status, data } = await this.$axios.post(
+          api.auth.signup,
+          values,
+        );
 
-        const { message } = response.data;
-        this.$notification.error({
-          message: 'Error',
-          description: Array.isArray(message) ? message.join('\n') : message,
+        if (status !== 200) return this.$notification.error(errorParser(data));
+
+        this.$notification.info({
+          message: this.$t('page.auth.signup.email-sent'),
+          description: data.email,
         });
       });
     },

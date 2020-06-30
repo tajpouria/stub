@@ -29,7 +29,7 @@ export class AppService {
   }
 
   generateConfirmLink(linkFor: 'signup' | 'forgotpassword', token: string) {
-    return `${HOST}/api/auth/${linkFor}/${token}`;
+    return `${HOST}/auth/${linkFor}/${token}`;
   }
 
   async sendEmail(to: string, template: string) {

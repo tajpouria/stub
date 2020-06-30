@@ -354,7 +354,7 @@ describe('app.controller (e2e)', () => {
         .set('Cookie', session)
         .send();
 
-      const { email, username } = response.body;
+      const { email, username } = response.body.user;
       expect(email).toEqual(user.email);
       expect(username).toEqual(user.username);
     });

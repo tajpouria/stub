@@ -18,6 +18,8 @@ import DefaultFooter from '~/components/footer/DefaultFooter';
 import LineProgress from '~/components/progress/LineProgress';
 import links from '~/constants/links';
 
+const { signup, signin, signinGoogle } = links;
+
 export default Vue.extend({
   components: {
     Announce,
@@ -29,13 +31,11 @@ export default Vue.extend({
     loading() {
       return this.$store.state.loading.isLoading;
     },
-  },
-  created() {
-    const { signup, signin, signinGoogle } = links;
-
-    this.notToIncludeHeader = !new RegExp(
-      `${signup}|${signin}|${signinGoogle}`,
-    ).test(this.$route.path);
+    notToIncludeHeader() {
+      return !new RegExp(`${signup}|${signin}|${signinGoogle}`).test(
+        this.$route.path,
+      );
+    },
   },
 });
 </script>

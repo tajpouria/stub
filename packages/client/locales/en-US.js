@@ -7,10 +7,10 @@ export default {
         'stub-logo-alt': 'stub',
         email: 'Email',
         username: 'Username',
-        'username-info' : 'Username Has to be at least 3 characters long',
+        'username-info': 'Username Has to be at least 3 characters long',
         password: 'Password',
         'password-info':
-          'Password Has to be at least 6 characters long, Must contain at least one digit',
+          'Password Has to be at least 6 characters long And contain at least one digit',
         'repeat password': 'Repeat password',
         'signup-btn': 'Sign up',
         'user agreement':
@@ -18,6 +18,9 @@ export default {
         'contact with friends': 'Connect with friends on Stub',
         'have a stub account': 'Have a Stub account?',
         signin: 'Sign in',
+        'email-sent': 'Validation email sent to:',
+        'credential validation': 'Credential Validation',
+        'try again': 'Try again',
       },
     },
   },
@@ -36,7 +39,7 @@ export default {
   validation: {
     required: 'This field is required',
     email: 'Email is not valid',
-    username: 'At least 2 and Maximum 12 characters',
+    username: 'At least 3 and Maximum 12 characters',
     password: 'At least 6 characters, At least one digit',
     'repeat-password-not-match': 'Make sure passwords match',
   },

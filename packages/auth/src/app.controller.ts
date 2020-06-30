@@ -132,7 +132,7 @@ export class AppController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(@Request() req: Express.Request & { user: IUser }) {
-    return req.user;
+    return { user: req.user };
   }
 
   @ApiCreatedResponse()
@@ -180,8 +180,7 @@ export class AppController {
     const existingUser = await usersService.findOneByUsernameOrEmail(
       usernameOrEmail,
     );
-
-    if (!existingUser) throw new BadRequestException();
+    if (!existingUser?.password) throw new BadRequestException(); // Block for google user since they haven't password
 
     const token = await appService.redisStoreTokenData(existingUser);
     const confirm_link = await appService.generateConfirmLink(

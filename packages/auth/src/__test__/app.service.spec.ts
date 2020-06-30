@@ -48,14 +48,14 @@ describe('app.service (unit)', () => {
   it('generateConfirmLink(), Generate appropriate SIGN UP confirmation link', () => {
     const token = '123';
     const link = service.generateConfirmLink('signup', token);
-    expect(link).toEqual(`${process.env.HOST}/api/auth/signup/${token}`);
+    expect(link).toEqual(`${process.env.HOST}/auth/signup/${token}`);
   });
 
   it('generateConfirmLink(), Generate appropriate FORGOT PASSWORD confirmation link', () => {
     const token = '123';
     const link = service.generateConfirmLink('forgotpassword', token);
     expect(link).toEqual(
-      `${process.env.HOST}/api/auth/forgotpassword/${token}`,
+      `${process.env.HOST}/auth/forgotpassword/${token}`,
     );
   });
 });

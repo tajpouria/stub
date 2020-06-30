@@ -8,13 +8,6 @@ build:
   local:
     push: false
   artifacts:
-    - image: tajpouria/stub-auth
-      context: ./packages/auth
-      sync:
-        manual:
-          - src: "src/**/*.ts"
-            dest: .
-
     - image: tajpouria/stub-client
       context: ./packages/client
       sync:
@@ -30,4 +23,11 @@ build:
           - src: "static/**/*.*"
             dest: .
           - src: "locales/*.json"
+            dest: .
+
+    - image: tajpouria/stub-auth
+      context: ./packages/auth
+      sync:
+        manual:
+          - src: "src/**/*.ts"
             dest: .
