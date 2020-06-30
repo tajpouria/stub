@@ -1,6 +1,6 @@
 <template>
   <main>
-    <h1>{{ $t('page.home.welcome') }}</h1>
+    <h1>{{ $t('page.index.welcome') }}</h1>
   </main>
 </template>
 <script lang="ts">

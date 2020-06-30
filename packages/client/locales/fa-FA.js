@@ -2,6 +2,7 @@ export default {
   page: {
     home: {
       welcome: 'خوش آمدید',
+      'stub-alt': 'استاب',
     },
     auth: {
       signup: {
@@ -27,7 +28,6 @@ export default {
       sell: 'فروش',
       english: 'en',
       farsi: 'فا',
-      'stub-logo-alt': 'استاب',
     },
   },
 

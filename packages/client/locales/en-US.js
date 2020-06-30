@@ -1,6 +1,6 @@
 export default {
   page: {
-    home: { welcome: 'Welcome' },
+    index: { welcome: 'Welcome', 'stub-alt': 'stub' },
     auth: {
       signup: {
         'sign up for stub': 'Sign up for Stub',
@@ -22,6 +22,16 @@ export default {
         'credential validation': 'Credential Validation',
         'try again': 'Try again',
       },
+
+      signin: {
+        'sign in to stub': 'Sign in to StubHub',
+        'username or email': 'Username or email',
+        password: 'Password',
+        'signin-btn': 'Sign in',
+        'contact with friends': 'Connect with friends on Stub',
+        'new to stub': 'New to Stub?',
+        'create account': 'Create Account',
+      },
     },
   },
 
@@ -32,7 +42,6 @@ export default {
       sell: 'Sell',
       english: 'en',
       farsi: 'فا',
-      'stub-logo-alt': 'stub',
       profile: 'Profile',
       'sign out': 'Sign out',
     },

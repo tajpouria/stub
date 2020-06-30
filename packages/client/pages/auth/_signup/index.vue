@@ -1,27 +1,9 @@
 <template>
-  <a-card class="signup">
-    <div class="signup__card">
-      <nuxt-link :to="links.index">
-        <picture>
-          <source
-            media="(max-width: 768px)"
-            srcset="~/static/pics/layout/stub_logo_1x.png"
-          />
-          <source
-            media="(min-width: 769px)"
-            srcset="~/static/pics/layout/stub_logo_2x.png"
-          />
-          <img
-            src="~/static/pics/layout/stub_logo_2x.png"
-            :alt="$t('page.auth.signup.stub-logo-alt')"
-            class="signup__logo"
-          />
-        </picture>
-      </nuxt-link>
+  <LogoCentredCard>
+    <section class="signup">
       <h1>
         <b>{{ $t('page.auth.signup.sign up for stub') }}</b>
       </h1>
-
       <a-form @submit.prevent="handleSubmit" :form="form" class="signup__form">
         <a-form-item>
           <a-input
@@ -140,14 +122,14 @@
           </nuxt-link></b
         >
       </p>
-    </div>
-  </a-card>
+    </section>
+  </LogoCentredCard>
 </template>
 
 <script>
 import Vue from 'vue';
-import { mapState } from 'vuex';
 
+import LogoCentredCard from '~/components/card/LogoCentredCard';
 import links from '~/constants/links';
 import api from '~/constants/api';
 import { hasErrors, validationRules } from '~/utils/form';
@@ -160,6 +142,9 @@ export default Vue.extend({
       validationRules,
       links,
     };
+  },
+  components: {
+    LogoCentredCard,
   },
   methods: {
     handleSubmit() {
@@ -193,29 +178,10 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .signup {
-  @include absolute-center;
-  min-width: 320px;
-  max-width: 50rem;
-
-  > :first-child {
-    @include respond(phone) {
-      padding: 7px;
-    }
-  }
-
-  @include respond(phone) {
-  }
-
-  &__card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  &__logo {
-    width: 10rem;
-    @include btn-effect;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 
   &__form {
     margin-top: 3%;
@@ -229,11 +195,11 @@ export default Vue.extend({
       width: 100%;
       margin: 1% 0;
     }
-  }
 
-  &__google-img {
-    width: 100%;
-    @include btn-effect;
+    &__google-img {
+      width: 100%;
+      @include btn-effect;
+    }
   }
 }
 </style>
