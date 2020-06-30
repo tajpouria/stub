@@ -33,7 +33,7 @@ spec:
             - name: NUXT_PORT
               value: "3000"
             - name: HOST
-              value: "stub.dev"
+              value: "https://stub.dev"
             - name: INGRESS_NGINX_HOST
               value: "ingress-nginx-controller.ingress-nginx.svc.cluster.local"
 ---

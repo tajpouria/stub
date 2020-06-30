@@ -1,4 +1,7 @@
 export default ({ store, app: { $axios } }) => {
+  // Not to throw Error on 4xx and 5xx response http status
+  $axios.defaults.validateStatus = () => true;
+
   $axios.interceptors.request.use(
     (config) => {
       store.commit('loading/START_LOADING');
@@ -6,7 +9,7 @@ export default ({ store, app: { $axios } }) => {
     },
     (error) => {
       store.commit('loading/FINISH_LOADING');
-      return Promise.reject(error);
+      return error;
     },
   );
 
@@ -17,7 +20,7 @@ export default ({ store, app: { $axios } }) => {
     },
     (error) => {
       store.commit('loading/FINISH_LOADING');
-      return Promise.reject(error);
+      return error;
     },
   );
 };

@@ -163,7 +163,7 @@ export default {
           user: { url: api.auth.user, method: 'get', propertyName: 'user' },
         },
         tokenRequired: false,
-        // tokenType: 'bearer',
+        tokenType: false,
         // globalToken: true,
         // autoFetchUser: true
       },

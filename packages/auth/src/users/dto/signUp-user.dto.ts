@@ -17,11 +17,10 @@ export const signUpUserDto = Joi.object<ISignUpUserDto>({
     .email()
     .required(),
   username: Joi.string()
-    .min(3)
-    .max(30)
+    .pattern(/.{3,30}$/) // Username contains between 3-30 characters,
     .required(),
   password: Joi.string()
-    .pattern(/^(?=.*\d)(?=.*[a-zA-Z])(?!.*\s).{6,12}$/) // Password contains between 6 and 12 characters, and contains at least one number.
+    .pattern(/^(?=.*\d)(?=.*[a-zA-Z])(?!.*\s).{6,12}$/) // Password contains between 6-12 characters, and contains at least one number.
     .required(),
   repeatPassword: Joi.ref('password'),
 });

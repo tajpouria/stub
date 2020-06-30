@@ -1,3 +1,4 @@
+// Changing key name may broke routing links
 export default {
   index: '/',
 

@@ -10,16 +10,13 @@ build:
   artifacts:
     - image: tajpouria/stub-auth
       context: ./packages/auth
-      docker:
-        dockerfile: Dockerfile
       sync:
         manual:
           - src: "src/**/*.ts"
             dest: .
+
     - image: tajpouria/stub-client
       context: ./packages/client
-      docker:
-        dockerfile: Dockerfile
       sync:
         manual:
           - src: "**/*.js"

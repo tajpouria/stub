@@ -9,7 +9,7 @@
     status="active"
     :show-info="false"
     strokeLinecap="square"
-    class="line-progess"
+    class="line-progress"
   />
 </template>
 
@@ -23,8 +23,14 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss" scoped>
-.ant-progress-inner {
-  vertical-align: top !important;
+<style lang="scss">
+.line-progress {
+  .ant-progress-outer {
+    display: grid;
+  }
+
+  .ant-progress-inner {
+    vertical-align: top;
+  }
 }
 </style>

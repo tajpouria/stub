@@ -1,8 +1,8 @@
 FROM node:alpine
 
-WORKDIR /app/
+WORKDIR /usr/src/app
 
-COPY . ./
+COPY . .
 RUN yarn
 
 EXPOSE 3000

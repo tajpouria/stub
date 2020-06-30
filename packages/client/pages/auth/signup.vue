@@ -41,6 +41,29 @@
           </a-input>
         </a-form-item>
         <a-form-item>
+          <a-input
+            v-decorator="[
+              'username',
+              {
+                rules: [
+                  {
+                    validator: validationRules.username($t('validation.username')),
+                  },
+                ],
+              },
+            ]"
+            :placeholder="$t('page.auth.signup.username')"
+          >
+            <a-icon slot="prefix" type="user" />
+            <a-tooltip
+              slot="postfix"
+              :title="$t('page.auth.signup.username-info')"
+            >
+              <a-icon type="info" />
+            </a-tooltip>
+          </a-input>
+        </a-form-item>
+        <a-form-item>
           <a-input-password
             v-decorator="[
               'password',
@@ -121,31 +144,42 @@
 
 <script>
 import Vue from 'vue';
+import { mapState } from 'vuex';
 
 import links from '~/constants/links';
+import api from '~/constants/api';
 import { hasErrors, validationRules } from '~/utils/form';
 
 export default Vue.extend({
-  layout: 'no-header-default',
   data() {
     return {
       hasErrors,
       validationRules,
       links,
-      loading: false,
     };
   },
   methods: {
     handleSubmit() {
-      this.form.validateFields((error, values) => {
+      this.form.validateFields(async (error, values) => {
         if (error) return;
 
-        console.log('Received values of form: ', values);
+        const response = await this.$axios.post(api.auth.signup, values);
+
+        const { message } = response.data;
+        this.$notification.error({
+          message: 'Error',
+          description: Array.isArray(message) ? message.join('\n') : message,
+        });
       });
     },
   },
   beforeCreate() {
     this.form = this.$form.createForm(this, { name: 'signup-form' });
+  },
+  computed: {
+    loading() {
+      return !!this.$store.state.loading.isLoading;
+    },
   },
 });
 </script>
@@ -155,6 +189,12 @@ export default Vue.extend({
   @include absolute-center;
   min-width: 320px;
   max-width: 50rem;
+
+  > :first-child {
+    @include respond(phone) {
+      padding: 7px;
+    }
+  }
 
   @include respond(phone) {
   }

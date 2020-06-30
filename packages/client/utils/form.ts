@@ -23,10 +23,18 @@ export const validationRules: Record<
     callback();
   },
 
+  username: (message: string) => (_, value, callback) => {
+    value = value ?? '';
+
+    // Username contains between 3-30 characters,
+    if (!validator.matches(value, /.{3,30}$/)) return callback(message);
+    callback();
+  },
+
   password: (message: string) => (_, value, callback) => {
     value = value ?? '';
 
-    // Password contains between 6 and 12 characters, and contains at least one number.
+    // Password contains between 6-12 characters, and contains at least one number.
     if (!validator.matches(value, /^(?=.*\d)(?=.*[a-zA-Z])(?!.*\s).{6,12}$/))
       return callback(message);
     callback();

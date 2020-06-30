@@ -6,6 +6,8 @@ export default {
         'sign up for stub': 'Sign up for Stub',
         'stub-logo-alt': 'stub',
         email: 'Email',
+        username: 'Username',
+        'username-info' : 'Username Has to be at least 3 characters long',
         password: 'Password',
         'password-info':
           'Password Has to be at least 6 characters long, Must contain at least one digit',
@@ -34,6 +36,7 @@ export default {
   validation: {
     required: 'This field is required',
     email: 'Email is not valid',
+    username: 'At least 2 and Maximum 12 characters',
     password: 'At least 6 characters, At least one digit',
     'repeat-password-not-match': 'Make sure passwords match',
   },
