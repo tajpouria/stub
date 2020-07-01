@@ -43,3 +43,4 @@
 [] Username and Password regex env var
 [] Not Receiving email? try again page
 [] A better default header
+[] forgotPassword

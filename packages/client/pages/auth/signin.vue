@@ -12,7 +12,9 @@
               {
                 rules: [
                   {
-                    validator: validationRules.required($t('validation.required')),
+                    validator: validationRules.required(
+                      $t('validation.required'),
+                    ),
                   },
                 ],
               },
@@ -93,11 +95,29 @@ export default Vue.extend({
     LogoCentredCard,
   },
   methods: {
-    handleSubmit() {
+    async handleSubmit() {
       this.form.validateFields(async (error, values) => {
         if (error) return;
 
-        console.log(values);
+        const { status, data } = await this.$auth.loginWith('local', {
+          data: values,
+        });
+
+        if (status !== 200)
+          return this.$notification.error(
+            errorParser(
+              data,
+              status === 401
+                ? this.$t('page.auth.signin.invalid email or password')
+                : '',
+            ),
+          );
+
+        this.$notification.info({
+          message: this.$t('page.auth.signin.welcome back'),
+        });
+
+        this.$router.push({ path: links, index });
       });
     },
   },

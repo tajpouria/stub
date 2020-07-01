@@ -13,7 +13,7 @@
           />
           <img
             src="~/static/pics/layout/stub_logo_2x.png"
-            :alt="$t('layout.default.stub-logo-alt')"
+            :alt="$t('page.index.stub-logo-alt')"
             class="header-default__logo"
           /> </picture
       ></nuxt-link>
@@ -79,9 +79,7 @@ export default Vue.extend({
   },
   methods: {
     async handleSignOut() {
-      const { status, data } = await this.$auth.logout();
-
-      if (status !== 204) this.$notification.error(errorParser(data));
+      await this.$auth.logout();
 
       this.$router.push({
         path: links.index,

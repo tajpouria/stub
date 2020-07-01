@@ -21,6 +21,7 @@ export default {
         'email-sent': 'Validation email sent:',
         'credential validation': 'Credential Validation',
         'try again': 'Try again',
+        'welcome to stub': 'Welcome to Stub',
       },
 
       signin: {
@@ -31,6 +32,8 @@ export default {
         'contact with friends': 'Connect with friends on Stub',
         'new to stub': 'New to Stub?',
         'create account': 'Create Account',
+        'invalid email or password': 'Invalid email or password',
+        'welcome back': 'Welcome Back',
       },
     },
   },

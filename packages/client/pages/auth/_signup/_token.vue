@@ -32,6 +32,10 @@ export default Vue.extend({
 
       await this.$auth.fetchUser();
 
+      this.$notification.info({
+        message: this.$t('page.auth.signin.welcome back'),
+      });
+
       this.$router.push({
         path: links.index,
       });
