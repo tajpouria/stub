@@ -13,7 +13,7 @@
           />
           <img
             src="~/static/pics/layout/stub_logo_2x.png"
-            :alt="$t('page.index.stub-logo-alt')"
+            :alt="$t('page.index.stub-alt')"
             class="header-default__logo"
           /> </picture
       ></nuxt-link>
@@ -50,7 +50,7 @@
                 </nuxt-link>
               </p>
               <p>
-                <a v-on:click="handleSignOut">
+                <a v-on:click="handleSignOut" :href="links.index">
                   {{ $t('layout.default.sign out') }}
                 </a>
               </p>

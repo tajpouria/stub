@@ -1,4 +1,4 @@
-import api from './constants/api';
+import apis from './constants/apis';
 
 const { NAME, SHORT_NAME, DESCRIPTION, HOST, INGRESS_NGINX_HOST } = process.env;
 
@@ -158,9 +158,9 @@ export default {
     strategies: {
       local: {
         endpoints: {
-          login: { url: api.auth.signin, method: 'post' },
-          logout: { url: api.auth.signout, method: 'get' },
-          user: { url: api.auth.user, method: 'get', propertyName: 'user' },
+          login: { url: apis.auth.signin, method: 'post' },
+          logout: { url: apis.auth.signout, method: 'get' },
+          user: { url: apis.auth.user, method: 'get', propertyName: 'user' },
         },
         tokenRequired: false,
         tokenType: false,

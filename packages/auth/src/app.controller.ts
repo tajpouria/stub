@@ -11,6 +11,7 @@ import {
   Param,
   UsePipes,
   Put,
+  Response,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -235,12 +236,17 @@ export class AppController {
   @ApiInternalServerErrorResponse()
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
-  async googleCallback(@Request() req: Express.Request & { user: IUser }) {
+  async googleCallback(
+    @Request() req: Express.Request & { user: IUser },
+    @Response() res,
+  ) {
     const { usersService, authService } = this;
 
     let targetUser = await usersService.existingUser(req.user);
     if (!targetUser) targetUser = await usersService.create(req.user);
 
-    return authService.signIn(targetUser, req);
+    authService.signIn(targetUser, req);
+
+    res.redirect('/');
   }
 }

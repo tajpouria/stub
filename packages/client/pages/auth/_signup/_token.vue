@@ -16,7 +16,7 @@
 <script>
 import Vue from 'vue';
 
-import api from '~/constants/api';
+import apis from '~/constants/apis';
 import links from '~/constants/links';
 import { errorParser } from '~/utils/notification';
 
@@ -25,7 +25,7 @@ export default Vue.extend({
     async handleParamTokenSignup() {
       const token = this.$route.params.token;
       const { status, data } = await this.$axios.get(
-        api.auth.signupToken(token),
+        apis.auth.signupToken(token),
       );
 
       if (status !== 201) return this.$notification.error(errorParser(data));

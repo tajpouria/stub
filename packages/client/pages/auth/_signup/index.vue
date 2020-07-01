@@ -107,13 +107,13 @@
       <p class="m1">
         <b> {{ $t('page.auth.signup.contact with friends') }} </b>
       </p>
-      <nuxt-link :to="links.signinGoogle">
+      <a :href="apis.auth.googleSignin">
         <img
           src="~/static/pics/auth/btn_google_signin_light_normal_web.png"
           alt="sign in with google"
           class="signup__google-img"
         />
-      </nuxt-link>
+      </a>
       <p class="mt1">
         <b>
           {{ $t('page.auth.signup.have a stub account') }}
@@ -131,7 +131,7 @@ import Vue from 'vue';
 
 import LogoCentredCard from '~/components/card/LogoCentredCard';
 import links from '~/constants/links';
-import api from '~/constants/api';
+import apis from '~/constants/apis';
 import { hasErrors, validationRules } from '~/utils/form';
 import { errorParser } from '~/utils/notification';
 
@@ -141,6 +141,7 @@ export default Vue.extend({
       hasErrors,
       validationRules,
       links,
+      apis,
     };
   },
   components: {
@@ -152,7 +153,7 @@ export default Vue.extend({
         if (error) return;
 
         const { status, data } = await this.$axios.post(
-          api.auth.signup,
+          apis.auth.signup,
           values,
         );
 
