@@ -15,6 +15,8 @@
             src="~/static/pics/layout/stub_logo_2x.png"
             :alt="$t('page.index.stub-alt')"
             class="logo-centred-card__logo"
+            height="80"
+            width="80"
           />
         </picture>
       </nuxt-link>
@@ -54,6 +56,7 @@ export default Vue.extend({
 
   &__logo {
     width: 10rem;
+    height: auto;
     @include btn-effect;
   }
 }

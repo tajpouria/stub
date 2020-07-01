@@ -89,7 +89,6 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/auth',
-    'nuxt-lazy-load',
     '@nuxtjs/style-resources',
     [
       'nuxt-i18n',

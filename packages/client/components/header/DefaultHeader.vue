@@ -15,6 +15,8 @@
             src="~/static/pics/layout/stub_logo_2x.png"
             :alt="$t('page.index.stub-alt')"
             class="header-default__logo"
+            height="80"
+            width="80"
           /> </picture
       ></nuxt-link>
 
@@ -55,9 +57,13 @@
                 </a>
               </p>
             </template>
-            <img :src="$auth.user.pictureURL" :alt="$auth.user.email" />
+            <img
+              :src="$auth.user.pictureURL"
+              :alt="$auth.user.email"
+              width="40"
+              height="40"
+            />
           </a-popover>
-
           <a-icon v-else type="user" />
         </a-menu-item>
       </a-menu>
@@ -105,6 +111,7 @@ export default Vue.extend({
 
   &__logo {
     width: 10rem;
+    height: auto;
 
     @include btn-effect;
     @include respond(phone) {

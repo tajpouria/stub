@@ -61,6 +61,8 @@
           src="~/static/pics/auth/btn_google_signin_light_normal_web.png"
           alt="sign in with google"
           class="signin__google-img"
+          width="190"
+          height="45"
         />
       </a>
       <p class="mt1">
@@ -155,7 +157,8 @@ export default Vue.extend({
     }
 
     &__google-img {
-      width: 100%;
+      max-width: 100%;
+      height: auto;
       @include btn-effect;
     }
   }

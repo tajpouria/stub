@@ -15,7 +15,7 @@
 [X] Are we need a generic is logged in middleware and are we need req.currentUser?
 [X] Are we need a generic reject if req.currentUser not defined?
 [X] Google OAuth2
-[] Handle multiple singUp forgotPassword for same user at the same time
+[] Handle multiple signUp forgotPassword for same user at the same time
 [] Dto validation message content is really bad "\"repeatPassword\" must be [ref:password]"
 [] Username and Password regex env var
 
@@ -37,7 +37,7 @@
 [X] Configure k8s cross nameSpace request to ingress-nginx service
 [-] Set Host header to stub.dev in case of client server side request (use next req.headers)
 [-] If we going with component.getInitialProps; Handle execution of child components getInitialProps and inject associated props
-[] Prevent from image loading resizing
+[X] Prevent from image loading resizing
 [] User agreement and privacy notice signUp real links
 [X] Fix SignUp mobile view
 [] Username and Password regex env var
