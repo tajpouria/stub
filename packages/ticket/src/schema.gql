@@ -9,5 +9,5 @@ type Ticket {
 }
 
 type Query {
-  ticket(id: Int!): Ticket!
+  ticket(id: Int): Ticket!
 }

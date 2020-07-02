@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
+import cookieSession from 'cookie-session';
 
 import { AppModule } from 'src/app.module';
 
@@ -8,11 +9,20 @@ describe('app.controller (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
+    const { SESSION_NAME } = process.env;
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.use(
+      cookieSession({
+        name: SESSION_NAME,
+        signed: false,
+        httpOnly: true,
+      }),
+    );
 
     await app.init();
   });
@@ -37,20 +47,23 @@ describe('app.controller (e2e)', () => {
         .expect(200);
     });
 
-    it('POST: 200', async () => {
-      const query = `
-        query {
-          ticket(id: 1){
-            id
-            firstName
-            lastName
-          }
-        }
-      `;
+    describe('POST /graphql', () => {
+      describe('query ticket', () => {
+        it('Unauthorized: 401', async () => {
+          const query = `
+            query {
+              ticket {
+                id
+              }
+            }
+          `;
 
-      const response = await gCall(query);
+          const response = await gCall(query);
+          expect(response.body.errors[0].extensions.exception.status).toBe(401);
+        });
 
-      console.info(response.body);
+        it('200', async () => {});
+      });
     });
   });
 });
