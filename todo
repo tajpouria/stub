@@ -10,7 +10,7 @@
 [X] Test cancel google signIn manually
 [X] Figure out how to not download mongoDb memory and other dev-dependency on docker build stage
 [X] Setup Test setup to 1. start memory mongo before all 2.delete mongoose collections before each 2. close db connections after all
-[] Should we include refresh token
+[] Should we include refresh token?
 [X] Forget password implementation
 [X] Are we need a generic is logged in middleware and are we need req.currentUser?
 [X] Are we need a generic reject if req.currentUser not defined?
@@ -18,9 +18,16 @@
 [] Handle multiple signUp forgotPassword for same user at the same time
 [] Dto validation message content is really bad "\"repeatPassword\" must be [ref:password]"
 [] Username and Password regex env var
+[] Put user proper approach to updating the picture
 
+## Ticket
+[] Faking create cookie test function (Buffer.from(JSON.stringify(jwt.sign(payload)).toString(base64)))
+[] Add reasonable sets of attribute to ticket model
+[] Implement to proper approach of uploading image and etc...
+[] Fix git issue
 
 ## Common
+[] Fixe Import in common module
 [X] Normal/consistence Response Error
 [] i18n
 [X] Add test coverage flag
@@ -44,3 +51,4 @@
 [] Not Receiving email? try again page
 [] A better default header
 [] forgotPassword
+[] End to end testing

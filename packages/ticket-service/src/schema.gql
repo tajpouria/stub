@@ -1,0 +1,13 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Ticket {
+  id: Int!
+  firstName: String
+  lastName: String
+}
+
+type Query {
+  ticket(id: Int!): Ticket!
+}

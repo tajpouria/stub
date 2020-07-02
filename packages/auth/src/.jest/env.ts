@@ -1,6 +1,6 @@
 process.env = {
   ...process.env,
-  NAME: 'Auth Test',
+  NAME: 'Auth',
   HOST: 'https://stub.test',
   NODE_ENV: 'test',
   PORT: '4000',

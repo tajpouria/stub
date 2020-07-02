@@ -1,10 +1,10 @@
 {
   "name": "@tajpouria/stub-common",
-  "version": "0.9.0",
-  "main": "dist/",
+  "version": "0.10.0",
+  "main": "dist/**/*",
   "license": "MIT",
   "author": "Pouria Tajdivand<tajpouria.dev@gmail.com>",
-  "types": "dist/index.d.ts",
+  "types": "dist/**/*.d.ts",
   "files": [
     "dist/*"
   ],
