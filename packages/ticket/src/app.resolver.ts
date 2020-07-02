@@ -7,7 +7,6 @@ export class TicketResolver {
   constructor() {}
 
   @Query(returns => Ticket)
-  // Arbitrary
   async ticket(@Args('id', { type: () => Int }) id: number) {
     return { id: 1, firstName: 'Hello', lastName: 'World' };
   }
