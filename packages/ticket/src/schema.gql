@@ -3,11 +3,34 @@
 # ------------------------------------------------------
 
 type Ticket {
-  id: Int!
-  firstName: String
-  lastName: String
+  id: String!
+  userId: String!
+  title: String!
+  price: Float!
+  description: String!
+  pictureURL: String!
+  timestamp: Float!
+  latitude: Float!
+  longitude: Float!
+  address: String!
 }
 
 type Query {
-  ticket(id: Int): Ticket!
+  tickets: [Ticket!]!
+  ticket(id: String!): [Ticket!]!
+}
+
+type Mutation {
+  createTicket(createTicketDto: CreateTicketDto!): Ticket!
+}
+
+input CreateTicketDto {
+  title: String!
+  price: Float!
+  description: String
+  pictureURL: String
+  timestamp: Float!
+  latitude: Float!
+  longitude: Float!
+  address: String
 }

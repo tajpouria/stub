@@ -8,7 +8,15 @@ import { AppModule } from 'src/app.module';
 async function bootstrap() {
   objectContainsAll(
     process.env,
-    ['NODE_ENV', 'NAME', 'HOST', 'PORT', 'SESSION_NAME', 'JWT_SECRET'],
+    [
+      'NODE_ENV',
+      'NAME',
+      'HOST',
+      'PORT',
+      'SESSION_NAME',
+      'JWT_SECRET',
+      'ORM_CONFIG',
+    ],
     'Does not exists on process.env',
   );
   const { SESSION_NAME, NODE_ENV, PORT } = process.env;
