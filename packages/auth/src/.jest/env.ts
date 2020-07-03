@@ -11,6 +11,8 @@ process.env = {
   GOOGLE_CLIENT_ID: 'secret',
   GOOGLE_CLIENT_SECRET: 'secret',
   JWT_SECRET: 'secret',
-  MAILER:
-    '{"service": "", "auth": {"user": "", "pass": ""}}',
+  MAILER: '{"service": "", "auth": {"user": "", "pass": ""}}',
+  USERNAME_PATTERN: '.{3,30}$',
+  PASSWORD_PATTERN: '^(?=.*[0-9])(?=.*[a-z]).{6,32}$',
+  URL_PATTERN: '((http|https)://?)[^s()<>]+(?:([wd]+)|([^[:punct:]s]|/?))',
 };

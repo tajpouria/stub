@@ -16,6 +16,7 @@ async function bootstrap() {
       'SESSION_NAME',
       'JWT_SECRET',
       'ORM_CONFIG',
+      'URL_PATTERN',
     ],
     'Does not exists on process.env',
   );

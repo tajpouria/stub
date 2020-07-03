@@ -13,16 +13,14 @@ export class IUpdateUserDto {
   @ApiProperty()
   repeatPassword: string;
 }
+const { URL_PATTERN, PASSWORD_PATTERN } = process.env;
 
 export const updateUserDto = Joi.object<IUpdateUserDto>({
   email: Joi.string().email(),
   username: Joi.string()
     .min(3)
     .max(30),
-  pictureURL: Joi.string()
-  .pattern(
-    /((http|https):\/\/?)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/,
-  ),
-  password: Joi.string().pattern(/^(?=.*\d)(?=.*[a-zA-Z])(?!.*\s).{6,12}$/), // Password contains between 6 and 12 characters, and contains at least one number.
+  pictureURL: Joi.string().pattern(new RegExp(URL_PATTERN)),
+  password: Joi.string().pattern(new RegExp(PASSWORD_PATTERN)), // Password contains between 6 and 12 characters, and contains at least one number.
   repeatPassword: Joi.ref('password'),
 });

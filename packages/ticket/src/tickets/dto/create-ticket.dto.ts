@@ -34,6 +34,8 @@ export class CreateTicketInput {
   address: string;
 }
 
+const { URL_PATTERN } = process.env;
+
 export const createTicketDto = Joi.object<CreateTicketInput>({
   title: Joi.string()
     .min(3)
@@ -46,9 +48,7 @@ export const createTicketDto = Joi.object<CreateTicketInput>({
   description: Joi.string()
     .min(3)
     .max(255),
-  pictureURL: Joi.string().pattern(
-    /((http|https):\/\/?)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/,
-  ),
+  pictureURL: Joi.string().pattern(new RegExp(URL_PATTERN)),
   timestamp: Joi.number()
     .greater(Date.now())
     .required(),

@@ -17,7 +17,7 @@
 [X] Google OAuth2
 [] Handle multiple signUp forgotPassword for same user at the same time
 [] Dto validation message content is really bad "\"repeatPassword\" must be [ref:password]"
-[] Username and Password regex env var
+[X] Username and Password regex env var
 [] Put user proper approach to updating the picture
 
 ## Ticket
@@ -47,7 +47,7 @@
 [X] Prevent from image loading resizing
 [] User agreement and privacy notice signUp real links
 [X] Fix SignUp mobile view
-[] Username and Password regex env var
+[X] Username and Password regex env var
 [] Not Receiving email? try again page
 [] A better default header
 [] forgotPassword

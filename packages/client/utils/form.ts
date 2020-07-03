@@ -1,5 +1,7 @@
 import validator from 'validator';
 
+const { USERNAME_PATTERN, PASSWORD_PATTERN } = process.env;
+
 export const hasErrors = (fieldsError: Record<string, string>) =>
   Object.keys(fieldsError).some((field) => fieldsError[field]);
 
@@ -26,16 +28,15 @@ export const validationRules: Record<
   username: (message: string) => (_, value, callback) => {
     value = value ?? '';
 
-    // Username contains between 3-30 characters,
-    if (!validator.matches(value, /.{3,30}$/)) return callback(message);
+    if (!validator.matches(value, new RegExp(USERNAME_PATTERN!)))
+      return callback(message);
     callback();
   },
 
   password: (message: string) => (_, value, callback) => {
     value = value ?? '';
 
-    // Password contains between 6-12 characters, and contains at least one number.
-    if (!validator.matches(value, /^(?=.*\d)(?=.*[a-zA-Z])(?!.*\s).{6,12}$/))
+    if (!validator.matches(value, new RegExp(PASSWORD_PATTERN!)))
       return callback(message);
     callback();
   },

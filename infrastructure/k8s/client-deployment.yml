@@ -36,6 +36,12 @@ spec:
               value: "https://stub.dev"
             - name: INGRESS_NGINX_HOST
               value: "ingress-nginx-controller.ingress-nginx.svc.cluster.local"
+            - name: USERNAME_PATTERN
+              value: "/.{3,30}$/"
+            - name: PASSWORD_PATTERN
+              value: "^(?=.*[0-9])(?=.*[a-z]).{6,32}$"
+            - name: URL_PATTERN
+              value: "/((http|https)://?)[^s()<>]+(?:([wd]+)|([^[:punct:]s]|/?))/"
 ---
 apiVersion: v1
 kind: Service
