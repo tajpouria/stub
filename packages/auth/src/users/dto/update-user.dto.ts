@@ -20,8 +20,9 @@ export const updateUserDto = Joi.object<IUpdateUserDto>({
     .min(3)
     .max(30),
   pictureURL: Joi.string()
-    .min(3)
-    .max(1000),
+  .pattern(
+    /((http|https):\/\/?)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/,
+  ),
   password: Joi.string().pattern(/^(?=.*\d)(?=.*[a-zA-Z])(?!.*\s).{6,12}$/), // Password contains between 6 and 12 characters, and contains at least one number.
   repeatPassword: Joi.ref('password'),
 });

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Ticket } from 'src/tickets/entity/ticket.entity';
-import { CreateTicketDto } from 'src/tickets/dto/createTicket.dto';
+import { CreateTicketInput } from 'src/tickets/dto/create-ticket.dto';
 
 @Injectable()
 export class TicketsService {
@@ -20,7 +20,7 @@ export class TicketsService {
     return this.ticketRepository.findOne(id);
   }
 
-  createOne(createTicketDto: CreateTicketDto & { userId: string }) {
+  createOne(createTicketDto: CreateTicketInput & { userId: string }) {
     return this.ticketRepository.create(createTicketDto);
   }
 

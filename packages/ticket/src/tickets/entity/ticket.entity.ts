@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, Int } from '@nestjs/graphql';
 import { ticketsConstants } from 'src/tickets/constants';
 
 @ObjectType()
@@ -22,6 +22,10 @@ export class Ticket {
   @Field()
   @Column('float')
   price: number;
+
+  @Field(type => Int)
+  @Column('int')
+  quantity: number;
 
   @Field()
   @Column({ nullable: true, default: '' })
