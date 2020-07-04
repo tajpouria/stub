@@ -21,13 +21,13 @@
 [] Put user proper approach to updating the picture
 
 ## Ticket
-[] Faking create cookie test function (Buffer.from(JSON.stringify(jwt.sign(payload)).toString(base64)))
-[] Add reasonable sets of attribute to ticket model
-[] Implement to proper approach of uploading image and etc...
-[] Fix git issue
+[X] Faking create cookie test function (Buffer.from(JSON.stringify(jwt.sign(payload)).toString(base64)))
+[X] Add reasonable sets of attribute to ticket model
+[X] Implement to proper approach of uploading image and etc...
+[X] Fix git issue
 
 ## Common
-[] Fixe Import in common module
+[] Fix import in common module
 [X] Normal/consistence Response Error
 [] i18n
 [X] Add test coverage flag

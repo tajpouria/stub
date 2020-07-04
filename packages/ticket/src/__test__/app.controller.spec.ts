@@ -29,15 +29,16 @@ describe('app.controller (e2e)', () => {
     );
 
     await app.init();
-    repository = moduleFixture.get('TicketRepository');
-  });
 
-  afterAll(async () => {
-    await app.close();
+    repository = moduleFixture.get('TicketRepository');
   });
 
   afterEach(async () => {
     await repository.query(`DELETE FROM ticket;`);
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   describe('Hello Ticket! (/api/ticket)', () => {

@@ -11,13 +11,13 @@ export class CreateTicketInput {
   price: number;
 
   @Field({ nullable: true })
-  quantity: number;
+  quantity?: number;
 
   @Field({ nullable: true })
-  description: string;
+  description?: string;
 
   @Field({ nullable: true })
-  pictureURL: string;
+  pictureURL?: string;
 
   // Date
   @Field()
@@ -31,7 +31,7 @@ export class CreateTicketInput {
   longitude: number;
 
   @Field({ nullable: true })
-  address: string;
+  address?: string;
 }
 
 const { URL_PATTERN } = process.env;
