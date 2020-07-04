@@ -4,6 +4,7 @@ import { sign } from 'jsonwebtoken';
 export enum HttpMessage {
   UNAUTHORIZED = 'Unauthorized',
   BAD_REQUEST = 'Bad Request Exception',
+  NOT_FOUND = 'Not Found',
 }
 
 export const generateCookie = (

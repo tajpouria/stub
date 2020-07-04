@@ -32,6 +32,7 @@
 [] i18n
 [X] Add test coverage flag
 [] README
+[] Use Nest @Component decorator for utility functions
 
 ## Models
 [X] User model should contains password validation and user already exists logic

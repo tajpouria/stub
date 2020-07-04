@@ -4,6 +4,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 export const JwtPayloadExtractor = createParamDecorator(
   (_: unknown, context: ExecutionContext) => {
     const ctx = GqlExecutionContext.create(context);
-    return ctx.getContext().req.session?.session;
+
+    return ctx.getContext().req.user;
   },
 );

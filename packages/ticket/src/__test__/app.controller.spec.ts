@@ -2,15 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import cookieSession from 'cookie-session';
+import { Repository } from 'typeorm';
 
 import { AppModule } from 'src/app.module';
 import { HttpMessage, generateCookie } from 'src/.jest/utils';
-import { CreateTicketInput } from 'src/tickets/dto/create-ticket.dto';
+import { Ticket } from 'src/tickets/entity/ticket.entity';
 
 describe('app.controller (e2e)', () => {
   let app: INestApplication;
+  let repository: Repository<Ticket>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const { SESSION_NAME } = process.env;
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -27,10 +29,15 @@ describe('app.controller (e2e)', () => {
     );
 
     await app.init();
+    repository = moduleFixture.get('TicketRepository');
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   afterEach(async () => {
-    await app.close();
+    await repository.query(`DELETE FROM ticket;`);
   });
 
   describe('Hello Ticket! (/api/ticket)', () => {
@@ -50,7 +57,7 @@ describe('app.controller (e2e)', () => {
         query,
       });
 
-  const produceVariables = (vars: Record<string, any>) =>
+  const produceObjectVariable = (vars: Record<string, any>) =>
     JSON.stringify(vars).replace(/\"([^(\")"]+)\":/g, '$1:');
 
   describe('POST /graphql', () => {
@@ -66,10 +73,9 @@ describe('app.controller (e2e)', () => {
 
         const response = await gCall(query);
         expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
-        expect(response.body.data).toBeNull();
       });
 
-      it('tickets', async () => {
+      it('Tickets', async () => {
         const query = `
           {
             tickets {
@@ -81,6 +87,60 @@ describe('app.controller (e2e)', () => {
         const response = await gCall(query, generateCookie());
         expect(response.body.data).not.toBeNull();
         expect(response.body.data.tickets.length).toBeDefined();
+      });
+    });
+
+    describe('query ticket(id)', () => {
+      it('Unauthorized: Unauthorized', async () => {
+        const query = `
+          {
+            ticket(id: "abc1") {
+              id
+            }
+          }
+        `;
+
+        const response = await gCall(query);
+        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+      });
+
+      it('Document not exists: Not Found', async () => {
+        const query = `
+          {
+            ticket(id: "abc1") {
+              id
+            }
+          }
+        `;
+
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.NOT_FOUND);
+      });
+
+      it('Ticket', async () => {
+        const vars = {
+          title: 'hello',
+          price: 99.99,
+          latitude: 12.1,
+          longitude: 14.2,
+          timestamp: 1593781663193,
+          userId: 'mock20%id',
+        };
+
+        const doc = await repository.save(repository.create(vars));
+
+        const query = `
+          {
+            ticket(id: "${doc.id}") {
+              id
+              title
+            }
+          }
+        `;
+
+        const response = await gCall(query, generateCookie());
+        expect(response.body.data.ticket.id).toBe(doc.id);
+        expect(response.body.data.ticket.title).toBe(vars.title);
       });
     });
 
@@ -96,7 +156,7 @@ describe('app.controller (e2e)', () => {
 
         const query = `
             mutation {
-              createTicket(createTicketInput: ${produceVariables(vars)}) {
+              createTicket(createTicketInput: ${produceObjectVariable(vars)}) {
                 id
               }
             }
@@ -117,7 +177,7 @@ describe('app.controller (e2e)', () => {
 
         let query = `
             mutation {
-              createTicket(createTicketInput: ${produceVariables(vars)}) {
+              createTicket(createTicketInput: ${produceObjectVariable(vars)}) {
                 id
               }
             }
@@ -139,7 +199,7 @@ describe('app.controller (e2e)', () => {
 
         let query = `
             mutation {
-              createTicket(createTicketInput: ${produceVariables(vars)}) {
+              createTicket(createTicketInput: ${produceObjectVariable(vars)}) {
                 id
               }
             }
@@ -157,7 +217,7 @@ describe('app.controller (e2e)', () => {
         response = await gCall(query, generateCookie());
         expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
 
-        // Invalid timestamp
+        // Invalid quantity
         vars = Object.assign(vars, {
           price: '100',
           timestamp: Date.now(),
@@ -181,7 +241,7 @@ describe('app.controller (e2e)', () => {
 
         let query = `
             mutation {
-              createTicket(createTicketInput: ${produceVariables(vars)}) {
+              createTicket(createTicketInput: ${produceObjectVariable(vars)}) {
                 id
               }
             }
@@ -198,7 +258,7 @@ describe('app.controller (e2e)', () => {
 
         query = `
             mutation {
-              createTicket(createTicketInput: ${produceVariables(vars)}) {
+              createTicket(createTicketInput: ${produceObjectVariable(vars)}) {
                 id
               }
             }
@@ -216,7 +276,7 @@ describe('app.controller (e2e)', () => {
 
         query = `
             mutation {
-              createTicket(createTicketInput: ${produceVariables(vars)}) {
+              createTicket(createTicketInput: ${produceObjectVariable(vars)}) {
                 id
               }
             }
@@ -224,6 +284,336 @@ describe('app.controller (e2e)', () => {
 
         response = await gCall(query, generateCookie());
         expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+      });
+
+      it('Create ticket', async () => {
+        const vars = {
+          title: 'hello',
+          price: 100,
+          latitude: -12.1,
+          longitude: 15.3,
+          timestamp: Date.now(),
+        };
+
+        const query = `
+            mutation {
+              createTicket(createTicketInput: ${produceObjectVariable(vars)}) {
+                title
+              }
+            }
+          `;
+
+        const response = await gCall(query, generateCookie());
+        expect(response.body.data.createTicket.title).toBe(vars.title);
+      });
+    });
+
+    describe('mutation updateTicket', () => {
+      let doc;
+      const userId = 'some%20id';
+
+      beforeEach(async () => {
+        const vars = {
+          title: 'hello',
+          price: 100,
+          latitude: -12.1,
+          longitude: 15.3,
+          timestamp: Date.now(),
+          userId,
+        };
+
+        doc = await repository.save(repository.create(vars));
+      });
+
+      it('Unauthorized: Unauthorized', async () => {
+        const vars = {
+          title: 'updated Title',
+        };
+
+        const query = `
+            mutation {
+              updateTicket(id: "${
+                doc.id
+              }",updateTicketInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+        const response = await gCall(query);
+        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+      });
+
+      it('Invalid title: Bad Request Exception', async () => {
+        // Invalid Title
+        let vars = {
+          title: '',
+          price: 99.99,
+          latitude: 12.1,
+          longitude: 14.2,
+          timestamp: Date.now(),
+        };
+
+        const query = `
+            mutation {
+              updateTicket(id: "NotExists", updateTicketInput: ${produceObjectVariable(
+                vars,
+              )}) {
+                id
+              }
+            }
+          `;
+
+        let response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+      });
+
+      it('Invalid price or timestamp or quantity: Bad Request Exception', async () => {
+        // Invalid price
+        let vars = {
+          title: 'hello',
+          price: 0,
+          latitude: 12.1,
+          longitude: 14.2,
+          timestamp: Date.now(),
+        };
+
+        const query = `
+            mutation {
+              updateTicket(id: "NotExists", updateTicketInput: ${produceObjectVariable(
+                vars,
+              )}) {
+                id
+              }
+            }
+          `;
+
+        let response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+
+        // Invalid timestamp
+        vars = Object.assign(vars, {
+          price: '100',
+          timestamp: 100,
+        });
+
+        response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+
+        // Invalid quantity
+        vars = Object.assign(vars, {
+          price: '100',
+          timestamp: Date.now(),
+          quantity: 0,
+        });
+
+        response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+      });
+
+      it('Invalid pictureURL or description or address: Bad Request Exception', async () => {
+        // Invalid pictureURL
+        let vars = {
+          title: 'hello',
+          price: 100,
+          latitude: -12.1,
+          longitude: 15.3,
+          timestamp: Date.now(),
+          pictureURL: 'abc',
+        };
+
+        let query = `
+            mutation {
+              updateTicket(id: "NotExists", updateTicketInput: ${produceObjectVariable(
+                vars,
+              )}) {
+                id
+              }
+            }
+          `;
+
+        let response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+
+        // Invalid description
+        vars = Object.assign(vars, {
+          pictureURL: 'https://google.com',
+          description: '',
+        });
+
+        query = `
+            mutation {
+              createTicket(createTicketInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+
+        response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+
+        // Invalid address
+        vars = Object.assign(vars, {
+          pictureURL: 'https://google.com',
+          description: 'valid description',
+          address: '',
+        });
+
+        query = `
+            mutation {
+              createTicket(createTicketInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+
+        response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+      });
+
+      it('Document not exists: Not Found', async () => {
+        const vars = {
+          title: 'updated Title',
+        };
+
+        const query = `
+            mutation {
+              updateTicket(id: "NotExists", updateTicketInput: ${produceObjectVariable(
+                vars,
+              )}) {
+                id
+              }
+            }
+          `;
+
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.NOT_FOUND);
+      });
+
+      it('Not ticket owner: Unauthorized', async () => {
+        const vars = {
+          title: 'updated Title',
+        };
+
+        const query = `
+            mutation {
+              updateTicket(id: "${
+                doc.id
+              }",updateTicketInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+      });
+
+      it('Update Ticket', async () => {
+        const title = 'updated Title';
+        const vars = {
+          title,
+        };
+
+        const query = `
+            mutation {
+              updateTicket(id: "${
+                doc.id
+              }",updateTicketInput: ${produceObjectVariable(vars)}) {
+                id
+                title
+              }
+            }
+          `;
+        const response = await gCall(
+          query,
+          generateCookie({
+            iat: Date.now(),
+            sub: userId,
+            username: 'someUserName',
+          }),
+        );
+
+        expect(response.body.data.updateTicket.id).toBe(doc.id);
+        expect(response.body.data.updateTicket.title).toBe(title);
+      });
+    });
+
+    describe('mutation removeTicket', () => {
+      let doc;
+      const userId = 'some%20id';
+
+      beforeEach(async () => {
+        const vars = {
+          title: 'hello',
+          price: 100,
+          latitude: -12.1,
+          longitude: 15.3,
+          timestamp: Date.now(),
+          userId,
+        };
+
+        doc = await repository.save(repository.create(vars));
+      });
+
+      it('Unauthorized: Unauthorized', async () => {
+        const query = `
+            mutation {
+              removeTicket(id:"${doc.id}"){
+                id
+              }
+            }
+          `;
+
+        const response = await gCall(query);
+        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+      });
+
+      it('Document not exists: Not Found', async () => {
+        const query = `
+            mutation {
+              removeTicket(id:"NotExists"){
+                id
+              }
+            }
+          `;
+
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.NOT_FOUND);
+      });
+
+      it('Not ticket owner: Unauthorized', async () => {
+        const query = `
+            mutation {
+              removeTicket(id:"${doc.id}"){
+                id
+              }
+            }
+          `;
+
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+      });
+
+      it('Remove Ticket', async () => {
+        const query = `
+            mutation {
+              removeTicket(id:"${doc.id}"){
+                id
+                title
+              }
+            }
+          `;
+
+        const response = await gCall(
+          query,
+          generateCookie({
+            iat: Date.now(),
+            sub: userId,
+            username: 'someUserName',
+          }),
+        );
+
+        expect(response.body.data.removeTicket.id).toBe(doc.id);
+        expect(response.body.data.removeTicket.title).toBe(doc.title);
       });
     });
   });

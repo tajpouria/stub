@@ -21,6 +21,7 @@ const { NODE_ENV, ORM_CONFIG } = process.env;
       ...JSON.parse(ORM_CONFIG),
       entities: [Ticket],
       synchronize: true,
+      
       logging: NODE_ENV === 'development' ? true : ['error'],
     }),
 

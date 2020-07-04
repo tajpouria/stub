@@ -16,15 +16,21 @@ export class TicketsService {
     return this.ticketRepository.find();
   }
 
-  findOne(id: string): Promise<Ticket> {
+  findOne(id: string): Promise<Ticket | null> {
     return this.ticketRepository.findOne(id);
   }
 
   createOne(createTicketDto: CreateTicketInput & { userId: string }) {
-    return this.ticketRepository.create(createTicketDto);
+    return this.ticketRepository.save(
+      this.ticketRepository.create(createTicketDto),
+    );
   }
 
-  async remove(id: string): Promise<void> {
-    this.ticketRepository.delete(id);
+  updateOne(id: string, updateTicketDto: Partial<CreateTicketInput>) {
+    return this.ticketRepository.save({ id, ...updateTicketDto });
+  }
+
+  async removeOne(id: string): Promise<void> {
+    await this.ticketRepository.delete(id);
   }
 }

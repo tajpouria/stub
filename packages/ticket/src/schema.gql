@@ -18,11 +18,13 @@ type Ticket {
 
 type Query {
   tickets: [Ticket!]!
-  ticket(id: String!): [Ticket!]!
+  ticket(id: String!): Ticket!
 }
 
 type Mutation {
   createTicket(createTicketInput: CreateTicketInput!): Ticket!
+  updateTicket(updateTicketInput: UpdateTicketInput!, id: String!): Ticket!
+  removeTicket(id: String!): Ticket!
 }
 
 input CreateTicketInput {
@@ -34,5 +36,17 @@ input CreateTicketInput {
   timestamp: Float!
   latitude: Float!
   longitude: Float!
+  address: String
+}
+
+input UpdateTicketInput {
+  title: String
+  price: Float
+  quantity: Float
+  description: String
+  pictureURL: String
+  timestamp: Float
+  latitude: Float
+  longitude: Float
   address: String
 }

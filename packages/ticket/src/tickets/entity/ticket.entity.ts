@@ -24,20 +24,20 @@ export class Ticket {
   price: number;
 
   @Field(type => Int)
-  @Column('int')
+  @Column('int', { default: 1 })
   quantity: number;
 
   @Field()
-  @Column({ nullable: true, default: '' })
+  @Column({ nullable: true })
   description: string;
 
   @Field()
-  @Column({ nullable: true, default: ticketsConstants.defaultPictureURL })
+  @Column({ default: ticketsConstants.defaultPictureURL })
   pictureURL: string;
 
   // Date
   @Field()
-  @Column('timestamp')
+  @Column('bigint')
   timestamp: number;
 
   // Location
@@ -50,6 +50,6 @@ export class Ticket {
   longitude: number;
 
   @Field()
-  @Column({ nullable: true, default: '' })
+  @Column({ nullable: true })
   address: string;
 }
