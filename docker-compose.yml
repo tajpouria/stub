@@ -15,5 +15,4 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
-    volumes:
-      - .docker/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - MYSQL_DATABASE=test # Created on image startup

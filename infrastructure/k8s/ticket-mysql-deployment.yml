@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticket-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ticket-mysql-pod
+  template:
+    metadata:
+      name: ticket-mysql
+      labels:
+        name: ticket-mysql-pod
+        tier: back-end
+    spec:
+      containers:
+        - name: ticket-mysql
+          image: mysql
+          args: ["--default-authentication-plugin=mysql_native_password"]
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root"
+            - name: MYSQL_DATABASE
+              value: "ticket"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ticket-mysql-clusterip
+spec:
+  selector:
+    name: ticket-mysql-pod
+  ports:
+    - name: ticket-mysql
+      protocol: TCP
+      targetPort: 3306
+      port: 3306

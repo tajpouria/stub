@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stub-nats
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: stub-nats-pod
+  template:
+    metadata:
+      name: stub-nats
+      labels:
+        name: stub-nats-pod
+        tier: back-end
+    spec:
+      containers:
+        - name: stub-nats
+          image: nats-streaming:0.17.0
+          args: [
+              "-p", # Port
+              "4222",
+              "-m", # Monitoring port
+              "8222",
+              "-hbi", # How often nats streaming should send heart-beat(health check) to each client
+              "5s",
+              "-hbt", # How long nats streaming should wait for client hearth-beat response
+              "5s",
+              "-hbf", # How many times client can fail to heart-beat response before nats streaming close the connection
+              "2",
+              "-SD", # Enable STAN debugging output
+              "-cid", # ClusterID
+              "stub",
+            ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stub-nats-clusterip
+spec:
+  selector:
+    name: stub-nats-pod
+  ports:
+    - name: stub-nats-client
+      protocol: TCP
+      targetPort: 4222
+      port: 4222
+    - name: stub-nats-monitoring # Accessing Monitoring page: >yarn run nats:listener kubectl port-forward 8222:8222 # Monitoring page is available on http://localhost:8222 and subscriptions is available on http://localhost:8222/streaming/clientsz?subs=1
+      protocol: TCP
+      targetPort: 8222
+      port: 8222
