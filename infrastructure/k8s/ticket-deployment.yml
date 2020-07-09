@@ -35,6 +35,10 @@ spec:
                 secretKeyRef:
                   name: stub-secret
                   key: JWT_SECRET
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
 ---
 apiVersion: v1
 kind: Service

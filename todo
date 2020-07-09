@@ -9,9 +9,7 @@
 [X] Do not import whole third party module [X] Generate session also on signUp maybe refactor create and send { session } process [] Random/Related algorithm in order to create username [X] Enhance swagger docs
 [X] Test cancel google signIn manually
 [X] Figure out how to not download mongoDb memory and other dev-dependency on docker build stage
-[X] Setup Test setup to 1. start memory mongo before all 2.delete mongoose collections before each 2. close db connections after all
-[] Should we include refresh token?
-[X] Forget password implementation
+[X] Setup Test setup to 1. start memory mongo before all 2.delete mongoose collections before each 2. close db connections after all [] Should we include refresh token? [X] Forget password implementation
 [X] Are we need a generic is logged in middleware and are we need req.currentUser?
 [X] Are we need a generic reject if req.currentUser not defined?
 [X] Google OAuth2
@@ -25,6 +23,8 @@
 [X] Add reasonable sets of attribute to ticket model
 [X] Implement to proper approach of uploading image and etc...
 [X] Fix git issue
+[] Handle The case that ticket successfully created or updated but event not emitted by recording event in a separate table and database transaction and vice versa 
+[] Should I mock nats-wrapper? If use jest.fn to track publish event expectations not to forgot clear all mocks
 
 ## Common
 [] Fix import in common module
