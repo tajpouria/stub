@@ -18,6 +18,9 @@ import {
   UpdateTicketInput,
 } from 'src/tickets/dto/update-ticket.dto';
 import { GqlJwtPayloadExtractor } from 'src/auth/gql-jwt-payload-extractor';
+import { ticketCreatedPublisher } from 'src/tickets/shared/ticket-created-publisher';
+import { ticketUpdatedPublisher } from 'src/tickets/shared/ticket-updated-publisher';
+import { ticketRemovedPublisher } from 'src/tickets/shared/ticket-removed-publisher';
 
 @Resolver(of => Ticket)
 export class TicketsResolver {
@@ -46,46 +49,70 @@ export class TicketsResolver {
     createTicketInput: CreateTicketInput,
     @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
   ) {
-    return this.ticketsService.createOne({
+    const ticket = await this.ticketsService.createOne({
       ...createTicketInput,
       userId: jwtPayload.sub,
     });
+
+    const { id, title, price, timestamp, userId } = ticket;
+    await ticketCreatedPublisher.publish({
+      id,
+      title,
+      price,
+      timestamp,
+      userId,
+    });
+
+    return ticket;
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => Ticket)
   async updateTicket(
-    @Args('id') id: string,
+    @Args('id') argId: string,
     @Args('updateTicketInput', new ValidationPipe(updateTicketDto))
     updateTicketInput: UpdateTicketInput,
     @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
   ) {
     const { ticketsService } = this;
 
-    const ticket = await ticketsService.findOne(id);
+    let ticket = await ticketsService.findOne(argId);
     if (!ticket) throw new NotFoundException();
 
     const notTicketOwner = jwtPayload.sub !== ticket.userId;
     if (notTicketOwner) throw new UnauthorizedException();
 
-    return this.ticketsService.updateOne(id, updateTicketInput);
+    ticket = await this.ticketsService.updateOne(argId, updateTicketInput);
+
+    const { id, title, price, timestamp, userId } = ticket;
+    await ticketUpdatedPublisher.publish({
+      id,
+      title,
+      price,
+      timestamp,
+      userId,
+    });
+
+    return ticket;
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => Ticket)
   async removeTicket(
-    @Args('id') id: string,
+    @Args('id') argId: string,
     @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
   ) {
     const { ticketsService } = this;
 
-    const ticket = await ticketsService.findOne(id);
+    const ticket = await ticketsService.findOne(argId);
     if (!ticket) throw new NotFoundException();
 
     const notTicketOwner = jwtPayload.sub !== ticket.userId;
     if (notTicketOwner) throw new UnauthorizedException();
 
-    await this.ticketsService.removeOne(id);
+    await this.ticketsService.removeOne(argId);
+
+    await ticketRemovedPublisher.publish({ id: ticket.id });
 
     return ticket;
   }

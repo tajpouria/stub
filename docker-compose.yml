@@ -16,3 +16,9 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=test # Created on image startup
+  nats:
+    image: "nats-streaming:0.17.0"
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: "-p 4222 -m 8222 -hbi 5s -hbf 2 -SD -cid test"
