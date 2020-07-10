@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Cipher } from '@tajpouria/stub-common/dist/crypto';
+import { Cipher, JwtPayload, SessionObj } from '@tajpouria/stub-common';
 import { JwtService } from '@nestjs/jwt';
 
 import { UsersService } from 'src/users/users.service';
 import { IUser } from 'src/users/interfaces/user.interface';
-import { JwtPayload, SessionObj } from 'src/interfaces/session';
 
 @Injectable()
 export class AuthService {

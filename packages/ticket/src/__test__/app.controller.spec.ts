@@ -3,18 +3,21 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import cookieSession from 'cookie-session';
 import { Repository } from 'typeorm';
+import {
+  HttpMessage,
+  cookieGeneratorFactory,
+  produceObjectVariable,
+} from '@tajpouria/stub-common';
 
 import { AppModule } from 'src/app.module';
-import { HttpMessage, generateCookie } from 'src/.jest/utils';
 import { Ticket } from 'src/tickets/entity/ticket.entity';
 
+const { SESSION_NAME, JWT_SECRET } = process.env;
+
 describe('app.controller (e2e)', () => {
-  let app: INestApplication;
-  let repository: Repository<Ticket>;
+  let app: INestApplication, repository: Repository<Ticket>;
 
   beforeAll(async () => {
-    const { SESSION_NAME } = process.env;
-
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -58,8 +61,7 @@ describe('app.controller (e2e)', () => {
         query,
       });
 
-  const produceObjectVariable = (vars: Record<string, any>) =>
-    JSON.stringify(vars).replace(/\"([^(\")"]+)\":/g, '$1:');
+  const generateCookie = cookieGeneratorFactory(SESSION_NAME, JWT_SECRET);
 
   describe('POST /graphql', () => {
     describe('query tickets', () => {

@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { objectContainsAll } from '@tajpouria/stub-common/dist/common';
+import { objectContainsAll } from '@tajpouria/stub-common';
 import cookieSession from 'cookie-session';
 
 import { AppModule } from 'src/app.module';

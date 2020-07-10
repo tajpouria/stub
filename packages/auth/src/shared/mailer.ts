@@ -1,5 +1,4 @@
-import { Mailer } from '@tajpouria/stub-common/dist/mailer';
-import { Logger } from '@tajpouria/stub-common/dist/logger';
+import { Mailer, Logger } from '@tajpouria/stub-common';
 
 const { MAILER, NODE_ENV } = process.env;
 

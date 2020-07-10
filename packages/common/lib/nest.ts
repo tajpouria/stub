@@ -15,3 +15,6 @@ export class ValidationPipe implements PipeTransform {
     return value;
   }
 }
+
+export const PassportCookieSessionExtractor = (req: Express.Request) =>
+  req?.session?.session ?? null;

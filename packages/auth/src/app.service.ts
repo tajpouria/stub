@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Cipher } from '@tajpouria/stub-common/dist/crypto';
+import { Cipher } from '@tajpouria/stub-common';
 
 import { redis } from 'src/shared/redis';
 import { mailer } from 'src/shared/mailer';

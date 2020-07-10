@@ -1,7 +1,7 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
-export const JwtPayloadExtractor = createParamDecorator(
+export const GqlJwtPayloadExtractor = createParamDecorator(
   (_: unknown, context: ExecutionContext) => {
     const ctx = GqlExecutionContext.create(context);
 

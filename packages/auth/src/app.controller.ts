@@ -22,7 +22,7 @@ import {
   ApiBody,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { Logger } from '@tajpouria/stub-common/dist/logger';
+import { Logger, ValidationPipe } from '@tajpouria/stub-common';
 
 import { AppService } from 'src/app.service';
 import { UsersService } from 'src/users/users.service';
@@ -33,7 +33,6 @@ import { IUser, userValidator } from 'src/users/interfaces/user.interface';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { GoogleAuthGuard } from 'src/auth/google-auth.guard';
 import { enTempProvider } from 'src/shared/mail-template';
-import { ValidationPipe } from 'src/shared/validationPipe';
 import { ISignInUserDto } from 'src/users/dto/signIn-user.dto';
 import {
   forgotPasswordDto,

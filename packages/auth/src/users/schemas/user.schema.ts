@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { Cipher } from '@tajpouria/stub-common/dist/crypto';
+import { Cipher } from '@tajpouria/stub-common';
 
 import { IUser } from 'src/users/interfaces/user.interface';
 import { usersConstants } from 'src/users/constants';

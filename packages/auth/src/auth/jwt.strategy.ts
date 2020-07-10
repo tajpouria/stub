@@ -1,9 +1,12 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { Injectable } from '@nestjs/common';
+import {
+  JwtPayload,
+  PassportCookieSessionExtractor,
+} from '@tajpouria/stub-common';
 
 import { jwtConstants } from 'src/auth/constants';
-import { JwtPayload } from 'src/interfaces/session';
 import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
@@ -21,8 +24,4 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   async validate(payload: JwtPayload) {
     return await this.authService.findUserByJwtPayload(payload);
   }
-}
-
-function PassportCookieSessionExtractor(req: Express.Request) {
-  return req?.session?.session ?? null;
 }

@@ -19,10 +19,10 @@ export const signUpUserDto = Joi.object<ISignUpUserDto>({
     .email()
     .required(),
   username: Joi.string()
-    .pattern(new RegExp(USERNAME_PATTERN)) // Username contains between 3-30 characters,
+    .pattern(new RegExp(USERNAME_PATTERN))
     .required(),
   password: Joi.string()
-    .pattern(new RegExp(PASSWORD_PATTERN)) // Password contains between 6-12 characters, and contains at least one number.
+    .pattern(new RegExp(PASSWORD_PATTERN))
     .required(),
   repeatPassword: Joi.ref('password'),
 });

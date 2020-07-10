@@ -4,21 +4,20 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { JwtPayload, ValidationPipe } from '@tajpouria/stub-common';
+import { GqlAuthGuard } from 'src/auth/gql-auth-guard';
 
 import { Ticket } from 'src/tickets/entity/ticket.entity';
-import { GqlAuthGuard } from 'src/auth/gqlAuthGuard';
 import { TicketsService } from 'src/tickets/tickets.service';
 import {
   CreateTicketInput,
   createTicketDto,
 } from 'src/tickets/dto/create-ticket.dto';
-import { JwtPayloadExtractor } from 'src/auth/jwtPayloadExtractor';
-import { JwtPayload } from 'src/interfaces/session';
-import { ValidationPipe } from 'src/shared/validationPipe';
 import {
   updateTicketDto,
   UpdateTicketInput,
 } from 'src/tickets/dto/update-ticket.dto';
+import { GqlJwtPayloadExtractor } from 'src/auth/gql-jwt-payload-extractor';
 
 @Resolver(of => Ticket)
 export class TicketsResolver {
@@ -45,7 +44,7 @@ export class TicketsResolver {
   async createTicket(
     @Args('createTicketInput', new ValidationPipe(createTicketDto))
     createTicketInput: CreateTicketInput,
-    @JwtPayloadExtractor() jwtPayload: JwtPayload,
+    @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
   ) {
     return this.ticketsService.createOne({
       ...createTicketInput,
@@ -59,7 +58,7 @@ export class TicketsResolver {
     @Args('id') id: string,
     @Args('updateTicketInput', new ValidationPipe(updateTicketDto))
     updateTicketInput: UpdateTicketInput,
-    @JwtPayloadExtractor() jwtPayload: JwtPayload,
+    @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
   ) {
     const { ticketsService } = this;
 
@@ -76,7 +75,7 @@ export class TicketsResolver {
   @Mutation(returns => Ticket)
   async removeTicket(
     @Args('id') id: string,
-    @JwtPayloadExtractor() jwtPayload: JwtPayload,
+    @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
   ) {
     const { ticketsService } = this;
 

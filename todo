@@ -27,7 +27,7 @@
 [] Should I mock nats-wrapper? If use jest.fn to track publish event expectations not to forgot clear all mocks
 
 ## Common
-[] Fix import in common module
+[X] Fix import in common module
 [X] Normal/consistence Response Error
 [] i18n
 [X] Add test coverage flag
