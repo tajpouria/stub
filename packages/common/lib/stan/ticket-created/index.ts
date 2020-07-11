@@ -1,9 +1,9 @@
-import { StanListener } from "../stan-listener";
-import { StanPublisher } from "../stan-publisher";
+import { StanListener } from '../stan-listener';
+import { StanPublisher } from '../stan-publisher';
 
-import * as eventSchema from "./event-schema.json";
+import * as eventSchema from './event-schema.json';
 
-interface EventData {
+export interface TicketCreatedEventData {
   id: string;
   title: string;
   price: number;
@@ -11,10 +11,14 @@ interface EventData {
   timestamp: number;
 }
 
-export class TicketCreatedPublisher extends StanPublisher<EventData> {
+export class TicketCreatedPublisher extends StanPublisher<
+  TicketCreatedEventData
+> {
   eventSchema = eventSchema;
 }
 
-export class TicketCreatedListener extends StanListener<EventData> {
+export class TicketCreatedListener extends StanListener<
+  TicketCreatedEventData
+> {
   eventSchema = eventSchema;
 }

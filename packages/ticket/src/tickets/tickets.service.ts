@@ -21,13 +21,11 @@ export class TicketsService {
   }
 
   createOne(createTicketDto: CreateTicketInput & { userId: string }) {
-    return this.ticketRepository.save(
-      this.ticketRepository.create(createTicketDto),
-    );
+    return this.ticketRepository.create(createTicketDto);
   }
 
   updateOne(id: string, updateTicketDto: Partial<CreateTicketInput>) {
-    return this.ticketRepository.save({ id, ...updateTicketDto });
+    return this.ticketRepository.update(id, { ...updateTicketDto });
   }
 
   async removeOne(id: string): Promise<void> {

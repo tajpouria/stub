@@ -2,9 +2,14 @@ import {
   UseGuards,
   NotFoundException,
   UnauthorizedException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { JwtPayload, ValidationPipe } from '@tajpouria/stub-common';
+import {
+  JwtPayload,
+  ValidationPipe,
+  TicketCreatedEventData,
+} from '@tajpouria/stub-common';
 import { GqlAuthGuard } from 'src/auth/gql-auth-guard';
 
 import { Ticket } from 'src/tickets/entity/ticket.entity';
@@ -21,10 +26,17 @@ import { GqlJwtPayloadExtractor } from 'src/auth/gql-jwt-payload-extractor';
 import { ticketCreatedPublisher } from 'src/tickets/shared/ticket-created-publisher';
 import { ticketUpdatedPublisher } from 'src/tickets/shared/ticket-updated-publisher';
 import { ticketRemovedPublisher } from 'src/tickets/shared/ticket-removed-publisher';
+import { StanEventsService } from 'src/stan-events/stan-events.service';
+import { TicketsStanEventsTransactionService } from 'src/tickets-stan-events-transaction/tickets-stan-events-transaction.service';
+import { StanEvent } from 'src/stan-events/entity/stan-event.entity';
 
 @Resolver(of => Ticket)
 export class TicketsResolver {
-  constructor(private readonly ticketsService: TicketsService) {}
+  constructor(
+    private readonly ticketsService: TicketsService,
+    private readonly stanEventsService: StanEventsService,
+    private readonly ticketsStanEventsTransactionService: TicketsStanEventsTransactionService,
+  ) {}
 
   @UseGuards(GqlAuthGuard)
   @Query(returns => [Ticket])
@@ -49,21 +61,50 @@ export class TicketsResolver {
     createTicketInput: CreateTicketInput,
     @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
   ) {
-    const ticket = await this.ticketsService.createOne({
-      ...createTicketInput,
-      userId: jwtPayload.sub,
-    });
+    const {
+      ticketsService,
+      stanEventsService,
+      ticketsStanEventsTransactionService,
+    } = this;
 
-    const { id, title, price, timestamp, userId } = ticket;
-    await ticketCreatedPublisher.publish({
-      id,
-      title,
-      price,
-      timestamp,
-      userId,
-    });
+    let createdTicket: Ticket | undefined,
+      createdTicketCreatedStanEvent: StanEvent | undefined;
 
-    return ticket;
+    try {
+      const ticket = await ticketsService.createOne({
+        ...createTicketInput,
+        userId: jwtPayload.sub,
+      });
+
+      const { id, title, price, timestamp, userId } = ticket;
+
+      const ticketCreatedStanEvent = stanEventsService.createOne({
+        id,
+        title,
+        price,
+        timestamp,
+        userId,
+      });
+
+      [
+        createdTicket,
+        createdTicketCreatedStanEvent,
+      ] = await ticketsStanEventsTransactionService.saveTicketAndStanEventTransaction(
+        ticket,
+        ticketCreatedStanEvent,
+      );
+
+      await ticketCreatedPublisher.publish(createdTicketCreatedStanEvent);
+
+      return createdTicket;
+    } catch (error) {
+      if (createdTicket) await ticketsService.removeOne(createdTicket.id);
+
+      throw new InternalServerErrorException();
+    } finally {
+      if (createdTicketCreatedStanEvent)
+        await stanEventsService.removeOne(createdTicketCreatedStanEvent.id);
+    }
   }
 
   @UseGuards(GqlAuthGuard)
@@ -82,6 +123,7 @@ export class TicketsResolver {
     const notTicketOwner = jwtPayload.sub !== ticket.userId;
     if (notTicketOwner) throw new UnauthorizedException();
 
+    //@ts-ignore // TODO:
     ticket = await this.ticketsService.updateOne(argId, updateTicketInput);
 
     const { id, title, price, timestamp, userId } = ticket;

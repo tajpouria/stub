@@ -10,7 +10,4 @@ process.env = {
   ORM_CONFIG:
     '{"type": "mysql","host": "localhost","port": 3306,"username": "root","password": "root","database": "test"}',
   URL_PATTERN: '/((http|https)://?)[^s()<>]+(?:([wd]+)|([^[:punct:]s]|/?))/',
-  NATS_CLUSTER_ID: 'test',
-  NATS_CLIENT_ID: randomBytes(4).toString('hex'),
-  NATS_URL: 'http://localhost:4222',
 };

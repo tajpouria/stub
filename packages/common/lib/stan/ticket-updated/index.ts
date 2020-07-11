@@ -3,7 +3,7 @@ import { StanPublisher } from '../stan-publisher';
 
 import * as eventSchema from './event-schema.json';
 
-interface EventData {
+export interface TicketUpdatedEventData {
   id: string;
   title: string;
   price: number;
@@ -11,10 +11,14 @@ interface EventData {
   timestamp: number;
 }
 
-export class TicketUpdatedPublisher extends StanPublisher<EventData> {
+export class TicketUpdatedPublisher extends StanPublisher<
+  TicketUpdatedEventData
+> {
   eventSchema = eventSchema;
 }
 
-export class TicketUpdatedListener extends StanListener<EventData> {
+export class TicketUpdatedListener extends StanListener<
+  TicketUpdatedEventData
+> {
   eventSchema = eventSchema;
 }

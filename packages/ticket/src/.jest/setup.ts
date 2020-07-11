@@ -1,2 +1,2 @@
 // @ts-ignore
-jest.mock('../shared/stan')
+jest.mock('../shared/stan');
