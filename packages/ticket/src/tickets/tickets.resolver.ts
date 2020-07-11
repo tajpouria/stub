@@ -5,11 +5,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import {
-  JwtPayload,
-  ValidationPipe,
-  TicketCreatedEventData,
-} from '@tajpouria/stub-common';
+import { JwtPayload, ValidationPipe, Logger } from '@tajpouria/stub-common';
 import { GqlAuthGuard } from 'src/auth/gql-auth-guard';
 
 import { Ticket } from 'src/tickets/entity/ticket.entity';
@@ -38,6 +34,8 @@ export class TicketsResolver {
     private readonly ticketsStanEventsTransactionService: TicketsStanEventsTransactionService,
   ) {}
 
+  private readonly logger = Logger(`${process.cwd()}/logs/app`);
+
   @UseGuards(GqlAuthGuard)
   @Query(returns => [Ticket])
   async tickets() {
@@ -65,19 +63,21 @@ export class TicketsResolver {
       ticketsService,
       stanEventsService,
       ticketsStanEventsTransactionService,
+      logger,
     } = this;
 
     let createdTicket: Ticket | undefined,
       createdTicketCreatedStanEvent: StanEvent | undefined;
 
     try {
-      const ticket = await ticketsService.createOne({
+      // Create record
+      const ticket = ticketsService.createOne({
         ...createTicketInput,
         userId: jwtPayload.sub,
       });
 
+      // Create event
       const { id, title, price, timestamp, userId } = ticket;
-
       const ticketCreatedStanEvent = stanEventsService.createOne({
         id,
         title,
@@ -86,6 +86,7 @@ export class TicketsResolver {
         userId,
       });
 
+      // Save record and event in context of same database transaction
       [
         createdTicket,
         createdTicketCreatedStanEvent,
@@ -94,14 +95,19 @@ export class TicketsResolver {
         ticketCreatedStanEvent,
       );
 
+      // Publish associated event
       await ticketCreatedPublisher.publish(createdTicketCreatedStanEvent);
 
       return createdTicket;
     } catch (error) {
+      logger.error(new Error(error));
+
+      // Remove record in cases that exception happened
       if (createdTicket) await ticketsService.removeOne(createdTicket.id);
 
-      throw new InternalServerErrorException();
+      return new InternalServerErrorException();
     } finally {
+      // Remove event in all circumstances
       if (createdTicketCreatedStanEvent)
         await stanEventsService.removeOne(createdTicketCreatedStanEvent.id);
     }
@@ -115,27 +121,57 @@ export class TicketsResolver {
     updateTicketInput: UpdateTicketInput,
     @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
   ) {
-    const { ticketsService } = this;
+    const {
+      ticketsService,
+      stanEventsService,
+      ticketsStanEventsTransactionService,
+      logger,
+    } = this;
 
-    let ticket = await ticketsService.findOne(argId);
-    if (!ticket) throw new NotFoundException();
+    let updatedTicket: Ticket | undefined,
+      createdTicketUpdatedStanEvent: StanEvent | undefined;
 
-    const notTicketOwner = jwtPayload.sub !== ticket.userId;
-    if (notTicketOwner) throw new UnauthorizedException();
+    try {
+      // Verify ticket existence
+      const ticket = await ticketsService.findOne(argId);
+      if (!ticket) return new NotFoundException();
 
-    //@ts-ignore // TODO:
-    ticket = await this.ticketsService.updateOne(argId, updateTicketInput);
+      // Verify ticket owner
+      const notTicketOwner = jwtPayload.sub !== ticket.userId;
+      if (notTicketOwner) return new UnauthorizedException();
 
-    const { id, title, price, timestamp, userId } = ticket;
-    await ticketUpdatedPublisher.publish({
-      id,
-      title,
-      price,
-      timestamp,
-      userId,
-    });
+      // Create event
+      const { id, title, price, timestamp, userId } = ticket;
+      const ticketUpdatedStanEvent = stanEventsService.createOne({
+        id,
+        title,
+        price,
+        timestamp,
+        userId,
+      });
 
-    return ticket;
+      // Save record and event in context of same database transaction
+
+      [
+        updatedTicket,
+        createdTicketUpdatedStanEvent,
+      ] = await ticketsStanEventsTransactionService.saveTicketAndStanEventTransaction(
+        Object.assign(ticket, updateTicketInput),
+        ticketUpdatedStanEvent,
+      );
+
+      // Publish associated event
+      await ticketUpdatedPublisher.publish(createdTicketUpdatedStanEvent);
+
+      return updatedTicket;
+    } catch (error) {
+      logger.error(new Error(error));
+
+      // Remove record in cases that exception happened
+      if (updatedTicket) await ticketsService.removeOne(updatedTicket.id);
+
+      return new InternalServerErrorException();
+    }
   }
 
   @UseGuards(GqlAuthGuard)

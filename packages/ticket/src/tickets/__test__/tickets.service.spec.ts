@@ -60,8 +60,8 @@ describe('tickets.service (unit)', () => {
     expect(ticket.title).toBe(ticket.title);
   });
 
-  it('createOne(): Create ticket', async () => {
-    const newTicket = await service.createOne({
+  it('createOne(): Create ticket template', async () => {
+    const newTicket = service.createOne({
       title: 'new Title',
       price: 100,
       latitude: -12.1,
@@ -72,25 +72,6 @@ describe('tickets.service (unit)', () => {
 
     // Method should retrieves document
     expect(newTicket.title).toBeDefined();
-
-    const createdTicket = await service.findOne(newTicket.id);
-    expect(createdTicket.title).toBe(newTicket.title);
-  });
-
-  it('updateOne(): Update ticket', async () => {
-    const newTicket = await service.updateOne(doc.id, {
-      title: 'new Title',
-      price: 100,
-      latitude: -12.1,
-      longitude: 15.3,
-      timestamp: Date.now(),
-    });
-
-    // Method should retrieves document
-    expect(newTicket.title).toBeDefined();
-
-    const createdTicket = await service.findOne(newTicket.id);
-    expect(createdTicket.title).toBe(newTicket.title);
   });
 
   it('removeOne(): Remove ticket', async () => {

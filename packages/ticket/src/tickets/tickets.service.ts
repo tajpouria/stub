@@ -24,10 +24,6 @@ export class TicketsService {
     return this.ticketRepository.create(createTicketDto);
   }
 
-  updateOne(id: string, updateTicketDto: Partial<CreateTicketInput>) {
-    return this.ticketRepository.update(id, { ...updateTicketDto });
-  }
-
   async removeOne(id: string): Promise<void> {
     await this.ticketRepository.delete(id);
   }
