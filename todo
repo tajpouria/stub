@@ -23,11 +23,11 @@
 [X] Add reasonable sets of attribute to ticket model
 [X] Implement to proper approach of uploading image and etc...
 [X] Fix git issue
-[] Handle The case that ticket successfully created or updated but event not emitted by recording event in a separate table and database transaction and vice versa 
+[X] Handle The case that ticket successfully created or updated but event not emitted by recording event in a separate table and database transaction and vice versa 
 [X] Should I mock nats-wrapper? If use jest.fn to track publish event expectations not to forgot clear all mocks
-[] Add 'Is mock stan called?' test
-[] Why I'm even saving stan-events?
-[] We're not storing event-subject
+[X] Add 'Is mock stan called?' test
+[X] Why I'm even saving stan-events?
+[X] We're not storing event-subject
 [] New Services unit tests
 
 ## Common
@@ -36,7 +36,8 @@
 [] i18n
 [X] Add test coverage flag
 [] README
-[] Use Nest @Component decorator for utility functions
+[-] Use Nest @Component decorator for utility functions
+[] Add typeDoc
 
 ## Models
 [X] User model should contains password validation and user already exists logic

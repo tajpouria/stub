@@ -20,15 +20,16 @@ import {
 } from 'src/tickets/dto/update-ticket.dto';
 import { GqlJwtPayloadExtractor } from 'src/auth/gql-jwt-payload-extractor';
 import { StanEventsService } from 'src/stan-events/stan-events.service';
-import { TicketsStanEventsTransactionService } from 'src/tickets-stan-events-transaction/tickets-stan-events-transaction.service';
+import { DatabaseTransactionService } from 'src/database-transaction/database-transaction.service';
 import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
+import { TicketUpdatedStanEvent } from 'src/stan-events/entity/ticket-updated-stan-event.entity';
 
 @Resolver(of => Ticket)
 export class TicketsResolver {
   constructor(
     private readonly ticketsService: TicketsService,
     private readonly stanEventsService: StanEventsService,
-    private readonly ticketsStanEventsTransactionService: TicketsStanEventsTransactionService,
+    private readonly databaseTransactionService: DatabaseTransactionService,
   ) {}
 
   private readonly logger = Logger(`${process.cwd()}/logs/ticket-resolver`);
@@ -59,7 +60,7 @@ export class TicketsResolver {
     const {
       ticketsService,
       stanEventsService,
-      ticketsStanEventsTransactionService,
+      databaseTransactionService,
       logger,
     } = this;
 
@@ -72,7 +73,7 @@ export class TicketsResolver {
 
       // Create event
       const { id, title, price, timestamp, userId } = ticket;
-      const ticketCreatedStanEvent = stanEventsService.createOne({
+      const ticketCreatedStanEvent = stanEventsService.createOneTicketCreated({
         id,
         title,
         price,
@@ -81,12 +82,12 @@ export class TicketsResolver {
       });
 
       // Save record and event in context of same database transaction
-      const [
-        createdTicket,
-      ] = await ticketsStanEventsTransactionService.saveTicketAndStanEventTransaction(
-        ticket,
-        ticketCreatedStanEvent,
-      );
+      const [createdTicket] = await databaseTransactionService.process<
+        [Ticket, TicketCreatedStanEvent]
+      >([
+        [ticket, 'save'],
+        [ticketCreatedStanEvent, 'save'],
+      ]);
 
       return createdTicket;
     } catch (error) {
@@ -107,25 +108,22 @@ export class TicketsResolver {
     const {
       ticketsService,
       stanEventsService,
-      ticketsStanEventsTransactionService,
+      databaseTransactionService,
       logger,
     } = this;
-
-    let updatedTicket: Ticket | undefined,
-      createdTicketUpdatedStanEvent: TicketCreatedStanEvent | undefined;
 
     try {
       // Verify ticket existence
       const ticket = await ticketsService.findOne(argId);
       if (!ticket) return new NotFoundException();
 
-      // Verify ticket owner
+      // Verify ticket ownership
       const notTicketOwner = jwtPayload.sub !== ticket.userId;
       if (notTicketOwner) return new UnauthorizedException();
 
       // Create event
       const { id, title, price, timestamp, userId } = ticket;
-      const ticketUpdatedStanEvent = stanEventsService.createOne({
+      const ticketUpdatedStanEvent = stanEventsService.createOneTicketUpdated({
         id,
         title,
         price,
@@ -134,21 +132,16 @@ export class TicketsResolver {
       });
 
       // Save record and event in context of same database transaction
-
-      [
-        updatedTicket,
-        createdTicketUpdatedStanEvent,
-      ] = await ticketsStanEventsTransactionService.saveTicketAndStanEventTransaction(
-        Object.assign(ticket, updateTicketInput),
-        ticketUpdatedStanEvent,
-      );
+      const [updatedTicket] = await databaseTransactionService.process<
+        [Ticket, TicketUpdatedStanEvent]
+      >([
+        [Object.assign(ticket, updateTicketInput), 'save'],
+        [ticketUpdatedStanEvent, 'save'],
+      ]);
 
       return updatedTicket;
     } catch (error) {
       logger.error(new Error(error));
-
-      // Remove record in cases that exception happened
-      if (updatedTicket) await ticketsService.removeOne(updatedTicket.id);
 
       return new InternalServerErrorException();
     }
@@ -160,16 +153,41 @@ export class TicketsResolver {
     @Args('id') argId: string,
     @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
   ) {
-    const { ticketsService } = this;
+    const {
+      ticketsService,
+      stanEventsService,
+      databaseTransactionService,
+      logger,
+    } = this;
 
-    const ticket = await ticketsService.findOne(argId);
-    if (!ticket) throw new NotFoundException();
+    try {
+      // Verify ticket existence
+      const ticket = await ticketsService.findOne(argId);
+      if (!ticket) return new NotFoundException();
 
-    const notTicketOwner = jwtPayload.sub !== ticket.userId;
-    if (notTicketOwner) throw new UnauthorizedException();
+      // Verify ticket ownership
+      const notTicketOwner = jwtPayload.sub !== ticket.userId;
+      if (notTicketOwner) return new UnauthorizedException();
 
-    await this.ticketsService.removeOne(argId);
+      // Create event
+      const { id } = ticket;
+      const ticketRemovedStanEvent = stanEventsService.createOneTicketRemoved({
+        id,
+      });
 
-    return ticket;
+      // Remove record and save event in context of same database transaction
+      const [removedTicket] = await databaseTransactionService.process<
+        [Ticket]
+      >([
+        [ticket, 'remove'],
+        [ticketRemovedStanEvent, 'save'],
+      ]);
+
+      return { ...removedTicket, id: argId }; // id field removed for some reason appended manually
+    } catch (error) {
+      logger.error(new Error(error));
+
+      return new InternalServerErrorException();
+    }
   }
 }

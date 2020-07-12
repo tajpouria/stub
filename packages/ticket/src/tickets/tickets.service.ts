@@ -23,8 +23,4 @@ export class TicketsService {
   createOne(createTicketDto: CreateTicketInput & { userId: string }) {
     return this.ticketRepository.create(createTicketDto);
   }
-
-  async removeOne(id: string): Promise<void> {
-    await this.ticketRepository.delete(id);
-  }
 }

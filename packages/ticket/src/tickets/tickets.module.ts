@@ -4,18 +4,16 @@ import { Ticket } from 'src/tickets/entity/ticket.entity';
 
 import { TicketsService } from 'src/tickets/tickets.service';
 import { TicketsResolver } from 'src/tickets/tickets.resolver';
-import { TicketsStanEventsTransactionService } from 'src/tickets-stan-events-transaction/tickets-stan-events-transaction.service';
-import { StanEventsService } from 'src/stan-events/stan-events.service';
-import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
+import { StanEventsModule } from 'src/stan-events/stan-events.module';
+import { DatabaseTransactionModule } from 'src/database-transaction/database-transaction.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Ticket, TicketCreatedStanEvent])],
-  providers: [
-    TicketsResolver,
-    TicketsService,
-    StanEventsService,
-    TicketsStanEventsTransactionService,
+  imports: [
+    TypeOrmModule.forFeature([Ticket]),
+    StanEventsModule,
+    DatabaseTransactionModule,
   ],
+  providers: [TicketsResolver, TicketsService],
   exports: [TicketsService],
 })
 export class TicketsModule {}

@@ -4,6 +4,9 @@ import { ObjectSchema } from '@hapi/joi';
 
 import { StanPublisher } from './stan/stan-publisher';
 
+/**
+ * Nest-Joi validation pipe
+ */
 @Injectable()
 export class ValidationPipe implements PipeTransform {
   constructor(private schema: ObjectSchema) {}
@@ -19,19 +22,28 @@ export class ValidationPipe implements PipeTransform {
   }
 }
 
+/**
+ * Extract session from req.session.session
+ * @param req
+ */
 export const PassportCookieSessionExtractor = (req: Express.Request) =>
   req?.session?.session ?? null;
 
-export const publishAndRemoveStanEventRecord = async <
-  EventDataT extends { id: any }
+/**
+ * Publish stan events that no published and delete published ones
+ * @param repository
+ * @param stanPublisher
+ */
+export const publishUnpublishedStanEvents = async <
+  StanEventDataT extends { id: any; published?: boolean }
 >(
-  repository: Repository<EventDataT>,
-  stanPublisher: StanPublisher<EventDataT>,
+  repository: Repository<StanEventDataT>,
+  stanPublisher: StanPublisher<StanEventDataT>,
 ) => {
-  for await (const record of await repository.find()) {
+  for await (const stanEvent of await repository.find()) {
     try {
-      await stanPublisher.publish(record);
-      await repository.delete(record.id);
+      if (!stanEvent.published) await stanPublisher.publish(stanEvent);
+      await repository.delete(stanEvent.id);
     } catch (error) {
       throw new Error(error);
     }

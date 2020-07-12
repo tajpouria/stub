@@ -11,11 +11,20 @@ import {
 
 import { AppModule } from 'src/app.module';
 import { Ticket } from 'src/tickets/entity/ticket.entity';
+import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
+import { TicketUpdatedStanEvent } from 'src/stan-events/entity/ticket-updated-stan-event.entity';
+import { TicketRemovedStanEvent } from 'src/stan-events/entity/ticket-removed-stan-event.entity';
+import { stan } from 'src/shared/stan';
+import { response } from 'express';
 
 const { SESSION_NAME, JWT_SECRET } = process.env;
 
 describe('app.controller (e2e)', () => {
-  let app: INestApplication, repository: Repository<Ticket>;
+  let app: INestApplication,
+    ticketRepository: Repository<Ticket>,
+    ticketCreatedStanEventRepository: Repository<TicketCreatedStanEvent>,
+    ticketUpdatedStanEventRepository: Repository<TicketUpdatedStanEvent>,
+    ticketRemovedStanEventRepository: Repository<TicketRemovedStanEvent>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -33,11 +42,32 @@ describe('app.controller (e2e)', () => {
 
     await app.init();
 
-    repository = moduleFixture.get('TicketRepository');
+    ticketRepository = moduleFixture.get('TicketRepository');
+    ticketCreatedStanEventRepository = moduleFixture.get(
+      'TicketCreatedStanEventRepository',
+    );
+    ticketUpdatedStanEventRepository = moduleFixture.get(
+      'TicketUpdatedStanEventRepository',
+    );
+    ticketRemovedStanEventRepository = moduleFixture.get(
+      'TicketRemovedStanEventRepository',
+    );
   });
 
   afterEach(async () => {
-    await repository.query(`DELETE FROM ticket;`);
+    await ticketRepository.query(`DELETE FROM ticket;`);
+
+    await ticketRemovedStanEventRepository.query(
+      `DELETE FROM ticket_removed_stan_event;`,
+    );
+
+    await ticketCreatedStanEventRepository.query(
+      `DELETE FROM ticket_created_stan_event;`,
+    );
+
+    await ticketUpdatedStanEventRepository.query(
+      `DELETE FROM ticket_updated_stan_event;`,
+    );
   });
 
   afterAll(async () => {
@@ -130,7 +160,7 @@ describe('app.controller (e2e)', () => {
           userId: 'mock20%id',
         };
 
-        const doc = await repository.save(repository.create(vars));
+        const doc = await ticketRepository.save(ticketRepository.create(vars));
 
         const query = `
           {
@@ -291,7 +321,7 @@ describe('app.controller (e2e)', () => {
 
       it('Create ticket', async () => {
         const vars = {
-          title: 'hello',
+          title: 'one',
           price: 100,
           latitude: -12.1,
           longitude: 15.3,
@@ -309,6 +339,27 @@ describe('app.controller (e2e)', () => {
         const response = await gCall(query, generateCookie());
         expect(response.body.data.createTicket.title).toBe(vars.title);
       });
+
+      it('Publish event', async () => {
+        const vars = {
+          title: 'two',
+          price: 100,
+          latitude: -12.1,
+          longitude: 15.3,
+          timestamp: Date.now(),
+        };
+
+        const query = `
+            mutation {
+              createTicket(createTicketInput: ${produceObjectVariable(vars)}) {
+                title
+              }
+            }
+          `;
+
+        await gCall(query, generateCookie());
+        expect(stan.instance.publish).toHaveBeenCalled();
+      });
     });
 
     describe('mutation updateTicket', () => {
@@ -325,7 +376,7 @@ describe('app.controller (e2e)', () => {
           userId,
         };
 
-        doc = await repository.save(repository.create(vars));
+        doc = await ticketRepository.save(ticketRepository.create(vars));
       });
 
       it('Unauthorized: Unauthorized', async () => {
@@ -538,6 +589,36 @@ describe('app.controller (e2e)', () => {
         expect(response.body.data.updateTicket.id).toBe(doc.id);
         expect(response.body.data.updateTicket.title).toBe(title);
       });
+
+      it('Publish event', async () => {
+        const title = 'updated Title';
+        const vars = {
+          title,
+        };
+
+        const query = `
+            mutation {
+              updateTicket(id: "${
+                doc.id
+              }",updateTicketInput: ${produceObjectVariable(vars)}) {
+                id
+                title
+              }
+            }
+          `;
+
+        await gCall(
+          query,
+          generateCookie({
+            iat: Date.now(),
+            sub: userId,
+            username: 'someUserName',
+          }),
+        );
+
+        await gCall(query, generateCookie());
+        expect(stan.instance.publish).toHaveBeenCalled();
+      });
     });
 
     describe('mutation removeTicket', () => {
@@ -554,7 +635,7 @@ describe('app.controller (e2e)', () => {
           userId,
         };
 
-        doc = await repository.save(repository.create(vars));
+        doc = await ticketRepository.save(ticketRepository.create(vars));
       });
 
       it('Unauthorized: Unauthorized', async () => {
@@ -617,6 +698,28 @@ describe('app.controller (e2e)', () => {
 
         expect(response.body.data.removeTicket.id).toBe(doc.id);
         expect(response.body.data.removeTicket.title).toBe(doc.title);
+      });
+
+      it('Publish Event', async () => {
+        const query = `
+            mutation {
+              removeTicket(id:"${doc.id}"){
+                id
+                title
+              }
+            }
+          `;
+
+        const response = await gCall(
+          query,
+          generateCookie({
+            iat: Date.now(),
+            sub: userId,
+            username: 'someUserName',
+          }),
+        );
+
+        expect(stan.instance.publish).toBeCalled();
       });
     });
   });

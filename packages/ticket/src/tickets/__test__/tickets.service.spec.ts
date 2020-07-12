@@ -73,11 +73,4 @@ describe('tickets.service (unit)', () => {
     // Method should retrieves document
     expect(newTicket.title).toBeDefined();
   });
-
-  it('removeOne(): Remove ticket', async () => {
-    await service.removeOne(doc.id);
-
-    const removedTicket = await service.findOne(doc.id);
-    expect(removedTicket).toBeUndefined();
-  });
 });

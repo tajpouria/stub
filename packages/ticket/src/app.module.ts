@@ -9,8 +9,8 @@ import { AuthModule } from 'src/auth/auth.module';
 import { Ticket } from 'src/tickets/entity/ticket.entity';
 import { TicketsModule } from 'src/tickets/tickets.module';
 import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
-import { StanEventsModule } from 'src/stan-events/stan-events.module';
-import { TicketsStanEventsTransactionModule } from 'src/tickets-stan-events-transaction/tickets-stan-events-transaction.module';
+import { TicketUpdatedStanEvent } from 'src/stan-events/entity/ticket-updated-stan-event.entity';
+import { TicketRemovedStanEvent } from 'src/stan-events/entity/ticket-removed-stan-event.entity';
 
 const { NODE_ENV, ORM_CONFIG } = process.env;
 
@@ -22,15 +22,18 @@ const { NODE_ENV, ORM_CONFIG } = process.env;
     }),
     TypeOrmModule.forRoot({
       ...JSON.parse(ORM_CONFIG),
-      entities: [Ticket, TicketCreatedStanEvent],
+      entities: [
+        Ticket,
+        TicketCreatedStanEvent,
+        TicketUpdatedStanEvent,
+        TicketRemovedStanEvent,
+      ],
       synchronize: true,
       logging: NODE_ENV === 'development' ? true : ['error'],
     }),
 
     AuthModule,
     TicketsModule,
-    StanEventsModule,
-    TicketsStanEventsTransactionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

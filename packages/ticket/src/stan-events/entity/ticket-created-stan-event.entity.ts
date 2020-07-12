@@ -2,21 +2,25 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  AfterInsert,
   getConnection,
+  AfterInsert,
+  AfterLoad,
 } from 'typeorm';
 import {
   TicketCreatedEventData,
   Logger,
-  publishAndRemoveStanEventRecord,
+  publishUnpublishedStanEvents,
 } from '@tajpouria/stub-common';
 
 import { ticketCreatedPublisher } from 'src/tickets/shared/ticket-created-publisher';
 
-const logger = Logger(process.cwd() + '/logs/stan-events');
+const logger = Logger(process.cwd() + '/logs/stan/ticket-created-stan-event');
 
 @Entity()
 export class TicketCreatedStanEvent implements TicketCreatedEventData {
+  @Column('boolean', { default: false })
+  published: boolean;
+
   // Identifiers
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -38,12 +42,22 @@ export class TicketCreatedStanEvent implements TicketCreatedEventData {
   @AfterInsert()
   async publishStanEvent() {
     try {
-      await publishAndRemoveStanEventRecord(
+      await ticketCreatedPublisher.publish(this);
+      this.published = true;
+    } catch (error) {
+      logger.error(new Error(error));
+    }
+  }
+
+  @AfterLoad()
+  async publishUnpublishedStanEvents() {
+    try {
+      await publishUnpublishedStanEvents(
         getConnection().getRepository(TicketCreatedStanEvent),
         ticketCreatedPublisher,
       );
     } catch (error) {
-      logger.error(new Error(error));
+      logger.info(new Error(error));
     }
   }
 }
