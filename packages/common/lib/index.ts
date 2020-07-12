@@ -5,6 +5,8 @@ export * from './crypto';
 export * from './logger';
 export * from './mailer';
 // Stan
+export * from './stan/stan-publisher';
+export * from './stan/stan-listener';
 export * from './stan/stan-connection';
 export * from './stan/ticket-created';
 export * from './stan/ticket-updated';

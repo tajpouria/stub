@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { getManager } from 'typeorm';
 
 import { Ticket } from 'src/tickets/entity/ticket.entity';
-import { StanEvent } from 'src/stan-events/entity/stan-event.entity';
+import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
 
 @Injectable()
 export class TicketsStanEventsTransactionService {
@@ -10,10 +10,10 @@ export class TicketsStanEventsTransactionService {
 
   async saveTicketAndStanEventTransaction(
     ticket: Ticket,
-    stanEvent: StanEvent,
-  ): Promise<[Ticket, StanEvent]> {
+    stanEvent: TicketCreatedStanEvent,
+  ): Promise<[Ticket, TicketCreatedStanEvent]> {
     try {
-      let createdTicket: Ticket, createdStanEvent: StanEvent;
+      let createdTicket: Ticket, createdStanEvent: TicketCreatedStanEvent;
 
       await getManager().transaction(async transactionalEntityManager => {
         createdTicket = await transactionalEntityManager.save(ticket);

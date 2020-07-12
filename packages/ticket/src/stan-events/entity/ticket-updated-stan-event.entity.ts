@@ -1,22 +1,23 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { TicketUpdatedEventData } from '@tajpouria/stub-common';
 
 @Entity()
-export class StanEvent {
+export class TicketUpdatedStanEvent implements TicketUpdatedEventData {
   // Identifiers
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
+  @Column()
   userId: string;
 
   // Details
-  @Column({ nullable: true })
+  @Column()
   title: string;
 
-  @Column('float', { nullable: true })
+  @Column('float')
   price: number;
 
   // Date
-  @Column('bigint', { nullable: true })
+  @Column('bigint')
   timestamp: number;
 }

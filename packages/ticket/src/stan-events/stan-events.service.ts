@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TicketCreatedEventData } from '@tajpouria/stub-common';
 
-import { StanEvent } from 'src/stan-events/entity/stan-event.entity';
+import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
 
 @Injectable()
 export class StanEventsService {
   constructor(
-    @InjectRepository(StanEvent)
-    private stanEventRepository: Repository<StanEvent>,
+    @InjectRepository(TicketCreatedStanEvent)
+    private stanEventRepository: Repository<TicketCreatedStanEvent>,
   ) {}
 
   createOne(

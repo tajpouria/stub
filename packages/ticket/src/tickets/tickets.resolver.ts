@@ -19,12 +19,9 @@ import {
   UpdateTicketInput,
 } from 'src/tickets/dto/update-ticket.dto';
 import { GqlJwtPayloadExtractor } from 'src/auth/gql-jwt-payload-extractor';
-import { ticketCreatedPublisher } from 'src/tickets/shared/ticket-created-publisher';
-import { ticketUpdatedPublisher } from 'src/tickets/shared/ticket-updated-publisher';
-import { ticketRemovedPublisher } from 'src/tickets/shared/ticket-removed-publisher';
 import { StanEventsService } from 'src/stan-events/stan-events.service';
 import { TicketsStanEventsTransactionService } from 'src/tickets-stan-events-transaction/tickets-stan-events-transaction.service';
-import { StanEvent } from 'src/stan-events/entity/stan-event.entity';
+import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
 
 @Resolver(of => Ticket)
 export class TicketsResolver {
@@ -34,7 +31,7 @@ export class TicketsResolver {
     private readonly ticketsStanEventsTransactionService: TicketsStanEventsTransactionService,
   ) {}
 
-  private readonly logger = Logger(`${process.cwd()}/logs/app`);
+  private readonly logger = Logger(`${process.cwd()}/logs/ticket-resolver`);
 
   @UseGuards(GqlAuthGuard)
   @Query(returns => [Ticket])
@@ -66,9 +63,6 @@ export class TicketsResolver {
       logger,
     } = this;
 
-    let createdTicket: Ticket | undefined,
-      createdTicketCreatedStanEvent: StanEvent | undefined;
-
     try {
       // Create record
       const ticket = ticketsService.createOne({
@@ -87,29 +81,18 @@ export class TicketsResolver {
       });
 
       // Save record and event in context of same database transaction
-      [
+      const [
         createdTicket,
-        createdTicketCreatedStanEvent,
       ] = await ticketsStanEventsTransactionService.saveTicketAndStanEventTransaction(
         ticket,
         ticketCreatedStanEvent,
       );
 
-      // Publish associated event
-      await ticketCreatedPublisher.publish(createdTicketCreatedStanEvent);
-
       return createdTicket;
     } catch (error) {
       logger.error(new Error(error));
 
-      // Remove record in cases that exception happened
-      if (createdTicket) await ticketsService.removeOne(createdTicket.id);
-
       return new InternalServerErrorException();
-    } finally {
-      // Remove event in all circumstances
-      if (createdTicketCreatedStanEvent)
-        await stanEventsService.removeOne(createdTicketCreatedStanEvent.id);
     }
   }
 
@@ -129,7 +112,7 @@ export class TicketsResolver {
     } = this;
 
     let updatedTicket: Ticket | undefined,
-      createdTicketUpdatedStanEvent: StanEvent | undefined;
+      createdTicketUpdatedStanEvent: TicketCreatedStanEvent | undefined;
 
     try {
       // Verify ticket existence
@@ -160,9 +143,6 @@ export class TicketsResolver {
         ticketUpdatedStanEvent,
       );
 
-      // Publish associated event
-      await ticketUpdatedPublisher.publish(createdTicketUpdatedStanEvent);
-
       return updatedTicket;
     } catch (error) {
       logger.error(new Error(error));
@@ -189,8 +169,6 @@ export class TicketsResolver {
     if (notTicketOwner) throw new UnauthorizedException();
 
     await this.ticketsService.removeOne(argId);
-
-    await ticketRemovedPublisher.publish({ id: ticket.id });
 
     return ticket;
   }

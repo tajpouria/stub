@@ -8,7 +8,7 @@ import { AppService } from 'src/app.service';
 import { AuthModule } from 'src/auth/auth.module';
 import { Ticket } from 'src/tickets/entity/ticket.entity';
 import { TicketsModule } from 'src/tickets/tickets.module';
-import { StanEvent } from 'src/stan-events/entity/stan-event.entity';
+import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
 import { StanEventsModule } from 'src/stan-events/stan-events.module';
 import { TicketsStanEventsTransactionModule } from 'src/tickets-stan-events-transaction/tickets-stan-events-transaction.module';
 
@@ -22,7 +22,7 @@ const { NODE_ENV, ORM_CONFIG } = process.env;
     }),
     TypeOrmModule.forRoot({
       ...JSON.parse(ORM_CONFIG),
-      entities: [Ticket, StanEvent],
+      entities: [Ticket, TicketCreatedStanEvent],
       synchronize: true,
       logging: NODE_ENV === 'development' ? true : ['error'],
     }),
