@@ -28,7 +28,8 @@
 [X] Add 'Is mock stan called?' test
 [X] Why I'm even saving stan-events?
 [X] We're not storing event-subject
-[] New Services unit tests
+[X] New Services unit tests
+[] Maybe better test for database-transaction.service
 
 ## Common
 [X] Fix import in common module

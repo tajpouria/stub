@@ -70,7 +70,6 @@ describe('tickets.service (unit)', () => {
       userId: 'someID',
     });
 
-    // Method should retrieves document
     expect(newTicket.title).toBeDefined();
   });
 });

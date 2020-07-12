@@ -3,14 +3,18 @@ import { getManager, EntityManager } from 'typeorm';
 
 @Injectable()
 export class DatabaseTransactionService {
+  /**
+   * Process a database transaction for specified actions
+   * @param entityAndActions Tuple of [Entity, Action that needs to Applied]
+   */
   async process<ResponseT extends any[] = any[]>(
-    repoAndActions: [any, keyof EntityManager][],
+    entityAndActions: [any, keyof EntityManager][],
   ) {
     try {
       let response: any[];
       await getManager().transaction(async transactionalEntityManager => {
         response = await Promise.all(
-          repoAndActions.map(([repository, action]) =>
+          entityAndActions.map(([repository, action]) =>
             (transactionalEntityManager[action] as any)(repository),
           ),
         );
@@ -18,7 +22,6 @@ export class DatabaseTransactionService {
 
       return response as ResponseT;
     } catch (error) {
-      console.error(error);
       throw new Error(error);
     }
   }
