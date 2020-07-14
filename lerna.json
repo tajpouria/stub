@@ -1,5 +1,10 @@
 {
-  "packages": ["packages/auth", "packages/client", "packages/ticket"],
+  "packages": [
+    "packages/auth",
+    "packages/client",
+    "packages/ticket",
+    "packages/order"
+  ],
   "version": "0.0.1",
   "npmClient": "yarn"
 }

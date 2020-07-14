@@ -15,7 +15,6 @@ import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-st
 import { TicketUpdatedStanEvent } from 'src/stan-events/entity/ticket-updated-stan-event.entity';
 import { TicketRemovedStanEvent } from 'src/stan-events/entity/ticket-removed-stan-event.entity';
 import { stan } from 'src/shared/stan';
-import { response } from 'express';
 
 const { SESSION_NAME, JWT_SECRET } = process.env;
 

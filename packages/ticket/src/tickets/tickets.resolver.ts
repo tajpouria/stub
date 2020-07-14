@@ -32,7 +32,7 @@ export class TicketsResolver {
     private readonly databaseTransactionService: DatabaseTransactionService,
   ) {}
 
-  private readonly logger = Logger(`${process.cwd()}/logs/ticket-resolver`);
+  private readonly logger = Logger(`${process.cwd()}/logs/tickets-resolver`);
 
   @UseGuards(GqlAuthGuard)
   @Query(returns => [Ticket])

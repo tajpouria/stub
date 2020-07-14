@@ -2,10 +2,10 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AppModule } from 'src/app.module';
-import { DatabaseTransactionService } from 'src/database-transaction/database-transaction.service';
+import { StanEventsService } from 'src/stan-events/stan-events.service';
 
-describe('database-transaction.service (unit)', () => {
-  let app: INestApplication, service: DatabaseTransactionService;
+describe('stan-events.service (unit)', () => {
+  let app: INestApplication, service: StanEventsService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -16,16 +16,12 @@ describe('database-transaction.service (unit)', () => {
 
     await app.init();
 
-    service = moduleFixture.get<DatabaseTransactionService>(
-      DatabaseTransactionService,
-    );
+    service = moduleFixture.get<StanEventsService>(StanEventsService);
   });
 
   afterAll(async () => {
     await app.close();
   });
 
-  it('process(): To be defined', async () => {
-    expect(service.process).toBeDefined();
-  });
+  it.todo('createOneTicketCreated(): Create ticketCreateStanEvent template');
 });

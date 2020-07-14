@@ -16,7 +16,8 @@
 [] Handle multiple signUp forgotPassword for same user at the same time
 [] Dto validation message content is really bad "\"repeatPassword\" must be [ref:password]"
 [X] Username and Password regex env var
-[] Put user proper approach to updating the picture
+[] User proper approach to updating the picture
+[] Set JWT expiry 
 
 ## Ticket
 [X] Faking create cookie test function (Buffer.from(JSON.stringify(jwt.sign(payload)).toString(base64)))
@@ -31,12 +32,18 @@
 [X] New Services unit tests
 [] Maybe better test for database-transaction.service
 
+## Order
+[] Notice **UTC** expiration date
+[] Apply SG test _out of the sync create and update ticket(concurrency) issue_
+
+
 ## Common
 [X] Fix import in common module
 [X] Normal/consistence Response Error
 [] i18n
 [X] Add test coverage flag
 [] README
+[] Put together record/event diagram
 [-] Use Nest @Component decorator for utility functions
 [] Add typeDoc
 

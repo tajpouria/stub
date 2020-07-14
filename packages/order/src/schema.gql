@@ -1,0 +1,12 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Order {
+  id: String!
+}
+
+type Query {
+  orders: [Order!]!
+  order(id: String!): Order!
+}
