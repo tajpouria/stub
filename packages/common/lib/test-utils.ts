@@ -10,6 +10,7 @@ export const produceObjectVariable = (props: Record<string, any>) =>
 
 export enum HttpMessage {
   UNAUTHORIZED = 'Unauthorized',
+  FORBIDDEN = 'Forbidden',
   BAD_REQUEST = 'Bad Request Exception',
   NOT_FOUND = 'Not Found',
 }

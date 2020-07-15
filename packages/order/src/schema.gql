@@ -2,11 +2,23 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Order {
+type TicketEntity {
   id: String!
+  userId: String!
+  title: String!
+  price: Float!
+  timestamp: Float!
+}
+
+type OrderEntity {
+  id: String!
+  userId: String!
+  status: String!
+  expiresAt: String!
+  ticket: TicketEntity!
 }
 
 type Query {
-  orders: [Order!]!
-  order(id: String!): Order!
+  orders: [OrderEntity!]!
+  order(id: String!): OrderEntity!
 }

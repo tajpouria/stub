@@ -1,8 +1,8 @@
 import {
   UseGuards,
   NotFoundException,
-  UnauthorizedException,
   InternalServerErrorException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { JwtPayload, ValidationPipe, Logger } from '@tajpouria/stub-common';
@@ -119,7 +119,7 @@ export class TicketsResolver {
 
       // Verify ticket ownership
       const notTicketOwner = jwtPayload.sub !== ticket.userId;
-      if (notTicketOwner) return new UnauthorizedException();
+      if (notTicketOwner) return new ForbiddenException();
 
       // Create event
       const { id, title, price, timestamp, userId } = ticket;
@@ -167,7 +167,7 @@ export class TicketsResolver {
 
       // Verify ticket ownership
       const notTicketOwner = jwtPayload.sub !== ticket.userId;
-      if (notTicketOwner) return new UnauthorizedException();
+      if (notTicketOwner) return new ForbiddenException();
 
       // Create event
       const { id } = ticket;

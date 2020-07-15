@@ -11,6 +11,7 @@ export * from './stan/stan-connection';
 export * from './stan/ticket-created';
 export * from './stan/ticket-updated';
 export * from './stan/ticket-removed';
+export * from './stan/types';
 // Test
 export * from './test-utils';
 // Types

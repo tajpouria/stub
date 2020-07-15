@@ -542,7 +542,7 @@ describe('app.controller (e2e)', () => {
         expect(response.body.errors[0].message).toBe(HttpMessage.NOT_FOUND);
       });
 
-      it('Not ticket owner: Unauthorized', async () => {
+      it('Not ticket owner: Forbidden', async () => {
         const vars = {
           title: 'updated Title',
         };
@@ -557,7 +557,7 @@ describe('app.controller (e2e)', () => {
             }
           `;
         const response = await gCall(query, generateCookie());
-        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+        expect(response.body.errors[0].message).toBe(HttpMessage.FORBIDDEN);
       });
 
       it('Update Ticket', async () => {
@@ -663,7 +663,7 @@ describe('app.controller (e2e)', () => {
         expect(response.body.errors[0].message).toBe(HttpMessage.NOT_FOUND);
       });
 
-      it('Not ticket owner: Unauthorized', async () => {
+      it('Not ticket owner: Forbidden', async () => {
         const query = `
             mutation {
               removeTicket(id:"${doc.id}"){
@@ -673,7 +673,7 @@ describe('app.controller (e2e)', () => {
           `;
 
         const response = await gCall(query, generateCookie());
-        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+        expect(response.body.errors[0].message).toBe(HttpMessage.FORBIDDEN);
       });
 
       it('Remove Ticket', async () => {

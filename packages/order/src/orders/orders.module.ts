@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Order } from 'src/orders/entity/order.entity';
+import { OrderEntity } from 'src/orders/entity/order.entity';
 
 import { OrdersService } from 'src/orders/orders.service';
 import { OrdersResolver } from 'src/orders/orders.resolver';
@@ -9,7 +9,7 @@ import { DatabaseTransactionModule } from 'src/database-transaction/database-tra
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order]),
+    TypeOrmModule.forFeature([OrderEntity]),
     StanEventsModule,
     DatabaseTransactionModule,
   ],
