@@ -21,6 +21,7 @@ async function bootstrap() {
       'NATS_CLUSTER_ID',
       'NATS_CLIENT_ID',
       'NATS_URL',
+      'ORDER_EXPIRATION_WINDOW_SECONDS',
     ],
     'Does not exists on process.env',
   );

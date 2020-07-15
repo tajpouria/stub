@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from 'src/app.controller';
 import { AppService } from 'src/app.service';
-import { AuthModule } from 'src/auth/auth.module';
 import { OrderEntity } from 'src/orders/entity/order.entity';
 import { OrdersModule } from 'src/orders/orders.module';
 import { TicketsModule } from 'src/tickets/tickets.module';
@@ -26,7 +25,6 @@ const { NODE_ENV, ORM_CONFIG } = process.env;
       logging: NODE_ENV === 'development' ? true : ['error'],
     }),
 
-    AuthModule,
     OrdersModule,
     TicketsModule,
   ],

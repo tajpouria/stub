@@ -24,8 +24,8 @@ export class OrdersService {
     return this.orderRepository.findOne({ where, relations: ['ticket'] });
   }
 
-  createOne(createTicketDto: CreateOrderInput) {
+  createOne(createInputDto: OrderEntity) {
     // TODO: & { userId: string }
-    return this.orderRepository.create(createTicketDto);
+    return this.orderRepository.create(createInputDto);
   }
 }

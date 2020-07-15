@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import {
+  INestApplication,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import request from 'supertest';
 import cookieSession from 'cookie-session';
 import { Repository } from 'typeorm';
@@ -146,7 +150,9 @@ describe('app.controller (e2e)', () => {
         `;
 
         const response = await gCall(query, generateCookie());
-        expect(response.body.errors[0].message).toBe(HttpMessage.NOT_FOUND);
+        expect(response.body.errors[0].message).toBe(
+          new NotFoundException().message,
+        );
       });
 
       it('Ticket', async () => {
@@ -539,7 +545,9 @@ describe('app.controller (e2e)', () => {
           `;
 
         const response = await gCall(query, generateCookie());
-        expect(response.body.errors[0].message).toBe(HttpMessage.NOT_FOUND);
+        expect(response.body.errors[0].message).toBe(
+          new NotFoundException().message,
+        );
       });
 
       it('Not ticket owner: Forbidden', async () => {
@@ -557,7 +565,9 @@ describe('app.controller (e2e)', () => {
             }
           `;
         const response = await gCall(query, generateCookie());
-        expect(response.body.errors[0].message).toBe(HttpMessage.FORBIDDEN);
+        expect(response.body.errors[0].message).toBe(
+          new ForbiddenException().message,
+        );
       });
 
       it('Update Ticket', async () => {
@@ -660,7 +670,9 @@ describe('app.controller (e2e)', () => {
           `;
 
         const response = await gCall(query, generateCookie());
-        expect(response.body.errors[0].message).toBe(HttpMessage.NOT_FOUND);
+        expect(response.body.errors[0].message).toBe(
+          new NotFoundException().message,
+        );
       });
 
       it('Not ticket owner: Forbidden', async () => {
@@ -673,7 +685,9 @@ describe('app.controller (e2e)', () => {
           `;
 
         const response = await gCall(query, generateCookie());
-        expect(response.body.errors[0].message).toBe(HttpMessage.FORBIDDEN);
+        expect(response.body.errors[0].message).toBe(
+          new ForbiddenException().message,
+        );
       });
 
       it('Remove Ticket', async () => {

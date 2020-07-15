@@ -22,3 +22,11 @@ type Query {
   orders: [OrderEntity!]!
   order(id: String!): OrderEntity!
 }
+
+type Mutation {
+  createOrder(createOrderInput: CreateOrderInput!): OrderEntity!
+}
+
+input CreateOrderInput {
+  ticketId: String!
+}

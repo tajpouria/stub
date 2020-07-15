@@ -1,6 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Repository, getConnection } from 'typeorm';
-import { INestApplication } from '@nestjs/common';
+import {
+  INestApplication,
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import request from 'supertest';
 import {
   HttpMessage,
@@ -123,7 +128,9 @@ describe('app.controller (e2e)', () => {
         `;
 
       const response = await gCall(query, generateCookie());
-      expect(response.body.errors[0].message).toBe(HttpMessage.NOT_FOUND);
+      expect(response.body.errors[0].message).toBe(
+        new NotFoundException().message,
+      );
     });
 
     it('Not Document Owner: Forbidden', async () => {
@@ -152,7 +159,9 @@ describe('app.controller (e2e)', () => {
       `;
 
       const response = await gCall(query, generateCookie());
-      expect(response.body.errors[0].message).toBe(HttpMessage.FORBIDDEN);
+      expect(response.body.errors[0].message).toBe(
+        new ForbiddenException().message,
+      );
     });
 
     it('Order', async () => {
@@ -198,6 +207,76 @@ describe('app.controller (e2e)', () => {
       expect(response.body.data.order.id).toBeDefined();
       expect(response.body.data.order.userId).toBe(userId);
       expect(response.body.data.order.ticket.id).toBe(ticketVars.id);
+    });
+
+    describe('mutation createOrder', () => {
+      it('Unauthorized: Unauthorized', async () => {
+        const vars = {
+          ticketId: '123',
+        };
+
+        const query = `
+            mutation {
+              createOrder(createOrderInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+        const response = await gCall(query);
+        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+      });
+
+      it('Invalid ticketId: BadRequest', async () => {
+        const vars = {
+          ticketId: 'Invalid uuid',
+        };
+
+        const query = `
+            mutation {
+              createOrder(createOrderInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+      });
+
+      it('Ticket is Reserved : BadRequest', async () => {
+        const ticketVars = {
+          id: 'ccd31c79-7bd2-4e23-9a62-5b8ef1aa41be', // Valid UUID
+          title: 'hello',
+          price: 99.99,
+          timestamp: 1593781663193,
+          userId: 'mock20%id',
+        };
+
+        const orderVars = {
+          expiresAt: new Date().toUTCString(),
+          userId: 'some-id',
+          ticket: ticketRepository.create(ticketVars),
+        };
+
+        const doc = await orderRepository.save(
+          orderRepository.create(orderVars),
+        );
+
+        const vars = {
+          ticketId: ticketVars.id,
+        };
+
+        const query = `
+            mutation {
+              createOrder(createOrderInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(
+          new BadRequestException().message,
+        );
+      });
     });
   });
 });

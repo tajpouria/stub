@@ -1,7 +1,14 @@
 import Joi from '@hapi/joi';
-import { InputType } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
-export class CreateOrderInput {}
+export class CreateOrderInput {
+  @Field()
+  ticketId: string;
+}
 
-export const createOrderDto = Joi.object<CreateOrderInput>({});
+export const createOrderDto = Joi.object<CreateOrderInput>({
+  ticketId: Joi.string()
+    .guid()
+    .required(),
+});

@@ -2,21 +2,31 @@ import {
   UseGuards,
   NotFoundException,
   ForbiddenException,
+  InternalServerErrorException,
+  BadRequestException,
 } from '@nestjs/common';
-import { Resolver, Query, Args } from '@nestjs/graphql';
-import { Logger, JwtPayload } from '@tajpouria/stub-common';
+import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Logger, JwtPayload, ValidationPipe } from '@tajpouria/stub-common';
 import { GqlAuthGuard } from 'src/auth/gql-auth-guard';
 
 import { OrderEntity } from 'src/orders/entity/order.entity';
 import { OrdersService } from 'src/orders/orders.service';
 import { StanEventsService } from 'src/stan-events/stan-events.service';
 import { DatabaseTransactionService } from 'src/database-transaction/database-transaction.service';
-import { GqlJwtPayloadExtractor } from '../auth/gql-jwt-payload-extractor';
+import { GqlJwtPayloadExtractor } from 'src/auth/gql-jwt-payload-extractor';
+import {
+  createOrderDto,
+  CreateOrderInput,
+} from 'src/orders/dto/create-order.dto';
+import { TicketsService } from 'src/tickets/tickets.service';
+
+const { ORDER_EXPIRATION_WINDOW_SECONDS } = process.env;
 
 @Resolver(of => OrderEntity)
 export class OrdersResolver {
   constructor(
     private readonly ordersService: OrdersService,
+    private readonly ticketsService: TicketsService,
     private readonly stanEventsService: StanEventsService,
     private readonly databaseTransactionService: DatabaseTransactionService,
   ) {}
@@ -44,5 +54,41 @@ export class OrdersResolver {
     if (!isDocOwner) return new ForbiddenException();
 
     return doc;
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => OrderEntity)
+  async createOrder(
+    @Args('createOrderInput', new ValidationPipe(createOrderDto))
+    { ticketId }: CreateOrderInput,
+    @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
+  ) {
+    const {
+      ticketsService,
+      ordersService,
+      stanEventsService,
+      databaseTransactionService,
+      logger,
+    } = this;
+
+    try {
+      // Verify document existence
+      const ticket = await ticketsService.findOne(ticketId);
+      if (!ticket) return new NotFoundException();
+
+      // Verify ticket is not already reserved
+      const isReserved = await ticket.isReserved();
+      if (isReserved) return new BadRequestException();
+
+      // Set Expiration Date
+      const expiresAt = new Date();
+      expiresAt.setSeconds(
+        expiresAt.getSeconds() + +ORDER_EXPIRATION_WINDOW_SECONDS,
+      );
+    } catch (error) {
+      logger.error(new Error(error));
+
+      return new InternalServerErrorException();
+    }
   }
 }

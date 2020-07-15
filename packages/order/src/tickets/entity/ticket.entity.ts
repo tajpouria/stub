@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, getConnection } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { TicketCreatedEventData } from '@tajpouria/stub-common';
+import { TicketCreatedEventData, OrderStatus } from '@tajpouria/stub-common';
+import { OrderEntity } from 'src/orders/entity/order.entity';
 
 @ObjectType()
 @Entity()
@@ -31,7 +32,15 @@ export class TicketEntity implements TicketCreatedEventData {
   /**
    * True if ticket is currently under order reservation
    */
-  public async isReserved() {
-    // TODO:
+  async isReserved(): Promise<boolean> {
+    return !!(await getConnection()
+      .getRepository(OrderEntity)
+      .findOne({
+        where: [
+          { ticket: this, status: OrderStatus.Created },
+          { ticket: this, status: OrderStatus.AwaitingPayment },
+          { ticket: this, status: OrderStatus.Complete },
+        ],
+      }));
   }
 }
