@@ -23,7 +23,7 @@ describe('stan-events.service (unit)', () => {
     await app.close();
   });
 
-  it('createOneTicketCreated(): Create ticketCreateStanEvent template', async () => {
+  it('createOneTicketCreated(): Create ticketCreatedStanEvent template', async () => {
     const newRecord = service.createOneTicketCreated({
       title: 'new Title',
       price: 100,

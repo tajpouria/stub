@@ -31,19 +31,4 @@ export class TicketEntity implements TicketCreatedEventData {
   @Field()
   @Column('bigint')
   timestamp: number;
-
-  /**
-   * True if ticket is currently under order reservation
-   */
-  async isReserved(): Promise<boolean> {
-    return !!(await getConnection()
-      .getRepository(OrderEntity)
-      .findOne({
-        where: [
-          { ticket: this, status: OrderStatus.Created },
-          { ticket: this, status: OrderStatus.AwaitingPayment },
-          { ticket: this, status: OrderStatus.Complete },
-        ],
-      }));
-  }
 }

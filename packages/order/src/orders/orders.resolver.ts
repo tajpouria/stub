@@ -88,7 +88,7 @@ export class OrdersResolver {
       if (!ticket) return new NotFoundException();
 
       // Verify ticket is not already reserved
-      const isReserved = await ticket.isReserved();
+      const isReserved = await ticketsService.isReserved(ticket);
       if (isReserved) return new BadRequestException();
 
       // Set Expiration Date
