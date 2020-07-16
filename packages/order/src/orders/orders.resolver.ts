@@ -25,6 +25,11 @@ import {
 } from 'src/orders/dto/create-order.dto';
 import { TicketsService } from 'src/tickets/tickets.service';
 import { OrderCreatedStanEvent } from 'src/stan-events/entity/order-created-stan-event.entity';
+import {
+  cancelOrderDto,
+  CancelOrderInput,
+} from 'src/orders/dto/cancel-order.dto';
+import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity copy';
 
 const { ORDER_EXPIRATION_WINDOW_SECONDS } = process.env;
 
@@ -114,6 +119,54 @@ export class OrdersResolver {
       ]);
 
       return createdOrder;
+    } catch (error) {
+      logger.error(new Error(error));
+
+      return new InternalServerErrorException();
+    }
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => OrderEntity)
+  async cancelOrder(
+    @Args('cancelOrderInput', new ValidationPipe(cancelOrderDto))
+    { id: argId }: CancelOrderInput,
+    @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
+  ) {
+    const {
+      ordersService,
+      stanEventsService,
+      databaseTransactionService,
+      logger,
+    } = this;
+
+    try {
+      // Verify document existence
+      const order = await ordersService.findOne({ id: argId });
+      if (!order) return new NotFoundException();
+
+      // Verify document ownership
+      const isDocOwner = order.userId === jwtPayload.sub;
+      if (!isDocOwner) return new ForbiddenException();
+
+      // Cancel the order
+      order.status = OrderStatus.Cancelled;
+
+      // Create event
+      const { id } = order;
+      const orderCancelledEvent = stanEventsService.createOneOrderCancelled({
+        id,
+      });
+
+      //Save record and event in context of same database transaction
+      const [updatedOrder] = await databaseTransactionService.process<
+        [OrderEntity, OrderCancelledStanEvent]
+      >([
+        [order, 'save'],
+        [orderCancelledEvent, 'save'],
+      ]);
+
+      return updatedOrder;
     } catch (error) {
       logger.error(new Error(error));
 

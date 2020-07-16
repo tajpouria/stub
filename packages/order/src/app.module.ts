@@ -10,6 +10,7 @@ import { OrdersModule } from 'src/orders/orders.module';
 import { TicketsModule } from 'src/tickets/tickets.module';
 import { TicketEntity } from 'src/tickets/entity/ticket.entity';
 import { OrderCreatedStanEvent } from 'src/stan-events/entity/order-created-stan-event.entity';
+import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity copy';
 
 const { NODE_ENV, ORM_CONFIG } = process.env;
 
@@ -21,7 +22,12 @@ const { NODE_ENV, ORM_CONFIG } = process.env;
     }),
     TypeOrmModule.forRoot({
       ...JSON.parse(ORM_CONFIG),
-      entities: [OrderEntity, TicketEntity, OrderCreatedStanEvent],
+      entities: [
+        OrderEntity,
+        TicketEntity,
+        OrderCreatedStanEvent,
+        OrderCancelledStanEvent,
+      ],
       synchronize: true,
       logging: NODE_ENV === 'development' ? true : ['error'],
     }),

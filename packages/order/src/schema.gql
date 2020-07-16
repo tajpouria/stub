@@ -25,8 +25,13 @@ type Query {
 
 type Mutation {
   createOrder(createOrderInput: CreateOrderInput!): OrderEntity!
+  cancelOrder(cancelOrderInput: CancelOrderInput!): OrderEntity!
 }
 
 input CreateOrderInput {
   ticketId: String!
+}
+
+input CancelOrderInput {
+  id: String!
 }

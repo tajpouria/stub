@@ -11,6 +11,7 @@ import {
   HttpMessage,
   cookieGeneratorFactory,
   produceObjectVariable,
+  OrderStatus,
 } from '@tajpouria/stub-common';
 import cookieSession from 'cookie-session';
 import { v4 } from 'uuid';
@@ -19,6 +20,7 @@ import { AppModule } from 'src/app.module';
 import { OrderEntity } from 'src/orders/entity/order.entity';
 import { TicketEntity } from 'src/tickets/entity/ticket.entity';
 import { OrderCreatedStanEvent } from 'src/stan-events/entity/order-created-stan-event.entity';
+import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity copy';
 // __mocks__
 import { stan } from 'src/shared/stan';
 
@@ -28,7 +30,8 @@ describe('app.controller (e2e)', () => {
   let app: INestApplication,
     orderRepository: Repository<OrderEntity>,
     ticketRepository: Repository<TicketEntity>,
-    orderCreatedStanEvent: Repository<OrderCreatedStanEvent>;
+    orderCreatedStanEvent: Repository<OrderCreatedStanEvent>,
+    orderCancelledStanEvent: Repository<OrderCancelledStanEvent>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -51,12 +54,18 @@ describe('app.controller (e2e)', () => {
     orderCreatedStanEvent = getConnection().getRepository(
       OrderCreatedStanEvent,
     );
+    orderCancelledStanEvent = getConnection().getRepository(
+      OrderCancelledStanEvent,
+    );
   });
 
   afterEach(async () => {
     await ticketRepository.query(`DELETE FROM ticket_entity;`);
     await orderRepository.query(`DELETE FROM order_entity;`);
     await orderCreatedStanEvent.query(`DELETE FROM order_created_stan_event;`);
+    await orderCancelledStanEvent.query(
+      `DELETE FROM order_cancelled_stan_event;`,
+    );
   });
 
   afterAll(async () => {
@@ -255,7 +264,7 @@ describe('app.controller (e2e)', () => {
         expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
       });
 
-      it('Ticket no exists: NotFound', async () => {
+      it('Ticket not exists: NotFound', async () => {
         const vars = {
           ticketId: v4(),
         };
@@ -366,6 +375,185 @@ describe('app.controller (e2e)', () => {
               }
             }
           `;
+
+        await gCall(query, generateCookie());
+        expect(stan.instance.publish).toHaveBeenCalled();
+      });
+    });
+
+    describe('mutation cancelOrder', () => {
+      it('Unauthorized: Unauthorized', async () => {
+        const vars = {
+          id: '123',
+        };
+
+        const query = `
+            mutation {
+              cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+        const response = await gCall(query);
+        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+      });
+
+      it('Invalid id: BadRequest', async () => {
+        const vars = {
+          id: 'Invalid uuid',
+        };
+
+        const query = `
+            mutation {
+              cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+      });
+
+      it('Order not exists: NotFound', async () => {
+        const vars = {
+          id: v4(),
+        };
+
+        const query = `
+            mutation {
+              cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(
+          new NotFoundException().message,
+        );
+      });
+
+      it('Not document owner: Forbidden', async () => {
+        const ticket = await ticketRepository.save(
+          ticketRepository.create({
+            id: v4(),
+            title: 'hello',
+            price: 99.99,
+            timestamp: 1593781663193,
+            userId: 'mock20%id',
+          }),
+        );
+
+        // Reserve ticket
+        const order = await orderRepository.save(
+          orderRepository.create({
+            expiresAt: new Date().toUTCString(),
+            userId: 'some-id',
+            ticket,
+          }),
+        );
+
+        const vars = {
+          id: order.id,
+        };
+
+        const query = `
+            mutation {
+              cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(
+          new ForbiddenException().message,
+        );
+      });
+
+      it('CancelOrder', async () => {
+        const ticket = await ticketRepository.save(
+          ticketRepository.create({
+            id: v4(),
+            title: 'hello',
+            price: 99.99,
+            timestamp: 1593781663193,
+            userId: 'mock20%id',
+          }),
+        );
+
+        const userId = 'user-id';
+
+        // Reserve ticket
+        const order = await orderRepository.save(
+          orderRepository.create({
+            expiresAt: new Date().toUTCString(),
+            userId,
+            ticket,
+          }),
+        );
+
+        const vars = {
+          id: order.id,
+        };
+
+        const query = `
+            mutation {
+              cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
+                id
+                status
+              }
+            }
+          `;
+
+        const response = await gCall(
+          query,
+          generateCookie({ iat: Date.now(), username: 'user', sub: userId }),
+        );
+
+        expect(response.body.data.cancelOrder.id).toBe(order.id);
+        expect(response.body.data.cancelOrder.status).toBe(
+          OrderStatus.Cancelled,
+        );
+      });
+
+      it('Publish event', async () => {
+        const ticket = await ticketRepository.save(
+          ticketRepository.create({
+            id: v4(),
+            title: 'hello',
+            price: 99.99,
+            timestamp: 1593781663193,
+            userId: 'mock20%id',
+          }),
+        );
+
+        const userId = 'user-id';
+
+        // Reserve ticket
+        const order = await orderRepository.save(
+          orderRepository.create({
+            expiresAt: new Date().toUTCString(),
+            userId,
+            ticket,
+          }),
+        );
+
+        const vars = {
+          id: order.id,
+        };
+
+        const query = `
+            mutation {
+              cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
+                id
+                status
+              }
+            }
+          `;
+
+        await gCall(
+          query,
+          generateCookie({ iat: Date.now(), username: 'user', sub: userId }),
+        );
 
         await gCall(query, generateCookie());
         expect(stan.instance.publish).toHaveBeenCalled();
