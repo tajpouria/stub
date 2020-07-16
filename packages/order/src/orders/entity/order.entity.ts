@@ -10,6 +10,8 @@ import { OrderStatus } from '@tajpouria/stub-common';
 
 import { TicketEntity } from 'src/tickets/entity/ticket.entity';
 
+const { NODE_ENV } = process.env;
+
 @ObjectType()
 @Entity()
 export class OrderEntity {
@@ -28,13 +30,20 @@ export class OrderEntity {
   status: OrderStatus;
 
   // Date
+  /**
+   * ExpiresAt property should collect in format ISO 8601
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+   */
   @Field()
   @Column()
   expiresAt: string;
 
   // Ticket
   @Field()
-  @OneToOne(type => TicketEntity, { cascade: true })
+  @OneToOne(type => TicketEntity, {
+    // For test clean up purposes
+    onDelete: NODE_ENV === 'test' ? 'CASCADE' : 'DEFAULT',
+  })
   @JoinColumn()
   ticket: TicketEntity;
 }

@@ -18,7 +18,7 @@ const logger = Logger(process.cwd() + '/logs/stan/ticket-created-stan-event');
 
 @Entity()
 export class TicketCreatedStanEvent implements TicketCreatedEventData {
-  @Column('boolean', { default: false })
+  @Column('boolean')
   published: boolean;
 
   // Identifiers

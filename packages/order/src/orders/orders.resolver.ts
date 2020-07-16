@@ -6,7 +6,12 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { Logger, JwtPayload, ValidationPipe } from '@tajpouria/stub-common';
+import {
+  Logger,
+  JwtPayload,
+  ValidationPipe,
+  OrderStatus,
+} from '@tajpouria/stub-common';
 import { GqlAuthGuard } from 'src/auth/gql-auth-guard';
 
 import { OrderEntity } from 'src/orders/entity/order.entity';
@@ -19,6 +24,7 @@ import {
   CreateOrderInput,
 } from 'src/orders/dto/create-order.dto';
 import { TicketsService } from 'src/tickets/tickets.service';
+import { OrderCreatedStanEvent } from 'src/stan-events/entity/order-created-stan-event.entity';
 
 const { ORDER_EXPIRATION_WINDOW_SECONDS } = process.env;
 
@@ -85,6 +91,29 @@ export class OrdersResolver {
       expiresAt.setSeconds(
         expiresAt.getSeconds() + +ORDER_EXPIRATION_WINDOW_SECONDS,
       );
+
+      // Create record
+      const order = ordersService.createOne({
+        status: OrderStatus.Created,
+        userId: jwtPayload.sub,
+        expiresAt: expiresAt.toISOString(),
+        ticket,
+      });
+
+      // Create event
+      const orderCreatedStanEvent = stanEventsService.createOneOrderCreated({
+        ...order,
+      });
+
+      //Save record and event in context of same database transaction
+      const [createdOrder] = await databaseTransactionService.process<
+        [OrderEntity, OrderCreatedStanEvent]
+      >([
+        [order, 'save'],
+        [orderCreatedStanEvent, 'save'],
+      ]);
+
+      return createdOrder;
     } catch (error) {
       logger.error(new Error(error));
 

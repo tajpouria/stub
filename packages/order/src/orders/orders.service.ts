@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOneOptions, FindManyOptions } from 'typeorm';
+import {
+  Repository,
+  FindOneOptions,
+  FindManyOptions,
+  DeepPartial,
+} from 'typeorm';
 
 import { OrderEntity } from 'src/orders/entity/order.entity';
-import { CreateOrderInput } from 'src/orders/dto/create-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -24,8 +28,7 @@ export class OrdersService {
     return this.orderRepository.findOne({ where, relations: ['ticket'] });
   }
 
-  createOne(createInputDto: OrderEntity) {
-    // TODO: & { userId: string }
+  createOne(createInputDto: DeepPartial<OrderEntity>) {
     return this.orderRepository.create(createInputDto);
   }
 }

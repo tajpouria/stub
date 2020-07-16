@@ -17,7 +17,7 @@ import { ticketUpdatedPublisher } from 'src/tickets/shared/ticket-updated-publis
 const logger = Logger(process.cwd() + '/logs/stan/ticket-updated-stan-event');
 @Entity()
 export class TicketUpdatedStanEvent implements TicketUpdatedEventData {
-  @Column('boolean', { default: false })
+  @Column('boolean')
   published: boolean;
 
   // Identifiers

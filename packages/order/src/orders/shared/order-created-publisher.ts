@@ -1,5 +1,5 @@
-// import { OrderCreatedPublisher } from '@tajpouria/stub-common';
+import { OrderCreatedPublisher } from '@tajpouria/stub-common';
 
 import { stan } from 'src/shared/stan';
 
-// export const orderCreatedPublisher = new OrderCreatedPublisher(stan.instance);
+export const orderCreatedPublisher = new OrderCreatedPublisher(stan.instance);

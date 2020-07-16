@@ -18,6 +18,7 @@ import { Ticket } from 'src/tickets/entity/ticket.entity';
 import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
 import { TicketUpdatedStanEvent } from 'src/stan-events/entity/ticket-updated-stan-event.entity';
 import { TicketRemovedStanEvent } from 'src/stan-events/entity/ticket-removed-stan-event.entity';
+// __mocks__
 import { stan } from 'src/shared/stan';
 
 const { SESSION_NAME, JWT_SECRET } = process.env;
