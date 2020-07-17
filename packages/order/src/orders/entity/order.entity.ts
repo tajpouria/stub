@@ -5,6 +5,7 @@ import {
   Column,
   JoinColumn,
   OneToOne,
+  VersionColumn,
 } from 'typeorm';
 import { OrderStatus } from '@tajpouria/stub-common';
 
@@ -46,4 +47,9 @@ export class OrderEntity {
   })
   @JoinColumn()
   ticket: TicketEntity;
+
+  // Version
+  // Hidden Field
+  @VersionColumn()
+  version: number;
 }

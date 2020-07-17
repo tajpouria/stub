@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeepPartial } from 'typeorm';
 import {
   TicketCreatedEventData,
   TicketUpdatedEventData,
@@ -29,23 +29,23 @@ export class StanEventsService {
   ) {}
 
   createOneTicketCreated(eventData: TicketCreatedEventData) {
-    return this.ticketCreatedStanEventRepository.create({
+    return this.ticketCreatedStanEventRepository.create(({
       ...eventData,
       published: false,
-    });
+    } as unknown) as DeepPartial<TicketCreatedStanEvent>);
   }
 
   createOneTicketUpdated(ticketEventData: TicketUpdatedEventData) {
-    return this.ticketUpdatedStanEventRepository.create({
+    return this.ticketUpdatedStanEventRepository.create(({
       ...ticketEventData,
       published: false,
-    });
+    } as unknown) as DeepPartial<TicketUpdatedStanEvent>);
   }
 
   createOneTicketRemoved(ticketEventData: TicketRemovedEventData) {
-    return this.ticketRemovedStanEventRepository.create({
+    return this.ticketRemovedStanEventRepository.create(({
       ...ticketEventData,
       published: false,
-    });
+    } as unknown) as DeepPartial<TicketRemovedStanEvent>);
   }
 }

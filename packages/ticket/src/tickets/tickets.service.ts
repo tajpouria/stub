@@ -21,6 +21,6 @@ export class TicketsService {
   }
 
   createOne(createTicketDto: CreateTicketInput & { userId: string }) {
-    return this.ticketRepository.create(createTicketDto);
+    return this.ticketRepository.create({ ...createTicketDto, version: 1 });
   }
 }

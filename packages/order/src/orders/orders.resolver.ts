@@ -153,9 +153,10 @@ export class OrdersResolver {
       order.status = OrderStatus.Cancelled;
 
       // Create event
-      const { id } = order;
+      const { id, version } = order;
       const orderCancelledEvent = stanEventsService.createOneOrderCancelled({
         id,
+        version,
       });
 
       //Save record and event in context of same database transaction

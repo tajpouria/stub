@@ -5,6 +5,7 @@ import * as eventSchema from './event-schema.json';
 import { OrderStatus } from '../types';
 
 export interface OrderCreatedEventData {
+  version: number;
   id: string;
   status: OrderStatus;
   expiresAt: string;

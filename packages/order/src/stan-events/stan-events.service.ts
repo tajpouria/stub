@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeepPartial } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   OrderCreatedEventData,
   OrderCancelledEventData,
@@ -22,17 +22,17 @@ export class StanEventsService {
     >,
   ) {}
 
-  createOneOrderCreated(eventData: DeepPartial<OrderCreatedEventData>) {
+  createOneOrderCreated(eventData: OrderCreatedEventData) {
     return this.orderCreatedStanEventRepository.create({
       ...eventData,
       published: false,
-    });
+    } as unknown);
   }
 
-  createOneOrderCancelled(eventData: DeepPartial<OrderCancelledEventData>) {
+  createOneOrderCancelled(eventData: OrderCancelledEventData) {
     return this.orderCancelledStanEventRepository.create({
       ...eventData,
       published: false,
-    });
+    } as unknown);
   }
 }

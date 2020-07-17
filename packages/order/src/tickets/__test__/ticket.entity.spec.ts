@@ -1,12 +1,13 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Repository, getConnection } from 'typeorm';
+import { v4 } from 'uuid';
 
-import { Ticket } from 'src/tickets/entity/ticket.entity';
+import { TicketEntity } from 'src/tickets/entity/ticket.entity';
 import { AppModule } from 'src/app.module';
 
 describe('tickets.entity (unit)', () => {
-  let app: INestApplication, repository: Repository<Ticket>;
+  let app: INestApplication, repository: Repository<TicketEntity>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -17,19 +18,18 @@ describe('tickets.entity (unit)', () => {
 
     await app.init();
 
-    repository = getConnection().getRepository(Ticket);
+    repository = getConnection().getRepository(TicketEntity);
   });
 
-  let doc: Ticket;
+  let doc: TicketEntity;
   beforeEach(async () => {
     doc = await repository.save(
       repository.create({
-        title: 'new Title',
-        price: 100,
-        latitude: -12.1,
-        longitude: 15.3,
-        timestamp: Date.now(),
-        userId: 'someID',
+        id: v4(),
+        title: 'hello',
+        price: 99.99,
+        timestamp: 1593781663193,
+        userId: 'mock20%id',
       }),
     );
   });

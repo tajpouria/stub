@@ -54,6 +54,7 @@ export class Ticket {
   address: string;
 
   // Version
+  // Hidden Field
   @VersionColumn()
   version: number;
 }

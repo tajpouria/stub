@@ -29,6 +29,6 @@ export class OrdersService {
   }
 
   createOne(createInputDto: DeepPartial<OrderEntity>) {
-    return this.orderRepository.create(createInputDto);
+    return this.orderRepository.create({ ...createInputDto, version: 1 });
   }
 }

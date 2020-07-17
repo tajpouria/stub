@@ -24,6 +24,11 @@ const { NODE_ENV } = process.env;
 
 @Entity()
 export class OrderCreatedStanEvent implements OrderCreatedEventData {
+  // Version
+  // Should provide manually
+  @Column('int')
+  version;
+
   @Column('boolean')
   published: boolean;
 

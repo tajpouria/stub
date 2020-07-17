@@ -1,8 +1,11 @@
 {
   "subject": "order:created",
-  "required": ["id", "status", "expiresAt", "userId", "ticket"],
+  "required": ["version", "id", "status", "expiresAt", "userId", "ticket"],
   "additionalProperties": false,
   "properties": {
+    "version": {
+      "type": "number"
+    },
     "id": {
       "type": "string"
     },

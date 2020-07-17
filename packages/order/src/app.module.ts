@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UpdateIfCurrentSubscriber } from '@tajpouria/stub-common';
 
 import { AppController } from 'src/app.controller';
 import { AppService } from 'src/app.service';
@@ -28,6 +29,7 @@ const { NODE_ENV, ORM_CONFIG } = process.env;
         OrderCreatedStanEvent,
         OrderCancelledStanEvent,
       ],
+      subscribers: [UpdateIfCurrentSubscriber],
       synchronize: true,
       logging: NODE_ENV === 'development' ? true : ['error'],
     }),

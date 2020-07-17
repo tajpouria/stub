@@ -1,8 +1,11 @@
 {
   "subject": "order:cancelled",
-  "required": ["id"],
+  "required": ["version", "id"],
   "additionalProperties": false,
   "properties": {
+    "version": {
+      "type": "number"
+    },
     "id": {
       "type": "string"
     }

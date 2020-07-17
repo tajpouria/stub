@@ -4,6 +4,7 @@ import { StanPublisher } from '../stan-publisher';
 import * as eventSchema from './event-schema.json';
 
 export interface TicketRemovedEventData {
+  version: number;
   id: string;
 }
 

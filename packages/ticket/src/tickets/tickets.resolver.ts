@@ -72,13 +72,14 @@ export class TicketsResolver {
       });
 
       // Create event
-      const { id, title, price, timestamp, userId } = ticket;
+      const { id, title, price, timestamp, userId, version } = ticket;
       const ticketCreatedStanEvent = stanEventsService.createOneTicketCreated({
         id,
         title,
         price,
         timestamp,
         userId,
+        version,
       });
 
       // Save record and event in context of same database transaction
@@ -122,13 +123,14 @@ export class TicketsResolver {
       if (notTicketOwner) return new ForbiddenException();
 
       // Create event
-      const { id, title, price, timestamp, userId } = ticket;
+      const { id, title, price, timestamp, userId, version } = ticket;
       const ticketUpdatedStanEvent = stanEventsService.createOneTicketUpdated({
         id,
         title,
         price,
         timestamp,
         userId,
+        version,
       });
 
       // Save record and event in context of same database transaction
@@ -170,9 +172,10 @@ export class TicketsResolver {
       if (notTicketOwner) return new ForbiddenException();
 
       // Create event
-      const { id } = ticket;
+      const { id, version } = ticket;
       const ticketRemovedStanEvent = stanEventsService.createOneTicketRemoved({
         id,
+        version,
       });
 
       // Remove record and save event in context of same database transaction

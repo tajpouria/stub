@@ -17,6 +17,11 @@ const logger = Logger(process.cwd() + '/logs/stan/ticket-removed-stan-event');
 
 @Entity()
 export class TicketRemovedStanEvent implements TicketRemovedEventData {
+  // Version
+  // Should provide manually
+  @Column('int')
+  version;
+
   @Column('boolean')
   published: boolean;
 

@@ -1,8 +1,11 @@
 {
   "subject": "ticket:removed",
-  "required": ["id"],
+  "required": ["number", "id"],
   "additionalProperties": false,
   "properties": {
+    "version": {
+      "type": "number"
+    },
     "id": {
       "type": "string"
     }

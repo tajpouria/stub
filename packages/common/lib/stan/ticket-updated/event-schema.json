@@ -1,6 +1,6 @@
 {
   "subject": "ticket:updated",
-  "required": ["id", "title", "price", "userId", "timestamp"],
+  "required": ["version", "id", "title", "price", "userId", "timestamp"],
   "additionalProperties": false,
   "properties": {
     "id": {

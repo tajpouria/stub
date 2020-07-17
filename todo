@@ -50,6 +50,7 @@
 [] Put together record/event diagram
 [-] Use Nest @Component decorator for utility functions
 [] Add typeDoc
+[] Publish type-orm optimistic concurrency control package
 
 ## Models
 [X] User model should contains password validation and user already exists logic

@@ -17,6 +17,11 @@ import { ticketUpdatedPublisher } from 'src/tickets/shared/ticket-updated-publis
 const logger = Logger(process.cwd() + '/logs/stan/ticket-updated-stan-event');
 @Entity()
 export class TicketUpdatedStanEvent implements TicketUpdatedEventData {
+  // Version
+  // Should provide manually
+  @Column('int')
+  version;
+
   @Column('boolean')
   published: boolean;
 

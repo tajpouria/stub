@@ -1,8 +1,11 @@
 {
   "subject": "ticket:created",
-  "required": ["id", "title", "price", "userId", "timestamp"],
+  "required": ["version", "id", "title", "price", "userId", "timestamp"],
   "additionalProperties": false,
   "properties": {
+    "version": {
+      "type": "number"
+    },
     "id": {
       "type": "string"
     },

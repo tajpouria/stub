@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, VersionColumn } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { TicketCreatedEventData } from '@tajpouria/stub-common';
 
@@ -30,4 +30,9 @@ export class TicketEntity implements TicketCreatedEventData {
   @Field()
   @Column('bigint')
   timestamp: number;
+
+  // Version
+  // Hidden Field
+  @VersionColumn()
+  version: number;
 }

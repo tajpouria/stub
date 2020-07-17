@@ -18,6 +18,11 @@ const logger = Logger(process.cwd() + '/logs/stan/order-created-stan-event');
 
 @Entity()
 export class OrderCancelledStanEvent implements OrderCancelledEventData {
+  // Version
+  // Should provide manually
+  @Column('int')
+  version;
+
   @Column('boolean')
   published: boolean;
 

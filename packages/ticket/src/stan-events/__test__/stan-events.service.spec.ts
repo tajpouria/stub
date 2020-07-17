@@ -25,6 +25,7 @@ describe('stan-events.service (unit)', () => {
 
   it('createOneTicketCreated(): Create ticketCreatedStanEvent template', async () => {
     const newRecord = service.createOneTicketCreated({
+      version: 1,
       title: 'new Title',
       price: 100,
       timestamp: Date.now(),
@@ -38,6 +39,7 @@ describe('stan-events.service (unit)', () => {
 
   it('createOneTicketUpdated(): Create ticketUpdatedStanEvent template', async () => {
     const newRecord = service.createOneTicketUpdated({
+      version: 1,
       title: 'new Title',
       price: 100,
       timestamp: Date.now(),
@@ -51,6 +53,7 @@ describe('stan-events.service (unit)', () => {
 
   it('createOneTicketRemoved(): Create ticketUpdatedStanEvent template', async () => {
     const newRecord = service.createOneTicketRemoved({
+      version: 1,
       id: '123',
     });
 
