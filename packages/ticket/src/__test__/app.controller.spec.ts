@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import request from 'supertest';
 import cookieSession from 'cookie-session';
-import { Repository } from 'typeorm';
+import { Repository, getConnection } from 'typeorm';
 import {
   HttpMessage,
   cookieGeneratorFactory,
@@ -46,15 +46,15 @@ describe('app.controller (e2e)', () => {
 
     await app.init();
 
-    ticketRepository = moduleFixture.get('TicketRepository');
-    ticketCreatedStanEventRepository = moduleFixture.get(
-      'TicketCreatedStanEventRepository',
+    ticketRepository = getConnection().getRepository(Ticket);
+    ticketCreatedStanEventRepository = getConnection().getRepository(
+      TicketCreatedStanEvent,
     );
-    ticketUpdatedStanEventRepository = moduleFixture.get(
-      'TicketUpdatedStanEventRepository',
+    ticketUpdatedStanEventRepository = getConnection().getRepository(
+      TicketUpdatedStanEvent,
     );
-    ticketRemovedStanEventRepository = moduleFixture.get(
-      'TicketRemovedStanEventRepository',
+    ticketRemovedStanEventRepository = getConnection().getRepository(
+      TicketRemovedStanEvent,
     );
   });
 

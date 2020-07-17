@@ -1,7 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, getConnection } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { TicketCreatedEventData, OrderStatus } from '@tajpouria/stub-common';
-import { OrderEntity } from 'src/orders/entity/order.entity';
+import { TicketCreatedEventData } from '@tajpouria/stub-common';
 
 @ObjectType()
 @Entity()

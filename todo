@@ -31,10 +31,14 @@
 [X] We're not storing event-subject
 [X] New Services unit tests
 [] Maybe better test for database-transaction.service
+[] Write optimistic concurrency control test
+[] Hide ticket document version
 
 ## Order
-[] Notice **UTC** expiration date
+[X] Notice **UTC** expiration date
 [] Apply SG test _out of the sync create and update ticket(concurrency) issue_
+[] Write optimistic concurrency control test
+[] Hide order document version
 
 
 ## Common

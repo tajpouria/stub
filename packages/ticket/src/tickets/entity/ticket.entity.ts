@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, VersionColumn } from 'typeorm';
 import { Field, ObjectType, Int } from '@nestjs/graphql';
 import { ticketsConstants } from 'src/tickets/constants';
 
@@ -52,4 +52,8 @@ export class Ticket {
   @Field()
   @Column({ nullable: true })
   address: string;
+
+  // Version
+  @VersionColumn()
+  version: number;
 }
