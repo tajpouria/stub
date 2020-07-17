@@ -4,6 +4,7 @@ export * from './common';
 export * from './crypto';
 export * from './logger';
 export * from './mailer';
+export * from './typeorm-update-if-current';
 // Stan
 export * from './stan/types';
 export * from './stan/stan-publisher';
