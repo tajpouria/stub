@@ -61,6 +61,7 @@ describe('tickets.service (unit)', () => {
       price: 99.99,
       timestamp: 1593781663193,
       userId: 'mock20%id',
+      version: 1,
     };
 
     await service.createAndSaveOne(doc);

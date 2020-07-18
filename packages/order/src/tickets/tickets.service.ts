@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial, getConnection } from 'typeorm';
 
 import { TicketEntity } from 'src/tickets/entity/ticket.entity';
-import { OrderEntity } from '../orders/entity/order.entity';
-import { OrderStatus } from '@tajpouria/stub-common';
+import { OrderEntity } from 'src/orders/entity/order.entity';
+import { OrderStatus, TicketCreatedEventData } from '@tajpouria/stub-common';
 import { TicketsModule } from './tickets.module';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class TicketsService {
     return this.ticketRepository.findOne(id);
   }
 
-  createAndSaveOne(createTicketDto: DeepPartial<TicketEntity>) {
+  createAndSaveOne(createTicketDto: TicketCreatedEventData) {
     const { ticketRepository } = this;
     return ticketRepository.save(ticketRepository.create(createTicketDto));
   }

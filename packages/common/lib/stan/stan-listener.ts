@@ -1,8 +1,14 @@
-import { Message, Stan, Subscription } from "node-nats-streaming";
-import Ajv, { ErrorObject } from "ajv";
-import { randomBytes } from "crypto";
+import { Message, Stan, Subscription } from 'node-nats-streaming';
+import Ajv, { ErrorObject } from 'ajv';
+import { randomBytes } from 'crypto';
 
-import { StanEventSchema } from "./types";
+import { StanEventSchema } from './types';
+
+export type StanListenerOnMessageCallback<DataT> = (
+  validationErrors: ErrorObject[] | null,
+  data: DataT,
+  msg: Message,
+) => void;
 
 export abstract class StanListener<DataT extends object> {
   abstract eventSchema: StanEventSchema;
@@ -11,14 +17,13 @@ export abstract class StanListener<DataT extends object> {
 
   private sub: Subscription | undefined;
 
-  private subOptions = (qGroup: string = randomBytes(4).toString("hex")) => {
-    return this.stan
+  private subOptions = (qGroup: string = randomBytes(4).toString('hex')) =>
+    this.stan
       .subscriptionOptions()
       .setManualAckMode(true)
       .setDeliverAllAvailable()
       .setAckWait(5000)
       .setDurableName(qGroup);
-  };
 
   constructor(private stan: Stan) {}
 
@@ -26,7 +31,7 @@ export abstract class StanListener<DataT extends object> {
     const { stan, eventSchema, subOptions } = this;
     const { subject } = eventSchema;
 
-    if (!subject) throw new Error("EventSchema.subject is not provided!");
+    if (!subject) throw new Error('EventSchema.subject is not provided!');
 
     if (qGroup) this.sub = stan.subscribe(subject, qGroup, subOptions(qGroup));
     else this.sub = stan.subscribe(subject, subOptions());
@@ -34,17 +39,11 @@ export abstract class StanListener<DataT extends object> {
     return this;
   }
 
-  onMessage(
-    cb: (
-      validationErrors: ErrorObject[] | null,
-      data: DataT,
-      msg: Message,
-    ) => void,
-  ) {
+  onMessage(cb: StanListenerOnMessageCallback<DataT>) {
     const { sub, eventSchema } = this;
 
     if (sub)
-      sub.on("message", (msg: Message) => {
+      sub.on('message', (msg: Message) => {
         const data = this.parseMessage(msg);
 
         const ajv = new Ajv();
@@ -55,14 +54,14 @@ export abstract class StanListener<DataT extends object> {
       });
     else
       throw new Error(
-        "Subscription is not initialized properly; Make sure that calling this.listen(qGroup) first.",
+        'Subscription is not initialized properly; Make sure that calling this.listen(qGroup) first.',
       );
   }
 
   private parseMessage(msg: Message) {
     const data = msg.getData();
-    return typeof data === "string"
+    return typeof data === 'string'
       ? JSON.parse(data)
-      : JSON.parse(data.toString("utf8"));
+      : JSON.parse(data.toString('utf8'));
   }
 }
