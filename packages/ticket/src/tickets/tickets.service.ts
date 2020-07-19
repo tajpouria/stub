@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOneOptions } from 'typeorm';
 
 import { Ticket } from 'src/tickets/entity/ticket.entity';
 import { CreateTicketInput } from 'src/tickets/dto/create-ticket.dto';
@@ -16,8 +16,8 @@ export class TicketsService {
     return this.ticketRepository.find();
   }
 
-  findOne(id: string): Promise<Ticket | null> {
-    return this.ticketRepository.findOne(id);
+  findOne(where: FindOneOptions<Ticket>['where']): Promise<Ticket | undefined> {
+    return this.ticketRepository.findOne({ where });
   }
 
   createOne(createTicketDto: CreateTicketInput & { userId: string }) {

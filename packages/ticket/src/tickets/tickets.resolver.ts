@@ -43,7 +43,7 @@ export class TicketsResolver {
   @UseGuards(GqlAuthGuard)
   @Query(returns => Ticket)
   async ticket(@Args('id') id: string) {
-    const doc = await this.ticketsService.findOne(id);
+    const doc = await this.ticketsService.findOne({ id });
 
     if (!doc) throw new NotFoundException();
 
@@ -115,7 +115,7 @@ export class TicketsResolver {
 
     try {
       // Verify document existence
-      const ticket = await ticketsService.findOne(argId);
+      const ticket = await ticketsService.findOne({ id: argId });
       if (!ticket) return new NotFoundException();
 
       // Verify document ownership
@@ -164,7 +164,7 @@ export class TicketsResolver {
 
     try {
       // Verify document existence
-      const ticket = await ticketsService.findOne(argId);
+      const ticket = await ticketsService.findOne({ id: argId });
       if (!ticket) return new NotFoundException();
 
       // Verify document ownership

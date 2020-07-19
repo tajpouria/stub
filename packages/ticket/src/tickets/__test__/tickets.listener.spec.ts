@@ -3,7 +3,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Repository, getConnection } from 'typeorm';
 import { v4 } from 'uuid';
 import { Message } from 'node-nats-streaming';
-import { OrderCreatedEventData, OrderStatus } from '@tajpouria/stub-common';
+import {
+  OrderCreatedEventData,
+  OrderStatus,
+  OrderCancelledEventData,
+} from '@tajpouria/stub-common';
 
 import { AppModule } from 'src/app.module';
 import { TicketsListener } from 'src/tickets/tickets.listener';
@@ -135,6 +139,92 @@ describe('tickets.listener (unit)', () => {
       const { eventData } = setup();
 
       await listener.onOrderCreated(null, eventData, mockMsg);
+
+      expect(stan.instance.publish).toBeCalled();
+    });
+  });
+
+  describe('onOrderCancelled()', () => {
+    let doc: Ticket;
+
+    beforeEach(async () => {
+      doc = await repository.save(
+        repository.create({
+          id: v4(),
+          title: 'hello',
+          price: 99.99,
+          timestamp: 1593781663193,
+          userId: 'user-id',
+          latitude: 1241.2,
+          longitude: 124.4,
+          lastOrderId: v4(),
+        }),
+      );
+    });
+
+    const setup = ({
+      orderId = doc.lastOrderId,
+    }: { orderId?: string } = {}) => {
+      const eventData: OrderCancelledEventData = {
+        id: orderId,
+        version: 1,
+      };
+
+      return { eventData };
+    };
+
+    it('ValidationError: Not to create document', async () => {
+      const { eventData } = setup();
+
+      await listener.onOrderCancelled(mockValidationError, eventData, mockMsg);
+
+      expect((await repository.findOne(doc.id)).lastOrderId).not.toBeNull();
+    });
+
+    it('ValidationError: Not to Invoke message acknowledge', async () => {
+      const { eventData } = setup();
+
+      await listener.onOrderCancelled(mockValidationError, eventData, mockMsg);
+
+      expect(mockMsg.ack).not.toBeCalled();
+    });
+
+    it('ticket not exist: Not to create document', async () => {
+      const { eventData } = setup({ orderId: 'Gibberish' });
+
+      await listener.onOrderCancelled(null, eventData, mockMsg);
+
+      expect((await repository.findOne(doc.id)).lastOrderId).not.toBeNull();
+    });
+
+    it('Ticket not exist: Not to Invoke message acknowledge', async () => {
+      const { eventData } = setup({ orderId: 'Gibberish' });
+
+      await listener.onOrderCancelled(null, eventData, mockMsg);
+
+      expect(mockMsg.ack).not.toBeCalled();
+    });
+
+    it('Update document', async () => {
+      const { eventData } = setup();
+
+      await listener.onOrderCancelled(null, eventData, mockMsg);
+
+      expect((await repository.findOne(doc.id)).lastOrderId).toBeNull();
+    });
+
+    it('Invoke message acknowledge', async () => {
+      const { eventData } = setup();
+
+      await listener.onOrderCancelled(null, eventData, mockMsg);
+
+      expect(mockMsg.ack).toBeCalled();
+    });
+
+    it('Publish event', async () => {
+      const { eventData } = setup();
+
+      await listener.onOrderCancelled(null, eventData, mockMsg);
 
       expect(stan.instance.publish).toBeCalled();
     });

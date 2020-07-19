@@ -55,7 +55,7 @@ describe('tickets.service (unit)', () => {
   });
 
   it('findOne(): Retrieve ticket', async () => {
-    const ticket = await service.findOne(doc.id);
+    const ticket = await service.findOne({ id: doc.id });
 
     expect(ticket.title).toBe(ticket.title);
   });
