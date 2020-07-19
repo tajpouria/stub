@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOneOptions } from 'typeorm';
+import { v4 } from 'uuid';
 
 import { Ticket } from 'src/tickets/entity/ticket.entity';
 import { CreateTicketInput } from 'src/tickets/dto/create-ticket.dto';
@@ -21,6 +22,10 @@ export class TicketsService {
   }
 
   createOne(createTicketDto: CreateTicketInput & { userId: string }) {
-    return this.ticketRepository.create({ ...createTicketDto, version: 1 });
+    return this.ticketRepository.create({
+      ...createTicketDto,
+      id: v4(), // Manually injected id _Id not created on document template at this level but it's required in order to publish consistence id_
+      version: 1,
+    });
   }
 }

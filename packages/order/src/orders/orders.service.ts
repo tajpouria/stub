@@ -6,6 +6,7 @@ import {
   FindManyOptions,
   DeepPartial,
 } from 'typeorm';
+import { v4 } from 'uuid';
 
 import { OrderEntity } from 'src/orders/entity/order.entity';
 
@@ -29,6 +30,10 @@ export class OrdersService {
   }
 
   createOne(createInputDto: DeepPartial<OrderEntity>) {
-    return this.orderRepository.create({ ...createInputDto, version: 1 });
+    return this.orderRepository.create({
+      ...createInputDto,
+      id: v4(), // Manually injected id _Id not created on document template at this level but it's required in order to publish consistence id_
+      version: 1,
+    });
   }
 }

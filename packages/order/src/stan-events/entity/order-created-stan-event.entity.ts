@@ -57,8 +57,23 @@ export class OrderCreatedStanEvent implements OrderCreatedEventData {
 
   @AfterInsert()
   async publishStanEvent() {
+    const { id, version, userId, ticket, status, expiresAt } = this;
+
     try {
-      await orderCreatedPublisher.publish(this);
+      await orderCreatedPublisher.publish({
+        id,
+        version,
+        userId,
+        ticket: {
+          id: ticket.id,
+          price: ticket.price,
+          timestamp: ticket.timestamp,
+          title: ticket.title,
+          userId: ticket.userId,
+        },
+        status,
+        expiresAt,
+      });
       this.published = true;
     } catch (error) {
       logger.error(new Error(error));

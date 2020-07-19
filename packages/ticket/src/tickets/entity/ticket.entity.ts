@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, VersionColumn } from 'typeorm';
 import { Field, ObjectType, Int } from '@nestjs/graphql';
 import { ticketsConstants } from 'src/tickets/constants';
-import { OrderStatus } from '@tajpouria/stub-common';
 
 @ObjectType()
 @Entity()

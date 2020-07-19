@@ -141,6 +141,14 @@ describe('tickets.listener (unit)', () => {
       await listener.onOrderCreated(null, eventData, mockMsg);
 
       expect(stan.instance.publish).toBeCalled();
+
+      expect(
+        JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1]).id,
+      ).toBe(doc.id);
+      expect(
+        JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1])
+          .version,
+      ).toBe(2);
     });
   });
 
@@ -227,6 +235,14 @@ describe('tickets.listener (unit)', () => {
       await listener.onOrderCancelled(null, eventData, mockMsg);
 
       expect(stan.instance.publish).toBeCalled();
+
+      expect(
+        JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1]).id,
+      ).toBe(doc.id);
+      expect(
+        JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1])
+          .version,
+      ).toBe(2);
     });
   });
 });

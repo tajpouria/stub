@@ -32,7 +32,9 @@ export class TicketRemovedStanEvent implements TicketRemovedEventData {
   @AfterInsert()
   async publishStanEvent() {
     try {
-      await ticketRemovedPublisher.publish(this);
+      const { id, version } = this;
+
+      await ticketRemovedPublisher.publish({ id, version });
       this.published = true;
     } catch (error) {
       logger.error(new Error(error));

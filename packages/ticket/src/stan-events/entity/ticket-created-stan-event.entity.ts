@@ -47,7 +47,16 @@ export class TicketCreatedStanEvent implements TicketCreatedEventData {
   @AfterInsert()
   async publishStanEvent() {
     try {
-      await ticketCreatedPublisher.publish(this);
+      const { id, version, userId, timestamp, title, price } = this;
+
+      await ticketCreatedPublisher.publish({
+        id,
+        version,
+        userId,
+        timestamp,
+        price,
+        title,
+      });
       this.published = true;
     } catch (error) {
       logger.error(new Error(error));

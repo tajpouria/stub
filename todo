@@ -33,8 +33,8 @@
 [-] Maybe better test for database-transaction.service
 [X] Write optimistic concurrency control test
 [X] Hide ticket document version
-[] **If we eventually decided to collect orderId inside the ticket** _in order to distinguish it's status_; Make sure to publish ticket-updated event inside the order-created-listener **Have to be done in db transaction way** in order the keep ticket version in sync
-[] Add optional orderId to ticket, ticket-updated and ticket-removed
+[X] **If we eventually decided to collect orderId inside the ticket** _in order to distinguish it's status_; Make sure to publish ticket-updated event inside the order-created-listener **Have to be done in db transaction way** in order the keep ticket version in sync
+[X] Add optional orderId to ticket, ticket-updated and ticket-removed
 [] Test stan.instance.publish mock function and make sure that it call with current **orderId** _stan.instance.publish.jest.mock.calls[0]_
 [] Prevent user from update locked ticket And write test around it
 
@@ -43,7 +43,7 @@
 [] Apply SG test _out of the sync create and update ticket(concurrency) issue_
 [X] Write optimistic concurrency control test
 [X] Hide order document version
-[] Add ticket.id to order-cancelled-event-data
+[-] Add ticket.id to order-cancelled-event-data
 
 ## Common
 [X] Fix import in common module

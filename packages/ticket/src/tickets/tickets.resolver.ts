@@ -23,6 +23,7 @@ import { StanEventsService } from 'src/stan-events/stan-events.service';
 import { DatabaseTransactionService } from 'src/database-transaction/database-transaction.service';
 import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
 import { TicketUpdatedStanEvent } from 'src/stan-events/entity/ticket-updated-stan-event.entity';
+import { V4MAPPED } from 'dns';
 
 @Resolver(of => Ticket)
 export class TicketsResolver {

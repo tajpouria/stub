@@ -33,7 +33,9 @@ export class OrderCancelledStanEvent implements OrderCancelledEventData {
   @AfterInsert()
   async publishStanEvent() {
     try {
-      await orderCancelledPublisher.publish(this);
+      const { id, version } = this;
+
+      await orderCancelledPublisher.publish({ id, version });
       this.published = true;
     } catch (error) {
       logger.error(new Error(error));

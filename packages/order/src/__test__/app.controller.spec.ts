@@ -378,8 +378,16 @@ describe('app.controller (e2e)', () => {
             }
           `;
 
-        await gCall(query, generateCookie());
+        const response = await gCall(query, generateCookie());
         expect(stan.instance.publish).toHaveBeenCalled();
+
+        expect(
+          JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1]).id,
+        ).toBe(response.body.data.createOrder.id);
+        expect(
+          JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1])
+            .version,
+        ).toBe(1);
       });
     });
 
@@ -558,7 +566,12 @@ describe('app.controller (e2e)', () => {
         );
 
         await gCall(query, generateCookie());
+
         expect(stan.instance.publish).toHaveBeenCalled();
+
+        expect(
+          JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1]).id,
+        ).toBe(order.id);
       });
     });
   });
