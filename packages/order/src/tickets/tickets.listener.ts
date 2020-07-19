@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import {
   Logger,
-  TicketCreatedEventData,
   StanListenerOnMessageCallback,
+  TicketCreatedEventData,
+  TicketUpdatedEventData,
+  TicketRemovedEventData,
 } from '@tajpouria/stub-common';
 
 import { TicketsService } from 'src/tickets/tickets.service';
 import { ticketCreatedListener } from 'src/tickets/shared/ticket-created-listener';
+import { ticketUpdatedListener } from 'src/tickets/shared/ticket-updated-listener';
+import { ticketRemovedListener } from 'src/tickets/shared/ticket-removed-listener';
 
 const { NAME, NODE_ENV } = process.env;
 
@@ -15,11 +19,12 @@ export class TicketsListener {
   private readonly logger = Logger(`${process.cwd()}/logs/tickets-listener`);
 
   constructor(private readonly ticketsService: TicketsService) {
-    const { onTicketCreated } = this;
-
+    const { onTicketCreated, onTicketUpdated, onTicketRemoved } = this;
     // Initialize listeners
     if (NODE_ENV !== 'test') {
       ticketCreatedListener.listen(NAME).onMessage(onTicketCreated);
+      ticketUpdatedListener.listen(NAME).onMessage(onTicketUpdated);
+      ticketRemovedListener.listen(NAME).onMessage(onTicketRemoved);
     }
   }
 
@@ -27,18 +32,51 @@ export class TicketsListener {
     TicketCreatedEventData
   > = async (validationErrors, data, msg) => {
     const { logger, ticketsService } = this;
-
-    if (validationErrors)
-      return (
-        NODE_ENV !== 'test' &&
-        logger.error(JSON.stringify({ validationErrors, data }))
-      );
-
     try {
+      if (validationErrors)
+        throw new Error(JSON.stringify({ validationErrors, data }));
+
       await ticketsService.createAndSaveOne(data);
       msg.ack();
     } catch (error) {
-      logger.error(error);
+      if (NODE_ENV !== 'test') logger.error(error);
+    }
+  };
+
+  onTicketUpdated: StanListenerOnMessageCallback<
+    TicketUpdatedEventData
+  > = async (validationErrors, data, msg) => {
+    const { logger, ticketsService } = this;
+
+    try {
+      if (validationErrors)
+        throw new Error(JSON.stringify({ validationErrors, data }));
+
+      await ticketsService.createAndSaveOne(data);
+      msg.ack();
+    } catch (error) {
+      if (NODE_ENV !== 'test') logger.error(error);
+    }
+  };
+
+  onTicketRemoved: StanListenerOnMessageCallback<
+    TicketRemovedEventData
+  > = async (validationErrors, data, msg) => {
+    const { logger, ticketsService } = this;
+
+    try {
+      if (validationErrors)
+        throw new Error(JSON.stringify({ validationErrors, data }));
+
+      // document existence
+      const doc = await ticketsService.findOne(data.id);
+      if (doc)
+        // Assume TicketEntity onDelete.CASCADE is enabled all associated orders also deleted
+        await ticketsService.removeOne(doc);
+
+      msg.ack();
+    } catch (error) {
+      if (NODE_ENV !== 'test') logger.error(error);
     }
   };
 }

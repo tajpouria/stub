@@ -151,6 +151,13 @@ describe('app.controller (e2e)', () => {
       });
 
       it('Not Document Owner: Forbidden', async () => {
+        const order = await orderRepository.save(
+          orderRepository.create({
+            expiresAt: new Date().toUTCString(),
+            userId: 'user-id',
+          }),
+        );
+
         const ticket = await ticketRepository.save(
           ticketRepository.create({
             id: 'ccd31c79-7bd2-4e23-9a62-5b8ef1aa41be',
@@ -158,14 +165,7 @@ describe('app.controller (e2e)', () => {
             price: 99.99,
             timestamp: 1593781663193,
             userId: 'mock20%id',
-          }),
-        );
-
-        const order = await orderRepository.save(
-          orderRepository.create({
-            expiresAt: new Date().toUTCString(),
-            userId: 'user-id',
-            ticket,
+            orders: [order],
           }),
         );
 
@@ -184,6 +184,15 @@ describe('app.controller (e2e)', () => {
       });
 
       it('Order', async () => {
+        const userId = 'some-constants-id';
+
+        const order = await orderRepository.save(
+          orderRepository.create({
+            expiresAt: new Date().toUTCString(),
+            userId,
+          }),
+        );
+
         const ticket = await ticketRepository.save(
           ticketRepository.create({
             id: v4(),
@@ -191,16 +200,7 @@ describe('app.controller (e2e)', () => {
             price: 99.99,
             timestamp: 1593781663193,
             userId: 'mock20%id',
-          }),
-        );
-
-        const userId = 'some-constants-id';
-
-        const order = await orderRepository.save(
-          orderRepository.create({
-            expiresAt: new Date().toUTCString(),
-            userId,
-            ticket,
+            orders: [order],
           }),
         );
 
@@ -283,6 +283,14 @@ describe('app.controller (e2e)', () => {
       });
 
       it('Ticket is Reserved : BadRequest', async () => {
+        const order = await orderRepository.save(
+          orderRepository.create({
+            expiresAt: new Date().toUTCString(),
+            userId: 'some-id',
+          }),
+        );
+
+        // Reserve ticket
         const ticket = await ticketRepository.save(
           ticketRepository.create({
             id: v4(),
@@ -290,15 +298,7 @@ describe('app.controller (e2e)', () => {
             price: 99.99,
             timestamp: 1593781663193,
             userId: 'mock20%id',
-          }),
-        );
-
-        // Reserve ticket
-        await orderRepository.save(
-          orderRepository.create({
-            expiresAt: new Date().toUTCString(),
-            userId: 'some-id',
-            ticket,
+            orders: [order],
           }),
         );
 
@@ -327,6 +327,7 @@ describe('app.controller (e2e)', () => {
             price: 99.99,
             timestamp: 1593781663193,
             userId: 'mock20%id',
+            orders: [],
           }),
         );
 
@@ -358,6 +359,7 @@ describe('app.controller (e2e)', () => {
             price: 99.99,
             timestamp: 1593781663193,
             userId: 'mock20%id',
+            orders: [],
           }),
         );
 
@@ -433,22 +435,22 @@ describe('app.controller (e2e)', () => {
       });
 
       it('Not document owner: Forbidden', async () => {
-        const ticket = await ticketRepository.save(
+        const order = await orderRepository.save(
+          orderRepository.create({
+            expiresAt: new Date().toUTCString(),
+            userId: 'some-id',
+          }),
+        );
+
+        // Reserve ticket
+        await ticketRepository.save(
           ticketRepository.create({
             id: v4(),
             title: 'hello',
             price: 99.99,
             timestamp: 1593781663193,
             userId: 'mock20%id',
-          }),
-        );
-
-        // Reserve ticket
-        const order = await orderRepository.save(
-          orderRepository.create({
-            expiresAt: new Date().toUTCString(),
-            userId: 'some-id',
-            ticket,
+            orders: [order],
           }),
         );
 
@@ -470,6 +472,16 @@ describe('app.controller (e2e)', () => {
       });
 
       it('CancelOrder', async () => {
+        const userId = 'user-id';
+
+        const order = await orderRepository.save(
+          orderRepository.create({
+            expiresAt: new Date().toUTCString(),
+            userId,
+          }),
+        );
+
+        // Reserve ticket
         const ticket = await ticketRepository.save(
           ticketRepository.create({
             id: v4(),
@@ -477,17 +489,7 @@ describe('app.controller (e2e)', () => {
             price: 99.99,
             timestamp: 1593781663193,
             userId: 'mock20%id',
-          }),
-        );
-
-        const userId = 'user-id';
-
-        // Reserve ticket
-        const order = await orderRepository.save(
-          orderRepository.create({
-            expiresAt: new Date().toUTCString(),
-            userId,
-            ticket,
+            orders: [order],
           }),
         );
 
@@ -516,24 +518,24 @@ describe('app.controller (e2e)', () => {
       });
 
       it('Publish event', async () => {
-        const ticket = await ticketRepository.save(
+        const userId = 'user-id';
+
+        const order = await orderRepository.save(
+          orderRepository.create({
+            expiresAt: new Date().toUTCString(),
+            userId,
+          }),
+        );
+
+        // Reserve ticket
+        await ticketRepository.save(
           ticketRepository.create({
             id: v4(),
             title: 'hello',
             price: 99.99,
             timestamp: 1593781663193,
             userId: 'mock20%id',
-          }),
-        );
-
-        const userId = 'user-id';
-
-        // Reserve ticket
-        const order = await orderRepository.save(
-          orderRepository.create({
-            expiresAt: new Date().toUTCString(),
-            userId,
-            ticket,
+            orders: [order],
           }),
         );
 

@@ -35,7 +35,7 @@ describe('tickets.entity (unit)', () => {
   });
 
   afterEach(async () => {
-    await repository.query(`DELETE FROM ticket;`);
+    await repository.query(`DELETE FROM ticket_entity;`);
   });
 
   afterAll(async () => {

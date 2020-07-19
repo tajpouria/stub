@@ -8,6 +8,7 @@ type TicketEntity {
   title: String!
   price: Float!
   timestamp: Float!
+  orders: [OrderEntity!]!
 }
 
 type OrderEntity {

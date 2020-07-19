@@ -1,6 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, VersionColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  VersionColumn,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { TicketCreatedEventData } from '@tajpouria/stub-common';
+
+import { OrderEntity } from 'src/orders/entity/order.entity';
 
 @ObjectType()
 @Entity()
@@ -30,6 +39,16 @@ export class TicketEntity implements TicketCreatedEventData {
   @Field()
   @Column('bigint')
   timestamp: number;
+
+  // Orders
+  @Field(type => [OrderEntity])
+  @OneToMany(
+    type => OrderEntity,
+    order => order.ticket,
+    // Should delete all associated orders
+    { onDelete: 'CASCADE' },
+  )
+  orders: OrderEntity[];
 
   // Version
   // Hidden Field

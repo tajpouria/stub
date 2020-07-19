@@ -3,9 +3,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  JoinColumn,
-  OneToOne,
   VersionColumn,
+  ManyToOne,
 } from 'typeorm';
 import { OrderStatus } from '@tajpouria/stub-common';
 
@@ -40,12 +39,13 @@ export class OrderEntity {
   expiresAt: string;
 
   // Ticket
-  @Field()
-  @OneToOne(type => TicketEntity, {
-    // For test clean up purposes
-    onDelete: NODE_ENV === 'test' ? 'CASCADE' : 'DEFAULT',
-  })
-  @JoinColumn()
+  @Field(type => TicketEntity)
+  @ManyToOne(
+    type => TicketEntity,
+    ticket => ticket.orders,
+    // For test cleanup purposes
+    { onDelete: NODE_ENV === 'test' ? 'CASCADE' : 'DEFAULT' },
+  )
   ticket: TicketEntity;
 
   // Version

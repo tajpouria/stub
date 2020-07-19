@@ -30,6 +30,8 @@ import {
   CancelOrderInput,
 } from 'src/orders/dto/cancel-order.dto';
 import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity copy';
+import { getConnection } from 'typeorm';
+import { TicketEntity } from '../tickets/entity/ticket.entity';
 
 const { ORDER_EXPIRATION_WINDOW_SECONDS } = process.env;
 

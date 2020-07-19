@@ -15,12 +15,16 @@ export class TicketsService {
   ) {}
 
   findOne(id: string): Promise<TicketEntity | null> {
-    return this.ticketRepository.findOne(id);
+    return this.ticketRepository.findOne(id, { relations: ['orders'] });
   }
 
   createAndSaveOne(createTicketDto: TicketCreatedEventData) {
     const { ticketRepository } = this;
     return ticketRepository.save(ticketRepository.create(createTicketDto));
+  }
+
+  removeOne(doc: TicketEntity) {
+    return this.ticketRepository.remove(doc);
   }
 
   /**
