@@ -8,14 +8,6 @@
     },
     "id": {
       "type": "string"
-    },
-    "ticket": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        }
-      }
     }
   }
 }

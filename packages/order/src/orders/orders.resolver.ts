@@ -169,9 +169,6 @@ export class OrdersResolver {
       const orderCancelledEvent = stanEventsService.createOneOrderCancelled({
         id,
         version: version + 1, // Document version will increment after update
-        ticket: {
-          id: ticket.id,
-        },
       });
 
       //Save record and event in context of same database transaction
