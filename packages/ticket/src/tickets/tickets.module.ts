@@ -4,6 +4,7 @@ import { Ticket } from 'src/tickets/entity/ticket.entity';
 
 import { TicketsService } from 'src/tickets/tickets.service';
 import { TicketsResolver } from 'src/tickets/tickets.resolver';
+import { TicketsListener } from 'src/tickets/tickets.listener';
 import { StanEventsModule } from 'src/stan-events/stan-events.module';
 import { DatabaseTransactionModule } from 'src/database-transaction/database-transaction.module';
 
@@ -13,7 +14,7 @@ import { DatabaseTransactionModule } from 'src/database-transaction/database-tra
     StanEventsModule,
     DatabaseTransactionModule,
   ],
-  providers: [TicketsResolver, TicketsService],
+  providers: [TicketsResolver, TicketsListener, TicketsService],
   exports: [TicketsService],
 })
 export class TicketsModule {}

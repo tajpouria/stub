@@ -65,7 +65,7 @@ export class TicketsResolver {
     } = this;
 
     try {
-      // Create record
+      // Create document
       const ticket = ticketsService.createOne({
         ...createTicketInput,
         userId: jwtPayload.sub,
@@ -82,7 +82,7 @@ export class TicketsResolver {
         version,
       });
 
-      // Save record and event in context of same database transaction
+      // Save document and event in context of same database transaction
       const [createdTicket] = await databaseTransactionService.process<
         [Ticket, TicketCreatedStanEvent]
       >([
@@ -114,11 +114,11 @@ export class TicketsResolver {
     } = this;
 
     try {
-      // Verify ticket existence
+      // Verify document existence
       const ticket = await ticketsService.findOne(argId);
       if (!ticket) return new NotFoundException();
 
-      // Verify ticket ownership
+      // Verify document ownership
       const notTicketOwner = jwtPayload.sub !== ticket.userId;
       if (notTicketOwner) return new ForbiddenException();
 
@@ -130,10 +130,10 @@ export class TicketsResolver {
         price,
         timestamp,
         userId,
-        version,
+        version: version + 1, // Document version will increment after update
       });
 
-      // Save record and event in context of same database transaction
+      // Save document and event in context of same database transaction
       const [updatedTicket] = await databaseTransactionService.process<
         [Ticket, TicketUpdatedStanEvent]
       >([
@@ -163,11 +163,11 @@ export class TicketsResolver {
     } = this;
 
     try {
-      // Verify ticket existence
+      // Verify document existence
       const ticket = await ticketsService.findOne(argId);
       if (!ticket) return new NotFoundException();
 
-      // Verify ticket ownership
+      // Verify document ownership
       const notTicketOwner = jwtPayload.sub !== ticket.userId;
       if (notTicketOwner) return new ForbiddenException();
 
@@ -178,7 +178,7 @@ export class TicketsResolver {
         version,
       });
 
-      // Remove record and save event in context of same database transaction
+      // Remove document and save event in context of same database transaction
       const [removedTicket] = await databaseTransactionService.process<
         [Ticket]
       >([

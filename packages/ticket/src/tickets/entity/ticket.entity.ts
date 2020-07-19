@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, VersionColumn } from 'typeorm';
 import { Field, ObjectType, Int } from '@nestjs/graphql';
 import { ticketsConstants } from 'src/tickets/constants';
+import { OrderStatus } from '@tajpouria/stub-common';
 
 @ObjectType()
 @Entity()
@@ -52,6 +53,11 @@ export class Ticket {
   @Field()
   @Column({ nullable: true })
   address: string;
+
+  // Order
+  @Field()
+  @Column({ nullable: true, default: null })
+  lastOrderId: string;
 
   // Version
   // Hidden Field

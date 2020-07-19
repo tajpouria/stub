@@ -30,8 +30,6 @@ import {
   CancelOrderInput,
 } from 'src/orders/dto/cancel-order.dto';
 import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity copy';
-import { getConnection } from 'typeorm';
-import { TicketEntity } from '../tickets/entity/ticket.entity';
 
 const { ORDER_EXPIRATION_WINDOW_SECONDS } = process.env;
 
@@ -94,22 +92,34 @@ export class OrdersResolver {
       if (isReserved) return new BadRequestException();
 
       // Set Expiration Date
-      const expiresAt = new Date();
-      expiresAt.setSeconds(
-        expiresAt.getSeconds() + +ORDER_EXPIRATION_WINDOW_SECONDS,
+      const expirationDate = new Date();
+      expirationDate.setSeconds(
+        expirationDate.getSeconds() + +ORDER_EXPIRATION_WINDOW_SECONDS,
       );
 
       // Create record
       const order = ordersService.createOne({
         status: OrderStatus.Created,
         userId: jwtPayload.sub,
-        expiresAt: expiresAt.toISOString(),
+        expiresAt: expirationDate.toISOString(),
         ticket,
       });
 
       // Create event
+      const { id, expiresAt, status, userId, version } = order;
       const orderCreatedStanEvent = stanEventsService.createOneOrderCreated({
-        ...order,
+        id,
+        expiresAt,
+        status,
+        userId,
+        version,
+        ticket: {
+          id: ticket.id,
+          price: ticket.price,
+          timestamp: ticket.timestamp,
+          title: ticket.title,
+          userId: ticket.userId,
+        },
       });
 
       //Save record and event in context of same database transaction
@@ -155,10 +165,13 @@ export class OrdersResolver {
       order.status = OrderStatus.Cancelled;
 
       // Create event
-      const { id, version } = order;
+      const { id, version, ticket } = order;
       const orderCancelledEvent = stanEventsService.createOneOrderCancelled({
         id,
-        version,
+        version: version + 1, // Document version will increment after update
+        ticket: {
+          id: ticket.id,
+        },
       });
 
       //Save record and event in context of same database transaction

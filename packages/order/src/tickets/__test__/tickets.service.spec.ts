@@ -71,6 +71,24 @@ describe('tickets.service (unit)', () => {
     expect(ticket.id).toBe(doc.id);
   });
 
+  it('removeOne(): Remove document', async () => {
+    const doc = await ticketRepository.save(
+      ticketRepository.create({
+        id: v4(),
+        title: 'hello',
+        price: 99.99,
+        timestamp: 1593781663193,
+        userId: 'mock20%id',
+      }),
+    );
+
+    await service.removeOne(doc);
+
+    const ticket = await ticketRepository.findOne(doc.id);
+
+    expect(ticket).toBeUndefined();
+  });
+
   describe('isReserved()', () => {
     it('Ticket not reserved: False', async () => {
       const ticket = await ticketRepository.save(

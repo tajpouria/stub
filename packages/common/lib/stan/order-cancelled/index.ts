@@ -6,6 +6,7 @@ import * as eventSchema from './event-schema.json';
 export interface OrderCancelledEventData {
   version: number;
   id: string;
+  ticket: { id: string };
 }
 
 export class OrderCancelledPublisher extends StanPublisher<

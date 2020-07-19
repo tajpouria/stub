@@ -5,7 +5,7 @@ import { Repository, DeepPartial, getConnection } from 'typeorm';
 import { TicketEntity } from 'src/tickets/entity/ticket.entity';
 import { OrderEntity } from 'src/orders/entity/order.entity';
 import { OrderStatus, TicketCreatedEventData } from '@tajpouria/stub-common';
-import { TicketsModule } from './tickets.module';
+import { TicketsModule } from 'src/tickets/tickets.module';
 
 @Injectable()
 export class TicketsService {
