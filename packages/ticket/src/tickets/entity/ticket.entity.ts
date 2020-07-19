@@ -56,7 +56,7 @@ export class Ticket {
   // Order
   @Field()
   @Column({ nullable: true, default: null })
-  lastOrderId: string;
+  lastOrderId: string; // If lastOrderId == null means document is not locked otherwise consider as lock document
 
   // Version
   // Hidden Field

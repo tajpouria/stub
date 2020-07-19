@@ -158,7 +158,7 @@ describe('app.controller (e2e)', () => {
           }),
         );
 
-        const ticket = await ticketRepository.save(
+        await ticketRepository.save(
           ticketRepository.create({
             id: 'ccd31c79-7bd2-4e23-9a62-5b8ef1aa41be',
             title: 'hello',

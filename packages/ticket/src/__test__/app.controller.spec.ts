@@ -3,6 +3,7 @@ import {
   INestApplication,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import request from 'supertest';
 import cookieSession from 'cookie-session';
@@ -12,6 +13,7 @@ import {
   cookieGeneratorFactory,
   produceObjectVariable,
 } from '@tajpouria/stub-common';
+import { v4 } from 'uuid';
 
 import { AppModule } from 'src/app.module';
 import { Ticket } from 'src/tickets/entity/ticket.entity';
@@ -377,7 +379,7 @@ describe('app.controller (e2e)', () => {
     });
 
     describe('mutation updateTicket', () => {
-      let doc;
+      let doc: Ticket;
       const userId = 'some%20id';
 
       beforeEach(async () => {
@@ -579,6 +581,38 @@ describe('app.controller (e2e)', () => {
         );
       });
 
+      it('Ticket locked: BadRequest', async () => {
+        // Lock the ticket
+        doc.lastOrderId = v4();
+        await ticketRepository.save(doc);
+
+        const vars = {
+          title: 'updated Title',
+        };
+
+        const query = `
+            mutation {
+              updateTicket(id: "${
+                doc.id
+              }",updateTicketInput: ${produceObjectVariable(vars)}) {
+                id
+              }
+            }
+          `;
+        const response = await gCall(
+          query,
+          generateCookie({
+            iat: Date.now(),
+            sub: userId,
+            username: 'someUserName',
+          }),
+        );
+
+        expect(response.body.errors[0].message).toBe(
+          new BadRequestException().message,
+        );
+      });
+
       it('Update Ticket', async () => {
         const title = 'updated Title';
         const vars = {
@@ -704,6 +738,31 @@ describe('app.controller (e2e)', () => {
         const response = await gCall(query, generateCookie());
         expect(response.body.errors[0].message).toBe(
           new ForbiddenException().message,
+        );
+      });
+
+      it('Ticket locked: BadRequest', async () => {
+        // Lock the ticket
+        doc.lastOrderId = v4();
+        await ticketRepository.save(doc);
+
+        const query = `
+            mutation {
+              removeTicket(id:"${doc.id}"){
+                id
+              }
+            }
+          `;
+        const response = await gCall(
+          query,
+          generateCookie({
+            iat: Date.now(),
+            sub: userId,
+            username: 'someUserName',
+          }),
+        );
+        expect(response.body.errors[0].message).toBe(
+          new BadRequestException().message,
         );
       });
 

@@ -3,6 +3,7 @@ import {
   NotFoundException,
   InternalServerErrorException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { JwtPayload, ValidationPipe, Logger } from '@tajpouria/stub-common';
@@ -23,7 +24,6 @@ import { StanEventsService } from 'src/stan-events/stan-events.service';
 import { DatabaseTransactionService } from 'src/database-transaction/database-transaction.service';
 import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
 import { TicketUpdatedStanEvent } from 'src/stan-events/entity/ticket-updated-stan-event.entity';
-import { V4MAPPED } from 'dns';
 
 @Resolver(of => Ticket)
 export class TicketsResolver {
@@ -123,6 +123,10 @@ export class TicketsResolver {
       const notTicketOwner = jwtPayload.sub !== ticket.userId;
       if (notTicketOwner) return new ForbiddenException();
 
+      // Verify that document is not locked
+      const isDocLocked = ticket.lastOrderId;
+      if (isDocLocked) return new BadRequestException();
+
       // Create event
       const { id, title, price, timestamp, userId, version } = ticket;
       const ticketUpdatedStanEvent = stanEventsService.createOneTicketUpdated({
@@ -171,6 +175,10 @@ export class TicketsResolver {
       // Verify document ownership
       const notTicketOwner = jwtPayload.sub !== ticket.userId;
       if (notTicketOwner) return new ForbiddenException();
+
+      // Verify that document is not locked
+      const isDocLocked = ticket.lastOrderId;
+      if (isDocLocked) return new BadRequestException();
 
       // Create event
       const { id, version } = ticket;
