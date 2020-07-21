@@ -1,0 +1,43 @@
+{
+  "subject": "order:created",
+  "required": ["version", "id", "status", "expiresAt", "userId", "ticket"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "number"
+    },
+    "id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["created", "Cancelled", "awaiting:payment", "complete"]
+    },
+    "expiresAt": {
+      "type": "string"
+    },
+    "userId": {
+      "type": "string"
+    },
+    "ticket": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

@@ -13,6 +13,9 @@
 [X] Are we need a generic is logged in middleware and are we need req.currentUser?
 [X] Are we need a generic reject if req.currentUser not defined?
 [X] Google OAuth2
+[X] User model should contains password validation and user already exists logic
+[X] Normal/consistence models e.g. in terms of mongoose user use toJSON to just includes id _not \_id_ and email _delete \_\_v and password_
+[X] Swagger Joi Docs
 [] Handle multiple signUp forgotPassword for same user at the same time
 [] Dto validation message content is really bad "\"repeatPassword\" must be [ref:password]"
 [X] Username and Password regex env var
@@ -36,7 +39,7 @@
 [X] **If we eventually decided to collect orderId inside the ticket** _in order to distinguish it's status_; Make sure to publish ticket-updated event inside the order-created-listener **Have to be done in db transaction way** in order the keep ticket version in sync
 [X] Add optional orderId to ticket, ticket-updated and ticket-removed
 [X] Test stan.instance.publish mock function and make sure that it call with current **orderId** _stan.instance.publish.jest.mock.calls[0]_
-[] Prevent user from update locked ticket And write test around it
+[X] Prevent user from update locked ticket And write test around it
 
 ## Order
 [X] Notice **UTC** expiration date
@@ -44,6 +47,7 @@
 [X] Write optimistic concurrency control test
 [X] Hide order document version
 [-] Add ticket.id to order-cancelled-event-data
+[] Don't cancel payed orders
 
 ## Common
 [X] Fix import in common module
@@ -55,11 +59,10 @@
 [-] Use Nest @Component decorator for utility functions
 [] Add typeDoc
 [] Publish type-orm optimistic concurrency control package
+[] Clean code report shield
 
-## Models
-[X] User model should contains password validation and user already exists logic
-[X] Normal/consistence models e.g. in terms of mongoose user use toJSON to just includes id _not \_id_ and email _delete \_\_v and password_
-[X] Swagger Joi Docs
+### Expiation
+[] Go report https://goreportcard.com/
 
 ## Client
 [-] MAYBE Fix next finicky file change detection
