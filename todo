@@ -60,6 +60,7 @@
 [] Add typeDoc
 [] Publish type-orm optimistic concurrency control package
 [] Clean code report shield
+[] Host JSONSchema some where in order to have single source of truth
 
 ### Expiation
 [] Go report https://goreportcard.com/

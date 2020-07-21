@@ -1,76 +1,48 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
+	"fmt"
 	"log"
 	"os"
-	"time"
+	"sync"
 
 	"github.com/nats-io/stan.go"
-	"github.com/xeipuuv/gojsonschema"
+	"github.com/tajpouria/stub/packages/expiration/utils"
 )
 
-type eventSchema struct {
-	Subject string `json:"subject"`
-}
-
 func main() {
+	// TODO:
+	os.Setenv("NAME", "expiration-service")
+	os.Setenv("GO_ENV", "dev")
+	os.Setenv("NATS_CLUSTER_ID", "stub")
+	os.Setenv("NATS_CLIENT_ID", "some-id")
+
 	// Verify required environment variables existence
-	envVarErr := allEnvVarsExists([]string{"NAME", "GO_ENV", "NATS_CLUSTER_ID", "NATS_CLIENT_ID"})
+	envVarErr := utils.AllEnvVarsExists([]string{"NAME", "GO_ENV", "NATS_CLUSTER_ID", "NATS_CLIENT_ID"})
 	if envVarErr != nil {
 		panic(envVarErr.Error())
 	}
 
 	// Establish NATS connection
-	sc, stanConnectionErr := stan.Connect(os.Getenv("NATS_CLUSTER_ID"), os.Getenv("NATS_CLIENT_ID"))
+	cid := os.Getenv("NATS_CLUSTER_ID")
+	sc, stanConnectionErr := stan.Connect(cid, os.Getenv("NATS_CLIENT_ID"), stan.Pings(10, 5), stan.SetConnectionLostHandler(func(_ stan.Conn, err error) {
+		log.Fatalf("NATSConnectionLost: %v", err)
+	}))
 	if stanConnectionErr != nil {
 		panic(stanConnectionErr.Error())
 	}
+	log.Printf("NATSConnection: Connected to %s", cid)
 
 	// Notify NATS from connection status
-	closeNATSConnectionOnForceStop(sc)
+	utils.CloseNATSConnectionOnForceStop(sc)
 
-	// NATS subscribers
-	dur, durExists := os.LookupEnv("NATS_ACK_WAIT_DURATION")
-	if !durExists {
-		dur = "5s"
-	}
-	aw, awErr := time.ParseDuration(dur)
-	if awErr != nil {
-		panic(awErr.Error())
-	}
+	// Intialized NATS listeners
+	utils.OnOrderCreatedStanEvent(sc, func(data utils.OrderCreatedStanEventData, m *stan.Msg) {
+		fmt.Println(data.ID)
+		m.Ack()
+	})
 
-	file, readFileErr := ioutil.ReadFile("event-schema.json")
-	if readFileErr != nil {
-		panic(readFileErr.Error())
-	}
-
-	es := eventSchema{}
-	json.Unmarshal(file, &es)
-
-	n := os.Getenv("NAME")
-	_, subErr := sc.QueueSubscribe(es.Subject, n, func(m *stan.Msg) {
-		d := string(m.Data)
-
-		schemaLoader, documentLoader := gojsonschema.NewStringLoader(string(file)), gojsonschema.NewStringLoader(d)
-		res, resErr := gojsonschema.Validate(schemaLoader, documentLoader)
-		if resErr != nil {
-			panic(resErr.Error())
-		}
-
-		if res.Valid() {
-			// DO THE STUFF
-		} else {
-			log.Printf("gojsonschema: '%s' Event associated data is not valid. see errors:\n", es.Subject)
-			for _, desc := range res.Errors() {
-				log.Printf("- %s\n", desc)
-			}
-		}
-
-	}, stan.SetManualAckMode(), stan.AckWait(aw), stan.DurableName(n))
-	if subErr != nil {
-		log.Println(subErr)
-	}
-
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	wg.Wait()
 }

@@ -30,16 +30,7 @@ async function bootstrap() {
     'Does not exists on process.env',
   );
 
-  const {
-    NAME,
-    VERSION,
-    PORT,
-    SESSION_NAME,
-    NODE_ENV,
-    NATS_CLUSTER_ID,
-    NATS_CLIENT_ID,
-    NATS_URL,
-  } = process.env;
+  const { NAME, VERSION, PORT, SESSION_NAME, NODE_ENV } = process.env;
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
