@@ -10,10 +10,6 @@
 **/yarn-error.log*
 **/lerna-debug.log*
 
-# Lock
-**/*.lock
-package-lock.json
-
 # OS
 **/.DS_Store
 

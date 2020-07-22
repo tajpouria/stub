@@ -33,14 +33,14 @@ func main() {
 	}
 	log.Printf("NATSConnection: Connected to %s", cid)
 
-	// Notify NATS from connection status
-	utils.CloseNATSConnectionOnForceStop(sc)
-
 	// Intialized NATS listeners
 	utils.OnOrderCreatedStanEvent(sc, func(data utils.OrderCreatedStanEventData, m *stan.Msg) {
 		fmt.Println(data.ID)
 		m.Ack()
 	})
+
+	// Notify NATS from connection status
+	utils.CloseNATSConnectionOnForceStop(sc)
 
 	wg := sync.WaitGroup{}
 	wg.Add(1)
