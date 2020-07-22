@@ -9,7 +9,8 @@ import (
 
 // OrderCreatedStanEventData Associated stan event data
 type OrderCreatedStanEventData struct {
-	ID string `json:"id"`
+	ID        string `json:"id"`
+	ExpiresAt string `json:"expiresAt"`
 }
 
 // OnOrderCreatedStanEvent Invoke the callback function on order:created stan event

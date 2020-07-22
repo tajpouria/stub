@@ -1,15 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"sync"
-	"time"
-
-	"github.com/nsqio/go-nsq"
 
 	"github.com/nats-io/stan.go"
+	"github.com/nsqio/go-nsq"
 	"github.com/tajpouria/stub/packages/expiration/utils"
 )
 
@@ -20,12 +17,13 @@ func main() {
 	os.Setenv("NATS_CLUSTER_ID", "stub")
 	os.Setenv("NATS_CLIENT_ID", "some-id")
 	os.Setenv("NSQD_ADDRESS", "127.0.0.1:4150")
+	os.Setenv("ORDER_EXPIRATION_WINDOW_SECONDS", "900")
 
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 
 	// Verify required environment variables existence
-	envVarErr := utils.AllEnvVarsExists([]string{"NAME", "GO_ENV", "NATS_CLUSTER_ID", "NATS_CLIENT_ID", "NSQD_ADDRESS"})
+	envVarErr := utils.AllEnvVarsExists([]string{"NAME", "GO_ENV", "NATS_CLUSTER_ID", "NATS_CLIENT_ID", "NSQD_ADDRESS", "ORDER_EXPIRATION_WINDOW_SECONDS"})
 	if envVarErr != nil {
 		panic(envVarErr.Error())
 	}
@@ -52,32 +50,35 @@ func main() {
 
 	// Intialized NATS listeners
 	utils.OnOrderCreatedStanEvent(sc, func(data utils.OrderCreatedStanEventData, m *stan.Msg) {
-		fmt.Println(data.ID)
-		m.Ack()
+		dpErr := deffredPublishOrderIDToNSQ(data, p)
+		if dpErr != nil {
+			// Acknowledge NATS on successfully DeferredPublish to NSQ
+			panic(dpErr.Error())
+		} else {
+			m.Ack()
+		}
 	})
 
 	// Initialize NSQ consumers
-	cConfig := nsq.NewConfig()
-	c, cErr := nsq.NewConsumer("TODO-topic", "TODO-channel", cConfig)
-	if cErr != nil {
-		panic(cErr.Error())
+	orderExpiredC, orderExpiredCErr := utils.NewOrderExpiredNSQConsumer()
+	if orderExpiredCErr != nil {
+		panic(orderExpiredCErr.Error())
 	}
 
-	c.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
+	// Initialize NSQ Handlers
+	orderExpiredC.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		log.Println("NSQ message received:")
 		log.Println(string(message.Body))
 		return nil
 	}))
 
-	// Establish NSQD Connection
-	NSQDConnErr := c.ConnectToNSQD(NSQDAddr)
-	if NSQDConnErr != nil {
-		panic(NSQDConnErr)
+	// Establish NSQD Connections
+	orderExpiredNSQDConnErr := orderExpiredC.ConnectToNSQD(NSQDAddr)
+	if orderExpiredNSQDConnErr != nil {
+		panic(orderExpiredNSQDConnErr)
 	}
-	log.Printf("NSQDConnection: Connection established to %s\n", NSQDAddr)
+	log.Printf("orderExpiredNSQDConnErr: Connection established to %s\n", NSQDAddr)
 
-	d, _ := time.ParseDuration("30s")
-	p.DeferredPublish("TODO-topic", d, []byte("THIS IS MESSAGE A TEST MESSAGE"))
-
+	// Keep main go routine on waiting state
 	wg.Wait()
 }
