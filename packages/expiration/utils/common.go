@@ -6,7 +6,7 @@ import (
 )
 
 // AllEnvVarsExists retrieve nill if all specified variables
-// exists in environment otherwise fullfill error
+// exists in environment otherwise fulfill error
 func AllEnvVarsExists(vars []string) error {
 	for _, v := range vars {
 		_, exists := os.LookupEnv(v)

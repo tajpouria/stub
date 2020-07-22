@@ -63,7 +63,8 @@
 [] Host JSONSchema some where in order to have single source of truth
 
 ### Expiation
-[] Go report https://goreportcard.com/
+[X] Go report https://goreportcard.com/
+[] Add tests
 
 ## Client
 [-] MAYBE Fix next finicky file change detection

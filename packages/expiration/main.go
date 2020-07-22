@@ -11,14 +11,6 @@ import (
 )
 
 func main() {
-	// TODO:
-	os.Setenv("NAME", "expiration-service")
-	os.Setenv("GO_ENV", "dev")
-	os.Setenv("NATS_CLUSTER_ID", "stub")
-	os.Setenv("NATS_CLIENT_ID", "some-id")
-	os.Setenv("NSQD_ADDRESS", "127.0.0.1:4150")
-	os.Setenv("ORDER_EXPIRATION_WINDOW_SECONDS", "10")
-
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 

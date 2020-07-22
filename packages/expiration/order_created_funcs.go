@@ -10,7 +10,7 @@ import (
 	"github.com/tajpouria/stub/packages/expiration/utils"
 )
 
-// deffredPublishOrderIDToNSQ Calculate substract duration of current date and created order expiresAt
+// deffredPublishOrderIDToNSQ Calculate subtract duration of current date and created order expiresAt
 // (if there is an error in parsing order.expiresAt set the duration ORDER_EXPIRATION_WINDOW_SECONDS later)
 // deffredPublish order id to NSQ
 func deffredPublishOrderIDToNSQ(data utils.OrderCreatedStanEventData, p *nsq.Producer) error {
