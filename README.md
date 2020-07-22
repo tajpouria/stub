@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9c9227f12d5949c0af19184e50ab8d16)](https://app.codacy.com/manual/tajpouria/stub?utm_source=github.com&utm_medium=referral&utm_content=tajpouria/stub&utm_campaign=Badge_Grade_Dashboard)
 # Stub [![Build Status](https://travis-ci.org/tajpouria/stub.svg?branch=master)](https://travis-ci.org/tajpouria/stub)
 
 ## Services
