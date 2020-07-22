@@ -17,7 +17,7 @@ func main() {
 	os.Setenv("NATS_CLUSTER_ID", "stub")
 	os.Setenv("NATS_CLIENT_ID", "some-id")
 	os.Setenv("NSQD_ADDRESS", "127.0.0.1:4150")
-	os.Setenv("ORDER_EXPIRATION_WINDOW_SECONDS", "900")
+	os.Setenv("ORDER_EXPIRATION_WINDOW_SECONDS", "10")
 
 	wg := sync.WaitGroup{}
 	wg.Add(1)
@@ -36,7 +36,7 @@ func main() {
 	if scErr != nil {
 		panic(scErr.Error())
 	}
-	log.Printf("NATSConnection: Connection established to %s\n", cid)
+	log.Printf("NATSConn: Connection established to %s\n", cid)
 	// Notify NATS from connection status
 	utils.CloseNATSConnectionOnForceStop(sc)
 
@@ -50,13 +50,15 @@ func main() {
 
 	// Intialized NATS listeners
 	utils.OnOrderCreatedStanEvent(sc, func(data utils.OrderCreatedStanEventData, m *stan.Msg) {
-		dpErr := deffredPublishOrderIDToNSQ(data, p)
-		if dpErr != nil {
-			// Acknowledge NATS on successfully DeferredPublish to NSQ
-			panic(dpErr.Error())
-		} else {
-			m.Ack()
-		}
+		go func() {
+			dpErr := deffredPublishOrderIDToNSQ(data, p)
+			if dpErr != nil {
+				log.Println("OnOrderCreatedStanEvent:", dpErr.Error())
+			} else {
+				// Acknowledge NATS on successfully DeferredPublish to NSQ
+				m.Ack()
+			}
+		}()
 	})
 
 	// Initialize NSQ consumers
@@ -65,10 +67,12 @@ func main() {
 		panic(orderExpiredCErr.Error())
 	}
 
+	// Initialize NATS publishers
+	orderExpiredP := utils.NewOrderExpiredStanEventPublisher(sc)
+
 	// Initialize NSQ Handlers
 	orderExpiredC.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
-		log.Println("NSQ message received:")
-		log.Println(string(message.Body))
+		go publishExpiredOrderIDStanEvent(string(message.Body), orderExpiredP)
 		return nil
 	}))
 
@@ -77,7 +81,7 @@ func main() {
 	if orderExpiredNSQDConnErr != nil {
 		panic(orderExpiredNSQDConnErr)
 	}
-	log.Printf("orderExpiredNSQDConnErr: Connection established to %s\n", NSQDAddr)
+	log.Printf("orderExpiredNSQDConn: Connection established to %s\n", NSQDAddr)
 
 	// Keep main go routine on waiting state
 	wg.Wait()

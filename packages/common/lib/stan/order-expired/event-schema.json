@@ -1,0 +1,10 @@
+{
+  "subject": "order:expired",
+  "required": ["id"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string"
+    }
+  }
+}

@@ -37,3 +37,8 @@ func GetAckWaitDuration() time.Duration {
 
 	return aw
 }
+
+// stanEventSchema common stan event props
+type stanEventSchema struct {
+	Subject string `json:"subject"`
+}

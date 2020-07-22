@@ -17,10 +17,11 @@ func deffredPublishOrderIDToNSQ(data utils.OrderCreatedStanEventData, p *nsq.Pro
 	// Parse expriseAt(assume to be in format RFC3339) to Time
 	exT, exTErr := time.Parse(time.RFC3339, data.ExpiresAt)
 	if exTErr != nil {
-		log.Println("deffredPublishOrderIDToNSQ:", exTErr.Error())
+		defaultEw := os.Getenv("ORDER_EXPIRATION_WINDOW_SECONDS")
+		log.Printf("deffredPublishOrderIDToNSQ: %s. Setting expiry to %s seconds later", exTErr.Error(), defaultEw)
 
 		// Set expiry Date to ORDER_EXPIRATION_WINDOW_SECONDS environment variable on parsing error
-		intOEW, intOEWErr := strconv.ParseInt(os.Getenv("ORDER_EXPIRATION_WINDOW_SECONDS"), 10, 64)
+		intOEW, intOEWErr := strconv.ParseInt(defaultEw, 10, 64)
 		if intOEWErr != nil {
 			return intOEWErr
 		}
@@ -28,8 +29,12 @@ func deffredPublishOrderIDToNSQ(data utils.OrderCreatedStanEventData, p *nsq.Pro
 	}
 
 	dur := exT.Sub(time.Now())
+	// Publish withoud delay if dur < 0
+	if dur < 0 {
+		dur = 0
+	}
 	// DeferredPublish to NSQ
-	dpErr := p.DeferredPublish("TODO-topic", dur, []byte(data.ID))
+	dpErr := p.DeferredPublish(utils.OrderExpiredNSQTitle, dur, []byte(data.ID))
 	if dpErr != nil {
 		return dpErr
 	}

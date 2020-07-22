@@ -20,6 +20,7 @@ type stanListenerImpl struct {
 	ackWaitDuration time.Duration
 }
 
+// newStanListener Retrieve new stanListener
 func newStanListener(sc stan.Conn, jsonSchemaFile []byte) stanListener {
 	return &stanListenerImpl{
 		sc:              sc,
@@ -28,10 +29,7 @@ func newStanListener(sc stan.Conn, jsonSchemaFile []byte) stanListener {
 	}
 }
 
-type stanEventSchema struct {
-	Subject string `json:"subject"`
-}
-
+// OnMessage Receive a callback and Invoke it after associated JSONSChema validation process
 func (l stanListenerImpl) OnMessage(cb func(m *stan.Msg)) {
 	n, sc, js, aw := os.Getenv("NAME"), l.sc, l.jsonSchemaFile, l.ackWaitDuration
 	es := stanEventSchema{}
