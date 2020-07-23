@@ -70,10 +70,7 @@ export class TicketsListener {
       // Save document and event in context of same database transaction
       await databaseTransactionService.process<
         [Ticket, TicketUpdatedStanEvent]
-      >([
-        [ticket, 'save'],
-        [ticketUpdatedStanEvent, 'save'],
-      ]);
+      >([ticket, 'save'], [ticketUpdatedStanEvent, 'save']);
 
       msg.ack();
     } catch (error) {
@@ -99,7 +96,6 @@ export class TicketsListener {
       const ticket = await ticketsService.findOne({ lastOrderId: data.id });
       if (!ticket) throw new Error(`Ticket ${data.id} not found`);
 
-
       // Update document
       ticket.lastOrderId = null;
 
@@ -117,10 +113,7 @@ export class TicketsListener {
       // Save document and event in context of same database transaction
       await databaseTransactionService.process<
         [Ticket, TicketUpdatedStanEvent]
-      >([
-        [ticket, 'save'],
-        [ticketUpdatedStanEvent, 'save'],
-      ]);
+      >([ticket, 'save'], [ticketUpdatedStanEvent, 'save']);
 
       msg.ack();
     } catch (error) {

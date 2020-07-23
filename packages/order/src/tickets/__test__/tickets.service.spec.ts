@@ -29,11 +29,6 @@ describe('tickets.service (unit)', () => {
     service = moduleFixture.get<TicketsService>(TicketsService);
   });
 
-  afterEach(async () => {
-    await ticketRepository.query(`DELETE FROM ticket_entity;`);
-    await orderRepository.query(`DELETE FROM order_entity;`);
-  });
-
   afterAll(async () => {
     await app.close();
   });

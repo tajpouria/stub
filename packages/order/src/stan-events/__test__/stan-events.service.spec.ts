@@ -28,10 +28,6 @@ describe('stan-events.service (unit)', () => {
     service = moduleFixture.get<StanEventsService>(StanEventsService);
   });
 
-  afterEach(async () => {
-    await orderRepository.query(`DELETE FROM order_entity;`);
-  });
-
   afterAll(async () => {
     await app.close();
   });

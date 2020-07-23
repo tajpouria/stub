@@ -20,7 +20,7 @@ import { AppModule } from 'src/app.module';
 import { OrderEntity } from 'src/orders/entity/order.entity';
 import { TicketEntity } from 'src/tickets/entity/ticket.entity';
 import { OrderCreatedStanEvent } from 'src/stan-events/entity/order-created-stan-event.entity';
-import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity copy';
+import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity';
 // __mocks__
 import { stan } from 'src/shared/stan';
 
@@ -56,15 +56,6 @@ describe('app.controller (e2e)', () => {
     );
     orderCancelledStanEvent = getConnection().getRepository(
       OrderCancelledStanEvent,
-    );
-  });
-
-  afterEach(async () => {
-    await ticketRepository.query(`DELETE FROM ticket_entity;`);
-    await orderRepository.query(`DELETE FROM order_entity;`);
-    await orderCreatedStanEvent.query(`DELETE FROM order_created_stan_event;`);
-    await orderCancelledStanEvent.query(
-      `DELETE FROM order_cancelled_stan_event;`,
     );
   });
 

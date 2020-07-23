@@ -29,7 +29,7 @@ import {
   cancelOrderDto,
   CancelOrderInput,
 } from 'src/orders/dto/cancel-order.dto';
-import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity copy';
+import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity';
 
 const { ORDER_EXPIRATION_WINDOW_SECONDS } = process.env;
 
@@ -122,13 +122,10 @@ export class OrdersResolver {
         },
       });
 
-      //Save record and event in context of same database transaction
+      //Save record and event in context of one database transaction
       const [createdOrder] = await databaseTransactionService.process<
         [OrderEntity, OrderCreatedStanEvent]
-      >([
-        [order, 'save'],
-        [orderCreatedStanEvent, 'save'],
-      ]);
+      >([order, 'save'], [orderCreatedStanEvent, 'save']);
 
       return createdOrder;
     } catch (error) {
@@ -165,19 +162,16 @@ export class OrdersResolver {
       order.status = OrderStatus.Cancelled;
 
       // Create event
-      const { id, version, ticket } = order;
+      const { id, version } = order;
       const orderCancelledEvent = stanEventsService.createOneOrderCancelled({
         id,
         version: version + 1, // Document version will increment after update
       });
 
-      //Save record and event in context of same database transaction
+      // Save record and event in context of one database transaction
       const [updatedOrder] = await databaseTransactionService.process<
         [OrderEntity, OrderCancelledStanEvent]
-      >([
-        [order, 'save'],
-        [orderCancelledEvent, 'save'],
-      ]);
+      >([order, 'save'], [orderCancelledEvent, 'save']);
 
       return updatedOrder;
     } catch (error) {

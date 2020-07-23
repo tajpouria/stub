@@ -11,7 +11,7 @@ import { OrdersModule } from 'src/orders/orders.module';
 import { TicketsModule } from 'src/tickets/tickets.module';
 import { TicketEntity } from 'src/tickets/entity/ticket.entity';
 import { OrderCreatedStanEvent } from 'src/stan-events/entity/order-created-stan-event.entity';
-import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity copy';
+import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity';
 
 const { NODE_ENV, ORM_CONFIG } = process.env;
 

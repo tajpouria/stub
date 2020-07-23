@@ -47,7 +47,7 @@
 [X] Write optimistic concurrency control test
 [X] Hide order document version
 [-] Add ticket.id to order-cancelled-event-data
-[] Don't cancel payed orders
+[X] Don't cancel payed orders
 
 ## Common
 [X] Fix import in common module
@@ -55,12 +55,14 @@
 [] i18n
 [X] Add test coverage flag
 [] README
+[] Services title should be links
 [] Put together record/event diagram
 [-] Use Nest @Component decorator for utility functions
 [] Add typeDoc
 [] Publish type-orm optimistic concurrency control package
-[] Clean code report shield
+[X] Clean code report shield
 [] Host JSONSchema some where in order to have single source of truth
+[X] Delete stan events on listener test or maybe setup jest afterEach db cleanup hook
 
 ### Expiation
 [X] Go report https://goreportcard.com/

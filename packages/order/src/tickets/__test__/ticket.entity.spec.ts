@@ -34,10 +34,6 @@ describe('tickets.entity (unit)', () => {
     );
   });
 
-  afterEach(async () => {
-    await repository.query(`DELETE FROM ticket_entity;`);
-  });
-
   afterAll(async () => {
     await app.close();
   });

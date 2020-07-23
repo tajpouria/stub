@@ -8,7 +8,7 @@ export class DatabaseTransactionService {
    * @param entityAndActions Tuple of [Entity, Action that needs to Applied]
    */
   async process<ResponseT extends any[] = any[]>(
-    entityAndActions: [any, keyof EntityManager][],
+    ...entityAndActions: [any, keyof EntityManager][]
   ) {
     try {
       let response: any[];

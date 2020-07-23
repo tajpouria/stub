@@ -86,10 +86,7 @@ export class TicketsResolver {
       // Save document and event in context of same database transaction
       const [createdTicket] = await databaseTransactionService.process<
         [Ticket, TicketCreatedStanEvent]
-      >([
-        [ticket, 'save'],
-        [ticketCreatedStanEvent, 'save'],
-      ]);
+      >([ticket, 'save'], [ticketCreatedStanEvent, 'save']);
 
       return createdTicket;
     } catch (error) {
@@ -141,10 +138,10 @@ export class TicketsResolver {
       // Save document and event in context of same database transaction
       const [updatedTicket] = await databaseTransactionService.process<
         [Ticket, TicketUpdatedStanEvent]
-      >([
+      >(
         [Object.assign(ticket, updateTicketInput), 'save'],
         [ticketUpdatedStanEvent, 'save'],
-      ]);
+      );
 
       return updatedTicket;
     } catch (error) {
@@ -190,10 +187,7 @@ export class TicketsResolver {
       // Remove document and save event in context of same database transaction
       const [removedTicket] = await databaseTransactionService.process<
         [Ticket]
-      >([
-        [ticket, 'remove'],
-        [ticketRemovedStanEvent, 'save'],
-      ]);
+      >([ticket, 'remove'], [ticketRemovedStanEvent, 'save']);
 
       return { ...removedTicket, id: argId }; // id field removed for some reason appended manually
     } catch (error) {

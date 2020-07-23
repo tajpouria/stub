@@ -34,10 +34,6 @@ describe('tickets.listener (unit)', () => {
     listener = moduleFixture.get<TicketsListener>(TicketsListener);
   });
 
-  afterEach(async () => {
-    await repository.query(`DELETE FROM ticket_entity;`);
-  });
-
   afterAll(async () => {
     await app.close();
   });

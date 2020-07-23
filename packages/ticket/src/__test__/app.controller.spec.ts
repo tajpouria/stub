@@ -60,22 +60,6 @@ describe('app.controller (e2e)', () => {
     );
   });
 
-  afterEach(async () => {
-    await ticketRepository.query(`DELETE FROM ticket;`);
-
-    await ticketRemovedStanEventRepository.query(
-      `DELETE FROM ticket_removed_stan_event;`,
-    );
-
-    await ticketCreatedStanEventRepository.query(
-      `DELETE FROM ticket_created_stan_event;`,
-    );
-
-    await ticketUpdatedStanEventRepository.query(
-      `DELETE FROM ticket_updated_stan_event;`,
-    );
-  });
-
   afterAll(async () => {
     await app.close();
   });

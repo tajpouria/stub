@@ -7,7 +7,7 @@ import {
 } from '@tajpouria/stub-common';
 
 import { OrderCreatedStanEvent } from 'src/stan-events/entity/order-created-stan-event.entity';
-import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity copy';
+import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity';
 
 @Injectable()
 export class StanEventsService {

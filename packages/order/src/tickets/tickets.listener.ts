@@ -71,7 +71,7 @@ export class TicketsListener {
       // document existence
       const doc = await ticketsService.findOne(data.id);
       if (doc)
-        // Assume TicketEntity onDelete.CASCADE is enabled all associated orders also deleted
+        // Assume TicketEntity onDelete.CASCADE is enabled, all associated orders also deleted
         await ticketsService.removeOne(doc);
 
       msg.ack();
