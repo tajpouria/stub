@@ -90,7 +90,7 @@ describe('tickets.entity (unit)', () => {
   it('Increment document.version onUpdate', async () => {
     expect(doc.version).toBe(1);
 
-    doc.status = OrderStatus.AwaitingPayment;
+    doc.status = OrderStatus.Complete;
     await orderRepository.save(doc);
     expect(doc.version).toBe(2);
 

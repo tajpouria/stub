@@ -1,17 +1,17 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Repository, getConnection } from 'typeorm';
+import { OrderStatus } from '@tajpouria/stub-common';
 import { v4 } from 'uuid';
 
 import { AppModule } from 'src/app.module';
 import { OrderEntity } from 'src/orders/entity/order.entity';
-import { TicketEntity } from 'src/tickets/entity/ticket.entity';
-import { OrderStatus } from '@tajpouria/stub-common';
+import { ChargeEntity } from 'src/charges/entity/charge.entity';
 
-describe('tickets.entity (unit)', () => {
+describe('charge.entity (unit)', () => {
   let app: INestApplication,
-    orderRepository: Repository<OrderEntity>,
-    ticketRepository: Repository<TicketEntity>;
+    chargeRepository: Repository<ChargeEntity>,
+    orderRepository: Repository<OrderEntity>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -22,27 +22,24 @@ describe('tickets.entity (unit)', () => {
 
     await app.init();
 
+    chargeRepository = getConnection().getRepository(ChargeEntity);
     orderRepository = getConnection().getRepository(OrderEntity);
-    ticketRepository = getConnection().getRepository(TicketEntity);
   });
 
-  let doc: OrderEntity;
+  let doc: ChargeEntity;
   beforeEach(async () => {
-    const ticket = await ticketRepository.save(
-      ticketRepository.create({
-        id: v4(),
-        title: 'hello',
-        price: 99.99,
-        timestamp: 1593781663193,
-        userId: 'mock20%id',
+    const order = await orderRepository.save(
+      orderRepository.create({
+        price: 1300,
+        status: OrderStatus.Created,
+        userId: v4(),
       }),
     );
 
-    doc = await orderRepository.save(
-      orderRepository.create({
-        expiresAt: new Date().toUTCString(),
-        userId: 'user-id',
-        ticket,
+    doc = await chargeRepository.save(
+      chargeRepository.create({
+        userId: order.userId,
+        order,
       }),
     );
   });
@@ -53,15 +50,17 @@ describe('tickets.entity (unit)', () => {
 
   describe('Implements Optimistic concurrency control', () => {
     it('On skipping forward', async done => {
-      const status = OrderStatus.Cancelled;
-      doc.status = status;
+      const userId = v4();
+      doc.userId = userId;
       // Skip forward
       doc.version = 5;
 
       try {
-        await orderRepository.save(doc);
+        await chargeRepository.save(doc);
       } catch (error) {
-        expect((await orderRepository.findOne(doc.id)).status).not.toBe(status);
+        expect((await chargeRepository.findOne(doc.id)).userId).not.toBe(
+          userId,
+        );
 
         return done();
       }
@@ -70,15 +69,17 @@ describe('tickets.entity (unit)', () => {
     });
 
     it('On skipping backward', async done => {
-      const status = OrderStatus.Cancelled;
-      doc.status = status;
+      const userId = v4();
+      doc.userId = userId;
       // Skip backward
       doc.version = 0;
 
       try {
-        await orderRepository.save(doc);
+        await chargeRepository.save(doc);
       } catch (error) {
-        expect((await orderRepository.findOne(doc.id)).status).not.toBe(status);
+        expect((await chargeRepository.findOne(doc.id)).userId).not.toBe(
+          userId,
+        );
 
         return done();
       }
@@ -90,12 +91,12 @@ describe('tickets.entity (unit)', () => {
   it('Increment document.version onUpdate', async () => {
     expect(doc.version).toBe(1);
 
-    doc.status = OrderStatus.AwaitingPayment;
-    await orderRepository.save(doc);
+    doc.userId = v4();
+    await chargeRepository.save(doc);
     expect(doc.version).toBe(2);
 
-    doc.status = OrderStatus.Cancelled;
-    await orderRepository.save(doc);
+    doc.userId = v4();
+    await chargeRepository.save(doc);
     expect(doc.version).toBe(3);
   });
 });

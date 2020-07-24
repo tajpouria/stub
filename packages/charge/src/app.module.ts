@@ -8,6 +8,9 @@ import { AppController } from 'src/app.controller';
 import { AppService } from 'src/app.service';
 import { OrderEntity } from 'src/orders/entity/order.entity';
 import { OrdersModule } from 'src/orders/orders.module';
+import { ChargeEntity } from 'src/charges/entity/charge.entity';
+import { ChargesModule } from 'src/charges/charges.module';
+import { OrderCompletedStanEvent } from 'src/stan-events/entity/order-completed-stan-event.entity';
 
 const { NODE_ENV, ORM_CONFIG } = process.env;
 
@@ -19,13 +22,14 @@ const { NODE_ENV, ORM_CONFIG } = process.env;
     }),
     TypeOrmModule.forRoot({
       ...JSON.parse(ORM_CONFIG),
-      entities: [OrderEntity],
+      entities: [OrderEntity, ChargeEntity, OrderCompletedStanEvent],
       subscribers: [UpdateIfCurrentSubscriber],
       synchronize: true,
       logging: NODE_ENV === 'development' ? true : ['error'],
     }),
 
     OrdersModule,
+    ChargesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

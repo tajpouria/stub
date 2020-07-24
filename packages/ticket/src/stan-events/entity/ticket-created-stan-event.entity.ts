@@ -21,7 +21,7 @@ export class TicketCreatedStanEvent implements TicketCreatedEventData {
   // Version
   // Should provide manually
   @Column('int')
-  version;
+  version: number;
 
   @Column('boolean')
   published: boolean;
@@ -71,7 +71,7 @@ export class TicketCreatedStanEvent implements TicketCreatedEventData {
         ticketCreatedPublisher,
       );
     } catch (error) {
-      logger.info(new Error(error));
+      logger.error(new Error(error));
     }
   }
 }

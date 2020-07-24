@@ -8,32 +8,31 @@ import {
 } from 'typeorm';
 import { v4 } from 'uuid';
 
-import { OrderEntity } from 'src/orders/entity/order.entity';
+import { ChargeEntity } from 'src/charges/entity/charge.entity';
 
 @Injectable()
-export class OrdersService {
+export class ChargesService {
   constructor(
-    @InjectRepository(OrderEntity)
-    private orderRepository: Repository<OrderEntity>,
+    @InjectRepository(ChargeEntity)
+    private repository: Repository<ChargeEntity>,
   ) {}
 
   findAll(
-    where: FindManyOptions<OrderEntity>['where'],
-  ): Promise<OrderEntity[]> {
-    return this.orderRepository.find({ where, relations: ['ticket'] });
+    where: FindManyOptions<ChargeEntity>['where'],
+  ): Promise<ChargeEntity[]> {
+    return this.repository.find({ where, relations: ['order'] });
   }
 
   findOne(
-    where: FindOneOptions<OrderEntity>['where'],
-  ): Promise<OrderEntity | null> {
-    return this.orderRepository.findOne({ where, relations: ['ticket'] });
+    where: FindOneOptions<ChargeEntity>['where'],
+  ): Promise<ChargeEntity | null> {
+    return this.repository.findOne({ where, relations: ['order'] });
   }
 
-  createOne(createInputDto: DeepPartial<OrderEntity>) {
-    return this.orderRepository.create({
+  createOne(createInputDto: DeepPartial<ChargeEntity>) {
+    return this.repository.create({
       ...createInputDto,
       id: v4(), // Manually injected id _Id not created on document template at this level but it's required in order to publish consistence id_
-      version: 1,
     });
   }
 }

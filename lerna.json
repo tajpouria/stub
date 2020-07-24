@@ -3,7 +3,8 @@
     "packages/auth",
     "packages/client",
     "packages/ticket",
-    "packages/order"
+    "packages/order",
+    "packages/charge"
   ],
   "version": "0.0.1",
   "npmClient": "yarn"

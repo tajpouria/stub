@@ -27,7 +27,7 @@ export class OrderCreatedStanEvent implements OrderCreatedEventData {
   // Version
   // Should provide manually
   @Column('int')
-  version;
+  version: number;
 
   @Column('boolean')
   published: boolean;
@@ -88,7 +88,7 @@ export class OrderCreatedStanEvent implements OrderCreatedEventData {
         orderCreatedPublisher,
       );
     } catch (error) {
-      logger.info(new Error(error));
+      logger.error(new Error(error));
     }
   }
 }

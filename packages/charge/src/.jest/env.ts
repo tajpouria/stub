@@ -2,7 +2,7 @@ process.env = {
   ...process.env,
   NAME: 'order',
   NODE_ENV: 'test',
-  PORT: '6000',
+  PORT: '7000',
   SESSION_NAME: 'session',
   JWT_SECRET: 'secret',
   ORM_CONFIG:

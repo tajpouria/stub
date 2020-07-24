@@ -9,19 +9,19 @@ import {
 import {
   Logger,
   publishUnpublishedStanEvents,
-  OrderCancelledEventData,
+  OrderCompletedEventData,
 } from '@tajpouria/stub-common';
 
-import { orderCancelledPublisher } from 'src/orders/shared/order-cancelled-publisher';
+import { orderCompletedPublisher } from 'src/orders/shared/order-completed-publisher';
 
-const logger = Logger(process.cwd() + '/logs/stan/order-created-stan-event');
+const logger = Logger(process.cwd() + '/logs/stan/order-completed-stan-event');
 
 @Entity()
-export class OrderCancelledStanEvent implements OrderCancelledEventData {
+export class OrderCompletedStanEvent implements OrderCompletedEventData {
   // Version
   // Should provide manually
   @Column('int')
-  version;
+  version: number;
 
   @Column('boolean')
   published: boolean;
@@ -33,9 +33,9 @@ export class OrderCancelledStanEvent implements OrderCancelledEventData {
   @AfterInsert()
   async publishStanEvent() {
     try {
-      const { id, version } = this;
+      const { id } = this;
 
-      await orderCancelledPublisher.publish({ id, version });
+      await orderCompletedPublisher.publish({ id });
       this.published = true;
     } catch (error) {
       logger.error(new Error(error));
@@ -46,11 +46,11 @@ export class OrderCancelledStanEvent implements OrderCancelledEventData {
   async publishUnpublishedStanEvents() {
     try {
       await publishUnpublishedStanEvents(
-        getConnection().getRepository(OrderCancelledStanEvent),
-        orderCancelledPublisher,
+        getConnection().getRepository(OrderCompletedStanEvent),
+        orderCompletedPublisher,
       );
     } catch (error) {
-      logger.info(new Error(error));
+      logger.error(new Error(error));
     }
   }
 }

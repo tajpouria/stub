@@ -39,7 +39,7 @@
 [X] **If we eventually decided to collect orderId inside the ticket** _in order to distinguish it's status_; Make sure to publish ticket-updated event inside the order-created-listener **Have to be done in db transaction way** in order the keep ticket version in sync
 [X] Add optional orderId to ticket, ticket-updated and ticket-removed
 [X] Test stan.instance.publish mock function and make sure that it call with current **orderId** _stan.instance.publish.jest.mock.calls[0]_
-[X] Prevent user from update locked ticket And write test around it
+[X] Prevent user from update locked ticket And write test around 
 
 ## Order
 [X] Notice **UTC** expiration date
@@ -64,6 +64,8 @@
 [X] Clean code report shield
 [] Host JSONSchema some where in order to have single source of truth
 [X] Delete stan events on listener test or maybe setup jest afterEach db cleanup hook
+[] Typescript check on create replicated record service which id not manually provided
+[] Write tests around the service that have to inject id manually on created template like https://github.com/tajpouria/stub/master/tree/packages/charge/src/charges/charges.service.ts
 
 ### Expiation
 [X] Go report https://goreportcard.com/
@@ -72,6 +74,7 @@
 ## Charge
 [] Publish order complete stan event after creating a charge that links order and to charge together
 [] Maybe Publish order cancelled stan event after creating a failed charge that links order and to charge charge together or simply publish order cancelled stan event on charge fail
+[] Make sure to updating charge status to complete after successfully charge
 
 ## Client
 [-] MAYBE Fix next finicky file change detection

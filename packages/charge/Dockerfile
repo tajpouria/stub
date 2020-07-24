@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 COPY . .
 RUN yarn
 
-EXPOSE 6000
+EXPOSE 7000
 
 CMD ["yarn", "start:dev"]
 

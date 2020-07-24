@@ -16,6 +16,7 @@ export * from './stan/ticket-removed';
 export * from './stan/order-created';
 export * from './stan/order-cancelled';
 export * from './stan/order-expired';
+export * from './stan/order-completed';
 // Test
 export * from './test-utils';
 // Types

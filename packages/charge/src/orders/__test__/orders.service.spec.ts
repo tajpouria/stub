@@ -2,17 +2,16 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { v4 } from 'uuid';
 import { Repository, getConnection } from 'typeorm';
+import { OrderStatus } from '@tajpouria/stub-common';
 
 import { AppModule } from 'src/app.module';
 import { OrdersService } from 'src/orders/orders.service';
 import { OrderEntity } from 'src/orders/entity/order.entity';
-import { TicketEntity } from 'src/tickets/entity/ticket.entity';
 
 describe('tickets.service (unit)', () => {
   let app: INestApplication,
     service: OrdersService,
-    orderRepository: Repository<OrderEntity>,
-    ticketRepository: Repository<TicketEntity>;
+    repository: Repository<OrderEntity>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -23,8 +22,7 @@ describe('tickets.service (unit)', () => {
 
     await app.init();
 
-    orderRepository = getConnection().getRepository(OrderEntity);
-    ticketRepository = getConnection().getRepository(TicketEntity);
+    repository = getConnection().getRepository(OrderEntity);
 
     service = moduleFixture.get<OrdersService>(OrdersService);
   });
@@ -36,58 +34,53 @@ describe('tickets.service (unit)', () => {
   const userId = 'user-id';
   let doc: OrderEntity;
   beforeEach(async () => {
-    const ticket = await ticketRepository.save(
-      ticketRepository.create({
+    doc = await repository.save(
+      repository.create({
         id: v4(),
-        title: 'hello',
-        price: 99.99,
-        timestamp: 1593781663193,
-        userId: 'mock20%id',
-      }),
-    );
-
-    doc = await orderRepository.save(
-      orderRepository.create({
-        expiresAt: new Date().toUTCString(),
+        price: Math.random(),
+        status: OrderStatus.Created,
+        version: 1,
         userId,
-        ticket,
       }),
     );
   });
 
-  it('findAll(): Retrieve user orders', async () => {
+  it('findAll(): Retrieve all documents', async () => {
     const orders = await service.findAll({ userId });
 
     expect(orders.length).toBeDefined();
     expect(orders[0].userId).toBe(userId);
-    expect(orders[0].ticket.id).toBe(doc.ticket.id);
   });
 
-  it('findOne(): Retrieve user order', async () => {
+  it('findOne(): Retrieve document', async () => {
     const order = await service.findOne({ userId });
 
     expect(order.userId).toBe(userId);
-    expect(order.ticket.id).toBe(doc.ticket.id);
   });
 
-  it('createOne(): Create order template', async () => {
-    const ticket = await ticketRepository.save(
-      ticketRepository.create({
-        id: v4(),
-        title: 'hello',
-        price: 99.99,
-        timestamp: 1593781663193,
-        userId: 'mock20%id',
-      }),
-    );
-
-    const newOrder = service.createOne({
-      expiresAt: new Date().toUTCString(),
+  it('createOne(): Create document template', async () => {
+    const doc = service.createOne({
+      id: v4(),
+      price: Math.random(),
+      status: OrderStatus.Created,
+      version: 1,
       userId,
-      ticket,
     });
 
-    expect(newOrder.expiresAt).toBeDefined();
-    expect(newOrder.ticket.id).toBe(ticket.id);
+    expect(doc.id).toBeDefined();
+  });
+
+  it('saveOne(): Save the document', async () => {
+    const doc = repository.create({
+      id: v4(),
+      price: Math.random(),
+      status: OrderStatus.Created,
+      version: 1,
+      userId,
+    });
+
+    await service.saveOne(doc);
+
+    expect(await repository.findOne(doc.id)).toBeDefined();
   });
 });

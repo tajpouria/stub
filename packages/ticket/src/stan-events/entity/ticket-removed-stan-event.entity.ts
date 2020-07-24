@@ -20,7 +20,7 @@ export class TicketRemovedStanEvent implements TicketRemovedEventData {
   // Version
   // Should provide manually
   @Column('int')
-  version;
+  version: number;
 
   @Column('boolean')
   published: boolean;

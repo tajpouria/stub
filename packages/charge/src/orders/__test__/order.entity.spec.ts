@@ -2,16 +2,13 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Repository, getConnection } from 'typeorm';
 import { v4 } from 'uuid';
+import { OrderStatus } from '@tajpouria/stub-common';
 
 import { AppModule } from 'src/app.module';
 import { OrderEntity } from 'src/orders/entity/order.entity';
-import { TicketEntity } from 'src/tickets/entity/ticket.entity';
-import { OrderStatus } from '@tajpouria/stub-common';
 
 describe('tickets.entity (unit)', () => {
-  let app: INestApplication,
-    orderRepository: Repository<OrderEntity>,
-    ticketRepository: Repository<TicketEntity>;
+  let app: INestApplication, repository: Repository<OrderEntity>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -22,27 +19,18 @@ describe('tickets.entity (unit)', () => {
 
     await app.init();
 
-    orderRepository = getConnection().getRepository(OrderEntity);
-    ticketRepository = getConnection().getRepository(TicketEntity);
+    repository = getConnection().getRepository(OrderEntity);
   });
 
   let doc: OrderEntity;
   beforeEach(async () => {
-    const ticket = await ticketRepository.save(
-      ticketRepository.create({
+    doc = await repository.save(
+      repository.create({
         id: v4(),
-        title: 'hello',
-        price: 99.99,
-        timestamp: 1593781663193,
-        userId: 'mock20%id',
-      }),
-    );
-
-    doc = await orderRepository.save(
-      orderRepository.create({
-        expiresAt: new Date().toUTCString(),
         userId: 'user-id',
-        ticket,
+        price: Math.random(),
+        status: OrderStatus.Created,
+        version: 1,
       }),
     );
   });
@@ -59,9 +47,9 @@ describe('tickets.entity (unit)', () => {
       doc.version = 5;
 
       try {
-        await orderRepository.save(doc);
+        await repository.save(doc);
       } catch (error) {
-        expect((await orderRepository.findOne(doc.id)).status).not.toBe(status);
+        expect((await repository.findOne(doc.id)).status).not.toBe(status);
 
         return done();
       }
@@ -76,9 +64,9 @@ describe('tickets.entity (unit)', () => {
       doc.version = 0;
 
       try {
-        await orderRepository.save(doc);
+        await repository.save(doc);
       } catch (error) {
-        expect((await orderRepository.findOne(doc.id)).status).not.toBe(status);
+        expect((await repository.findOne(doc.id)).status).not.toBe(status);
 
         return done();
       }
@@ -90,12 +78,12 @@ describe('tickets.entity (unit)', () => {
   it('Increment document.version onUpdate', async () => {
     expect(doc.version).toBe(1);
 
-    doc.status = OrderStatus.AwaitingPayment;
-    await orderRepository.save(doc);
+    doc.status = OrderStatus.Complete;
+    await repository.save(doc);
     expect(doc.version).toBe(2);
 
     doc.status = OrderStatus.Cancelled;
-    await orderRepository.save(doc);
+    await repository.save(doc);
     expect(doc.version).toBe(3);
   });
 });

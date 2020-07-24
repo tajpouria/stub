@@ -6,7 +6,6 @@ import {
   FindManyOptions,
   DeepPartial,
 } from 'typeorm';
-import { v4 } from 'uuid';
 
 import { OrderEntity } from 'src/orders/entity/order.entity';
 
@@ -20,20 +19,21 @@ export class OrdersService {
   findAll(
     where: FindManyOptions<OrderEntity>['where'],
   ): Promise<OrderEntity[]> {
-    return this.orderRepository.find({ where, relations: ['ticket'] });
+    return this.orderRepository.find({ where });
   }
 
   findOne(
     where: FindOneOptions<OrderEntity>['where'],
   ): Promise<OrderEntity | null> {
-    return this.orderRepository.findOne({ where, relations: ['ticket'] });
+    return this.orderRepository.findOne({ where });
   }
 
-  createOne(createInputDto: DeepPartial<OrderEntity>) {
-    return this.orderRepository.create({
-      ...createInputDto,
-      id: v4(), // Manually injected id _Id not created on document template at this level but it's required in order to publish consistence id_
-      version: 1,
-    });
+  // Since document is meant to be replicated from another service 'id' should provided manually
+  createOne(createInputDto: DeepPartial<OrderEntity> & { id: string }) {
+    return this.orderRepository.create(createInputDto);
+  }
+
+  saveOne(doc: OrderEntity) {
+    return this.orderRepository.save(doc);
   }
 }

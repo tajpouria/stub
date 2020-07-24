@@ -37,7 +37,6 @@ export class TicketsService {
       .findOne({
         where: [
           { ticket, status: OrderStatus.Created },
-          { ticket, status: OrderStatus.AwaitingPayment },
           { ticket, status: OrderStatus.Complete },
         ],
       }));

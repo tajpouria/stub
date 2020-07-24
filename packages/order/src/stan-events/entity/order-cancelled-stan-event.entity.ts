@@ -21,7 +21,7 @@ export class OrderCancelledStanEvent implements OrderCancelledEventData {
   // Version
   // Should provide manually
   @Column('int')
-  version;
+  version: number;
 
   @Column('boolean')
   published: boolean;
@@ -50,7 +50,7 @@ export class OrderCancelledStanEvent implements OrderCancelledEventData {
         orderCancelledPublisher,
       );
     } catch (error) {
-      logger.info(new Error(error));
+      logger.error(new Error(error));
     }
   }
 }
