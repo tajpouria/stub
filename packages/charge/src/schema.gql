@@ -1,0 +1,38 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type TicketEntity {
+  id: String!
+  userId: String!
+  title: String!
+  price: Float!
+  timestamp: Float!
+  orders: [OrderEntity!]!
+}
+
+type OrderEntity {
+  id: String!
+  userId: String!
+  status: String!
+  expiresAt: String!
+  ticket: TicketEntity!
+}
+
+type Query {
+  orders: [OrderEntity!]!
+  order(id: String!): OrderEntity!
+}
+
+type Mutation {
+  createOrder(createOrderInput: CreateOrderInput!): OrderEntity!
+  cancelOrder(cancelOrderInput: CancelOrderInput!): OrderEntity!
+}
+
+input CreateOrderInput {
+  ticketId: String!
+}
+
+input CancelOrderInput {
+  id: String!
+}

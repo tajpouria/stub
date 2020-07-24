@@ -4,7 +4,6 @@ import {
   PrimaryGeneratedColumn,
   VersionColumn,
   OneToMany,
-  JoinColumn,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { TicketCreatedEventData } from '@tajpouria/stub-common';
