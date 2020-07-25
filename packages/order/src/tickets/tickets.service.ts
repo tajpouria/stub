@@ -18,7 +18,7 @@ export class TicketsService {
     return this.ticketRepository.findOne(id, { relations: ['orders'] });
   }
 
-  createAndSaveOne(createTicketDto: TicketCreatedEventData) {
+  createAndSaveOne(createTicketDto: TicketCreatedEventData & { id: string }) {
     const { ticketRepository } = this;
     return ticketRepository.save(ticketRepository.create(createTicketDto));
   }

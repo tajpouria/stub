@@ -36,7 +36,15 @@ export class TicketsListener {
       if (validationErrors)
         throw new Error(JSON.stringify({ validationErrors, data }));
 
-      await ticketsService.createAndSaveOne(data);
+      const { id, price, timestamp, title, userId, version } = data;
+      await ticketsService.createAndSaveOne({
+        id,
+        version,
+        userId,
+        title,
+        timestamp,
+        price,
+      });
       msg.ack();
     } catch (error) {
       if (NODE_ENV !== 'test') logger.error(error);
@@ -52,7 +60,15 @@ export class TicketsListener {
       if (validationErrors)
         throw new Error(JSON.stringify({ validationErrors, data }));
 
-      await ticketsService.createAndSaveOne(data);
+      const { id, price, timestamp, title, userId, version } = data;
+      await ticketsService.createAndSaveOne({
+        id,
+        price,
+        version,
+        userId,
+        title,
+        timestamp,
+      });
       msg.ack();
     } catch (error) {
       if (NODE_ENV !== 'test') logger.error(error);

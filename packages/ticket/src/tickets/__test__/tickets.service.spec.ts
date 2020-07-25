@@ -66,6 +66,8 @@ describe('tickets.service (unit)', () => {
       userId: 'someID',
     });
 
+    // Check injected id
+    expect(newTicket.id).toBeDefined();
     expect(newTicket.title).toBeDefined();
   });
 });

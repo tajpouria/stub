@@ -87,6 +87,7 @@ describe('tickets.service (unit)', () => {
       ticket,
     });
 
+    // Check injected id
     expect(newOrder.id).toBeDefined();
     expect(newOrder.ticket.id).toBe(ticket.id);
   });

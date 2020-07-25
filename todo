@@ -48,7 +48,7 @@
 [X] Hide order document version
 [-] Add ticket.id to order-cancelled-event-data
 [X] Don't cancel payed orders
-[] Maybe delete the awaiting payment order status
+[X] Maybe delete the awaiting payment order status
 
 ## Common
 [X] Fix import in common module
@@ -64,8 +64,8 @@
 [X] Clean code report shield
 [] Host JSONSchema some where in order to have single source of truth
 [X] Delete stan events on listener test or maybe setup jest afterEach db cleanup hook
-[] Typescript check on create replicated record service which id not manually provided
-[] Write tests around the service that have to inject id manually on created template like https://github.com/tajpouria/stub/master/tree/packages/charge/src/charges/charges.service.ts
+[X] Typescript check on create replicated record service which id not manually provided
+[X] Write tests around the service that have to inject id manually on created template like https://github.com/tajpouria/stub/master/tree/packages/charge/src/charges/charges.service.ts
 [] Fix test converges
 
 ### Expiation
@@ -73,9 +73,9 @@
 [] Add tests
 
 ## Charge
-[] Publish order complete stan event after creating a charge that links order and to charge together
-[] Maybe Publish order cancelled stan event after creating a failed charge that links order and to charge charge together or simply publish order cancelled stan event on charge fail
-[] Make sure to updating charge status to complete after successfully charge
+[X] Publish order complete stan event after creating a charge that links order and to charge together
+[-] Maybe Publish order cancelled stan event after creating a failed charge that links order and to charge charge together or simply publish order cancelled stan event on charge fail
+[X] Make sure to updating charge status to complete after successfully charge
 [] Add createZarinpal mutation
 
 ## Client

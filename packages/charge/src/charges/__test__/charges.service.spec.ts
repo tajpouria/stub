@@ -81,6 +81,7 @@ describe('charge.service (unit)', () => {
       order,
     });
 
+    // Check Injected id
     expect(doc.id).toBeDefined();
     expect(doc.order.id).toBe(order.id);
   });
