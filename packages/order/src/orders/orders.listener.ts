@@ -12,6 +12,7 @@ import { StanEventsService } from 'src/stan-events/stan-events.service';
 import { DatabaseTransactionService } from 'src/database-transaction/database-transaction.service';
 import { OrderEntity } from 'src/orders/entity/order.entity';
 import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity';
+import { orderCompletedListener } from './shared/order-completed-listener';
 
 const { NAME, NODE_ENV } = process.env;
 
@@ -24,10 +25,11 @@ export class OrdersListener {
     private readonly stanEventsService: StanEventsService,
     private readonly databaseTransactionService: DatabaseTransactionService,
   ) {
-    const { onOrderExpired } = this;
+    const { onOrderExpired, onOrderCompleted } = this;
     // Initialize listeners
     if (NODE_ENV !== 'test') {
       orderExpiredListener.listen(NAME).onMessage(onOrderExpired);
+      orderCompletedListener.listen(NAME).onMessage(onOrderCompleted);
     }
   }
 
@@ -68,6 +70,29 @@ export class OrdersListener {
       await databaseTransactionService.process<
         [OrderEntity, OrderCancelledStanEvent]
       >([doc, 'save'], [event, 'save']);
+
+      msg.ack();
+    } catch (error) {
+      if (NODE_ENV !== 'test') logger.error(error);
+    }
+  };
+
+  onOrderCompleted: StanListenerOnMessageCallback<
+    OrderExpiredEventData
+  > = async (validationErrors, data, msg) => {
+    const { logger, ordersService } = this;
+
+    try {
+      if (validationErrors)
+        throw new Error(JSON.stringify({ validationErrors, data }));
+
+      // Verify document existence
+      const doc = await ordersService.findOne({ id: data.id });
+      if (!doc) throw new Error(`Order ${data.id} not found!`);
+
+      // Update document and save the record
+      doc.status = OrderStatus.Complete;
+      await ordersService.saveOne(doc);
 
       msg.ack();
     } catch (error) {

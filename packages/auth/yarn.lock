@@ -836,10 +836,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@tajpouria/stub-common@1.10.0":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/@tajpouria/stub-common/-/stub-common-1.10.0.tgz#732ea067aa9dad8902d3a469c189f7682a27b1fe"
-  integrity sha512-o8s9R7Elowx3vmf7uLczA9CjQreg85kb9LroFjM+SbWTb0axVwYBPzTvRn3dIIic661CdT64U5VaZaM5qz08sg==
+"@tajpouria/stub-common@1.24.0":
+  version "1.24.0"
+  resolved "https://registry.yarnpkg.com/@tajpouria/stub-common/-/stub-common-1.24.0.tgz#87a74d005bf730c3a216db811f955b1871ccf66a"
+  integrity sha512-/jdzbTA0qW44slCSiA19h7JhILozL5H2qEVZ+Oa111y4DPrbBsldKdx31wHoKpZ2bUWtXdgJ5Lv26CSsnaquTg==
   dependencies:
     "@hapi/joi" "^17.1.1"
     "@nestjs/common" "^7.1.3"

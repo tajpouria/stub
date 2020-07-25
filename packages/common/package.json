@@ -1,12 +1,13 @@
 {
   "name": "@tajpouria/stub-common",
-  "version": "1.23.0",
+  "version": "1.24.0",
   "main": "dist/index.js",
   "license": "MIT",
   "author": "Pouria Tajdivand<tajpouria.dev@gmail.com>",
   "types": "dist/index.d.ts",
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "README.md"
   ],
   "scripts": {
     "build": "rimraf dist/ && tsc"
@@ -34,6 +35,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tajpouria/stub.git"
+    "url": "git+https://github.com/tajpouria/stub/tree/master/packages/common"
   }
 }

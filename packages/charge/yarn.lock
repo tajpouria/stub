@@ -1403,10 +1403,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@tajpouria/stub-common@1.23.0":
-  version "1.23.0"
-  resolved "https://registry.yarnpkg.com/@tajpouria/stub-common/-/stub-common-1.23.0.tgz#42ff208141e64ac3be221e80b56680a8a98d844e"
-  integrity sha512-X8OmMqMnxdOI7lINtnM68i5A99ye7p0iCdM/wBrlV0CH6tRlkZ6J9NjIDIz/1ITNkEY6XmUVU2ARXb5uPFB6Vg==
+"@tajpouria/stub-common@1.24.0":
+  version "1.24.0"
+  resolved "https://registry.yarnpkg.com/@tajpouria/stub-common/-/stub-common-1.24.0.tgz#87a74d005bf730c3a216db811f955b1871ccf66a"
+  integrity sha512-/jdzbTA0qW44slCSiA19h7JhILozL5H2qEVZ+Oa111y4DPrbBsldKdx31wHoKpZ2bUWtXdgJ5Lv26CSsnaquTg==
   dependencies:
     "@hapi/joi" "^17.1.1"
     "@nestjs/common" "^7.1.3"

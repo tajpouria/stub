@@ -70,7 +70,7 @@ describe('tickets.service (unit)', () => {
     expect(order.ticket.id).toBe(doc.ticket.id);
   });
 
-  it('createOne(): Create order template', async () => {
+  it('createOne(): Create order template and inject id', async () => {
     const ticket = await ticketRepository.save(
       ticketRepository.create({
         id: v4(),
@@ -87,7 +87,30 @@ describe('tickets.service (unit)', () => {
       ticket,
     });
 
-    expect(newOrder.expiresAt).toBeDefined();
+    expect(newOrder.id).toBeDefined();
     expect(newOrder.ticket.id).toBe(ticket.id);
+  });
+
+  it('saveOne(): Save document', async () => {
+    const ticket = await ticketRepository.save(
+      ticketRepository.create({
+        id: v4(),
+        title: 'hello',
+        price: 99.99,
+        timestamp: 1593781663193,
+        userId: 'mock20%id',
+      }),
+    );
+
+    const newOrder = orderRepository.create({
+      id: v4(),
+      expiresAt: new Date().toUTCString(),
+      userId,
+      ticket,
+    });
+
+    await service.saveOne(newOrder);
+
+    expect(await orderRepository.findOne(newOrder.id)).toBeDefined();
   });
 });

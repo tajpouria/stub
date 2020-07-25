@@ -177,4 +177,78 @@ describe('orders.listener (unit)', () => {
       ).toBe(3);
     });
   });
+
+  describe('onOrderCompleted()', () => {
+    let doc: OrderEntity;
+    beforeEach(async () => {
+      doc = await orderRepository.save(
+        orderRepository.create({
+          expiresAt: new Date().toISOString(),
+          userId: 'user-id',
+        }),
+      );
+
+      await ticketRepository.save(
+        ticketRepository.create({
+          id: v4(),
+          title: 'hello',
+          price: 99.99,
+          timestamp: 1593781663193,
+          userId: 'mock20%id',
+          orders: [doc],
+        }),
+      );
+    });
+
+    const setup = ({ orderId = doc.id }: { orderId?: string } = {}) => {
+      const eventData: OrderCancelledEventData = {
+        id: orderId,
+        version: 1,
+      };
+
+      return { eventData };
+    };
+
+    it('ValidationError: Not to update document', async () => {
+      const { eventData } = setup();
+
+      await listener.onOrderCompleted(mockValidationError, eventData, mockMsg);
+
+      expect((await orderRepository.findOne(doc.id)).status).toBe(doc.status);
+    });
+
+    it('ValidationError: Not to Invoke message acknowledge', async () => {
+      const { eventData } = setup();
+
+      await listener.onOrderCompleted(mockValidationError, eventData, mockMsg);
+
+      expect(mockMsg.ack).not.toBeCalled();
+    });
+
+    it('Document not exist: Not to Invoke message acknowledge', async () => {
+      const { eventData } = setup({ orderId: 'Gibberish' });
+
+      await listener.onOrderCompleted(null, eventData, mockMsg);
+
+      expect(mockMsg.ack).not.toBeCalled();
+    });
+
+    it('Update document', async () => {
+      const { eventData } = setup();
+
+      await listener.onOrderCompleted(null, eventData, mockMsg);
+
+      expect((await orderRepository.findOne(doc.id)).status).toBe(
+        OrderStatus.Complete,
+      );
+    });
+
+    it('Invoke message acknowledge', async () => {
+      const { eventData } = setup();
+
+      await listener.onOrderCompleted(null, eventData, mockMsg);
+
+      expect(mockMsg.ack).toBeCalled();
+    });
+  });
 });

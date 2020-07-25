@@ -12,6 +12,10 @@
 
 ### Ticket service [![Coverage Status](https://coveralls.io/repos/gitlab/tajpouria/stub-ticket/badge.svg?branch=master)](https://coveralls.io/gitlab/tajpouria/stub-ticket?branch=master)
 
-## Modules
+## Package
 
-### Common [![](https://img.shields.io/npm/v/@tajpouria/stub-common)](https://www.npmjs.com/package/@tajpouria/stub-common)
+### @tajpouria/stub-common [![](https://img.shields.io/npm/v/@tajpouria/stub-common)](https://www.npmjs.com/package/@tajpouria/stub-common)
+
+## License
+
+Stub is [MIT licensed](LICENSE).
