@@ -1,8 +1,11 @@
 {
   "subject": "order:completed",
-  "required": ["id"],
+  "required": ["id", "version"],
   "additionalProperties": false,
   "properties": {
+    "version": {
+      "type": "number"
+    },
     "id": {
       "type": "string"
     }

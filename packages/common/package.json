@@ -1,6 +1,6 @@
 {
   "name": "@tajpouria/stub-common",
-  "version": "1.22.0",
+  "version": "1.23.0",
   "main": "dist/index.js",
   "license": "MIT",
   "author": "Pouria Tajdivand<tajpouria.dev@gmail.com>",

@@ -22,6 +22,7 @@ export class ChargeEntity {
   userId: string;
 
   // Order
+  @Field(type => OrderEntity)
   @OneToOne(type => OrderEntity, { onDelete: 'CASCADE' })
   @JoinColumn()
   order: OrderEntity;

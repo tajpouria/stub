@@ -12,15 +12,17 @@ import {
   cookieGeneratorFactory,
   produceObjectVariable,
   OrderStatus,
+  JwtPayload,
 } from '@tajpouria/stub-common';
 import cookieSession from 'cookie-session';
 import { v4 } from 'uuid';
 
 import { AppModule } from 'src/app.module';
 import { OrderEntity } from 'src/orders/entity/order.entity';
+import { ChargeEntity } from 'src/charges/entity/charge.entity';
 // __mocks__
 import { stan } from 'src/shared/stan';
-import { ChargeEntity } from '../charges/entity/charge.entity';
+import { stripe } from 'src/charges/shared/stripe';
 
 const { SESSION_NAME, JWT_SECRET } = process.env;
 
@@ -73,426 +75,414 @@ describe('app.controller (e2e)', () => {
   const generateCookie = cookieGeneratorFactory(SESSION_NAME, JWT_SECRET);
 
   describe('POST /graphql', () => {
-    it.todo('Hello');
-    //   describe('query orders', () => {
-    //     it('Unauthorized: Unauthorized', async () => {
-    //       const query = `
-    //         {
-    //           orders {
-    //             id
-    //           }
-    //         }
-    //       `;
-    //       const response = await gCall(query);
-    //       expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
-    //     });
-    //     it('Orders', async () => {
-    //       const query = `
-    //         {
-    //           orders {
-    //             id
-    //           }
-    //         }
-    //       `;
-    //       const response = await gCall(query, generateCookie());
-    //       expect(response.body.data).not.toBeNull();
-    //       expect(response.body.data.orders.length).toBeDefined();
-    //     });
-    //   });
-    //   describe('query order(id)', () => {
-    //     it('Unauthorized: Unauthorized', async () => {
-    //       const query = `
-    //         {
-    //           order(id: "abc1") {
-    //             id
-    //           }
-    //         }
-    //       `;
-    //       const response = await gCall(query);
-    //       expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
-    //     });
-    //     it('Document not exists: Not Found', async () => {
-    //       const query = `
-    //         {
-    //           order(id: "abc1") {
-    //             id
-    //           }
-    //         }
-    //       `;
-    //       const response = await gCall(query, generateCookie());
-    //       expect(response.body.errors[0].message).toBe(
-    //         new NotFoundException().message,
-    //       );
-    //     });
-    //     it('Not Document Owner: Forbidden', async () => {
-    //       const order = await chargeRepository.save(
-    //         chargeRepository.create({
-    //           expiresAt: new Date().toUTCString(),
-    //           userId: 'user-id',
-    //         }),
-    //       );
-    //       await orderRepository.save(
-    //         orderRepository.create({
-    //           id: 'ccd31c79-7bd2-4e23-9a62-5b8ef1aa41be',
-    //           title: 'hello',
-    //           price: 99.99,
-    //           timestamp: 1593781663193,
-    //           userId: 'mock20%id',
-    //           orders: [order],
-    //         }),
-    //       );
-    //       const query = `
-    //       {
-    //         order(id: "${order.id}") {
-    //           id
-    //         }
-    //       }
-    //     `;
-    //       const response = await gCall(query, generateCookie());
-    //       expect(response.body.errors[0].message).toBe(
-    //         new ForbiddenException().message,
-    //       );
-    //     });
-    //     it('Order', async () => {
-    //       const userId = 'some-constants-id';
-    //       const order = await chargeRepository.save(
-    //         chargeRepository.create({
-    //           expiresAt: new Date().toUTCString(),
-    //           userId,
-    //         }),
-    //       );
-    //       const ticket = await orderRepository.save(
-    //         orderRepository.create({
-    //           id: v4(),
-    //           title: 'hello',
-    //           price: 99.99,
-    //           timestamp: 1593781663193,
-    //           userId: 'mock20%id',
-    //           orders: [order],
-    //         }),
-    //       );
-    //       const query = `
-    //       {
-    //         order(id: "${order.id}") {
-    //           id
-    //           userId
-    //           ticket {
-    //             id
-    //           }
-    //         }
-    //       }
-    //     `;
-    //       const response = await gCall(
-    //         query,
-    //         generateCookie({
-    //           iat: Date.now(),
-    //           username: 'username',
-    //           sub: userId,
-    //         }),
-    //       );
-    //       expect(response.body.data.order.id).toBeDefined();
-    //       expect(response.body.data.order.userId).toBe(userId);
-    //       expect(response.body.data.order.ticket.id).toBe(ticket.id);
-    //     });
-    //   });
-    //   describe('mutation createOrder', () => {
-    //     it('Unauthorized: Unauthorized', async () => {
-    //       const vars = {
-    //         ticketId: '123',
-    //       };
-    //       const query = `
-    //           mutation {
-    //             createOrder(createOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //             }
-    //           }
-    //         `;
-    //       const response = await gCall(query);
-    //       expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
-    //     });
-    //     it('Invalid ticketId: BadRequest', async () => {
-    //       const vars = {
-    //         ticketId: 'Invalid uuid',
-    //       };
-    //       const query = `
-    //           mutation {
-    //             createOrder(createOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //             }
-    //           }
-    //         `;
-    //       const response = await gCall(query, generateCookie());
-    //       expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
-    //     });
-    //     it('Ticket not exists: NotFound', async () => {
-    //       const vars = {
-    //         ticketId: v4(),
-    //       };
-    //       const query = `
-    //           mutation {
-    //             createOrder(createOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //             }
-    //           }
-    //         `;
-    //       const response = await gCall(query, generateCookie());
-    //       expect(response.body.errors[0].message).toBe(
-    //         new NotFoundException().message,
-    //       );
-    //     });
-    //     it('Ticket is Reserved : BadRequest', async () => {
-    //       const order = await chargeRepository.save(
-    //         chargeRepository.create({
-    //           expiresAt: new Date().toUTCString(),
-    //           userId: 'some-id',
-    //         }),
-    //       );
-    //       // Reserve ticket
-    //       const ticket = await orderRepository.save(
-    //         orderRepository.create({
-    //           id: v4(),
-    //           title: 'hello',
-    //           price: 99.99,
-    //           timestamp: 1593781663193,
-    //           userId: 'mock20%id',
-    //           orders: [order],
-    //         }),
-    //       );
-    //       const vars = {
-    //         ticketId: ticket.id,
-    //       };
-    //       const query = `
-    //           mutation {
-    //             createOrder(createOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //             }
-    //           }
-    //         `;
-    //       const response = await gCall(query, generateCookie());
-    //       expect(response.body.errors[0].message).toBe(
-    //         new BadRequestException().message,
-    //       );
-    //     });
-    //     it('CreateOrder', async () => {
-    //       const ticket = await orderRepository.save(
-    //         orderRepository.create({
-    //           id: v4(),
-    //           title: 'hello',
-    //           price: 99.99,
-    //           timestamp: 1593781663193,
-    //           userId: 'mock20%id',
-    //           orders: [],
-    //         }),
-    //       );
-    //       const vars = {
-    //         ticketId: ticket.id,
-    //       };
-    //       const query = `
-    //           mutation {
-    //             createOrder(createOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //               ticket {
-    //                 id
-    //               }
-    //             }
-    //           }
-    //         `;
-    //       const response = await gCall(query, generateCookie());
-    //       expect(response.body.data.createOrder.id).toBeDefined();
-    //       expect(response.body.data.createOrder.ticket.id).toBe(ticket.id);
-    //     });
-    //     it('Publish event', async () => {
-    //       const ticket = await orderRepository.save(
-    //         orderRepository.create({
-    //           id: v4(),
-    //           title: 'hello',
-    //           price: 99.99,
-    //           timestamp: 1593781663193,
-    //           userId: 'mock20%id',
-    //           orders: [],
-    //         }),
-    //       );
-    //       const vars = {
-    //         ticketId: ticket.id,
-    //       };
-    //       const query = `
-    //           mutation {
-    //             createOrder(createOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //               ticket {
-    //                 id
-    //               }
-    //             }
-    //           }
-    //         `;
-    //       const response = await gCall(query, generateCookie());
-    //       expect(stan.instance.publish).toHaveBeenCalled();
-    //       expect(
-    //         JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1]).id,
-    //       ).toBe(response.body.data.createOrder.id);
-    //       expect(
-    //         JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1])
-    //           .version,
-    //       ).toBe(1);
-    //     });
-    //   });
-    //   describe('mutation cancelOrder', () => {
-    //     it('Unauthorized: Unauthorized', async () => {
-    //       const vars = {
-    //         id: '123',
-    //       };
-    //       const query = `
-    //           mutation {
-    //             cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //             }
-    //           }
-    //         `;
-    //       const response = await gCall(query);
-    //       expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
-    //     });
-    //     it('Invalid id: BadRequest', async () => {
-    //       const vars = {
-    //         id: 'Invalid uuid',
-    //       };
-    //       const query = `
-    //           mutation {
-    //             cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //             }
-    //           }
-    //         `;
-    //       const response = await gCall(query, generateCookie());
-    //       expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
-    //     });
-    //     it('Order not exists: NotFound', async () => {
-    //       const vars = {
-    //         id: v4(),
-    //       };
-    //       const query = `
-    //           mutation {
-    //             cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //             }
-    //           }
-    //         `;
-    //       const response = await gCall(query, generateCookie());
-    //       expect(response.body.errors[0].message).toBe(
-    //         new NotFoundException().message,
-    //       );
-    //     });
-    //     it('Not document owner: Forbidden', async () => {
-    //       const order = await chargeRepository.save(
-    //         chargeRepository.create({
-    //           expiresAt: new Date().toUTCString(),
-    //           userId: 'some-id',
-    //         }),
-    //       );
-    //       // Reserve ticket
-    //       await orderRepository.save(
-    //         orderRepository.create({
-    //           id: v4(),
-    //           title: 'hello',
-    //           price: 99.99,
-    //           timestamp: 1593781663193,
-    //           userId: 'mock20%id',
-    //           orders: [order],
-    //         }),
-    //       );
-    //       const vars = {
-    //         id: order.id,
-    //       };
-    //       const query = `
-    //           mutation {
-    //             cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //             }
-    //           }
-    //         `;
-    //       const response = await gCall(query, generateCookie());
-    //       expect(response.body.errors[0].message).toBe(
-    //         new ForbiddenException().message,
-    //       );
-    //     });
-    //     it('CancelOrder', async () => {
-    //       const userId = 'user-id';
-    //       const order = await chargeRepository.save(
-    //         chargeRepository.create({
-    //           expiresAt: new Date().toUTCString(),
-    //           userId,
-    //         }),
-    //       );
-    //       // Reserve ticket
-    //       const ticket = await orderRepository.save(
-    //         orderRepository.create({
-    //           id: v4(),
-    //           title: 'hello',
-    //           price: 99.99,
-    //           timestamp: 1593781663193,
-    //           userId: 'mock20%id',
-    //           orders: [order],
-    //         }),
-    //       );
-    //       const vars = {
-    //         id: order.id,
-    //       };
-    //       const query = `
-    //           mutation {
-    //             cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //               status
-    //             }
-    //           }
-    //         `;
-    //       const response = await gCall(
-    //         query,
-    //         generateCookie({ iat: Date.now(), username: 'user', sub: userId }),
-    //       );
-    //       expect(response.body.data.cancelOrder.id).toBe(order.id);
-    //       expect(response.body.data.cancelOrder.status).toBe(
-    //         OrderStatus.Cancelled,
-    //       );
-    //     });
-    //     it('Publish event', async () => {
-    //       const userId = 'user-id';
-    //       const order = await chargeRepository.save(
-    //         chargeRepository.create({
-    //           expiresAt: new Date().toUTCString(),
-    //           userId,
-    //         }),
-    //       );
-    //       // Reserve ticket
-    //       await orderRepository.save(
-    //         orderRepository.create({
-    //           id: v4(),
-    //           title: 'hello',
-    //           price: 99.99,
-    //           timestamp: 1593781663193,
-    //           userId: 'mock20%id',
-    //           orders: [order],
-    //         }),
-    //       );
-    //       const vars = {
-    //         id: order.id,
-    //       };
-    //       const query = `
-    //           mutation {
-    //             cancelOrder(cancelOrderInput: ${produceObjectVariable(vars)}) {
-    //               id
-    //               status
-    //             }
-    //           }
-    //         `;
-    //       await gCall(
-    //         query,
-    //         generateCookie({ iat: Date.now(), username: 'user', sub: userId }),
-    //       );
-    //       await gCall(query, generateCookie());
-    //       expect(stan.instance.publish).toHaveBeenCalled();
-    //       expect(
-    //         JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1]).id,
-    //       ).toBe(order.id);
-    //     });
-    //   });
+    describe('query charges', () => {
+      it('Unauthorized: Unauthorized', async () => {
+        const query = `
+              {
+                charges{
+                  id
+                }
+              }
+            `;
+        const response = await gCall(query);
+        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+      });
+
+      it('Charges', async () => {
+        const query = `
+              {
+                charges{
+                  id
+                }
+              }
+            `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.data).not.toBeNull();
+        expect(response.body.data.charges.length).toBeDefined();
+      });
+    });
+
+    describe('query charge(id)', () => {
+      let doc: ChargeEntity;
+      beforeEach(async () => {
+        const order = await orderRepository.save(
+          orderRepository.create({
+            price: 1300,
+            status: OrderStatus.Created,
+            userId: v4(),
+          }),
+        );
+
+        doc = await chargeRepository.save(
+          chargeRepository.create({
+            userId: order.userId,
+            order,
+          }),
+        );
+      });
+
+      it('Unauthorized: Unauthorized', async () => {
+        const query = `
+                {
+                  charge(id: "abc1") {
+                    id
+                  }
+                }
+              `;
+        const response = await gCall(query);
+        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+      });
+
+      it('Document not exists: Not Found', async () => {
+        const query = `
+                {
+                  charge(id: "abc1") {
+                    id
+                  }
+                }
+              `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(
+          new NotFoundException().message,
+        );
+      });
+
+      it('Not Document Owner: Forbidden', async () => {
+        const query = `
+              {
+                charge(id: "${doc.id}") {
+                  id
+                }
+              }
+            `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(
+          new ForbiddenException().message,
+        );
+      });
+
+      it('Order', async () => {
+        const query = `
+              {
+                charge(id: "${doc.id}") {
+                  id
+                  userId
+                  order {
+                    id
+                  }
+                }
+              }
+            `;
+        const response = await gCall(
+          query,
+          generateCookie({
+            iat: Date.now(),
+            username: 'username',
+            sub: doc.userId,
+          }),
+        );
+
+        expect(response.body.data.charge.id).toBeDefined();
+        expect(response.body.data.charge.userId).toBe(doc.userId);
+        expect(response.body.data.charge.order.id).toBe(doc.order.id);
+      });
+    });
+
+    describe('mutation createStripCharge', () => {
+      let order: OrderEntity;
+      beforeEach(async () => {
+        order = await orderRepository.save(
+          orderRepository.create({
+            price: 1300,
+            status: OrderStatus.Created,
+            userId: v4(),
+          }),
+        );
+      });
+
+      it('Unauthorized: Unauthorized', async () => {
+        const vars = {
+          orderId: v4(),
+          source: v4(),
+        };
+        const query = `
+                mutation {
+                  createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
+                    vars,
+                  )}) {
+                    id
+                  }
+                }
+              `;
+        const response = await gCall(query);
+        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
+      });
+
+      it('Invalid orderId: BadRequest', async () => {
+        const vars = {
+          orderId: 'Invalid uuid',
+          source: v4(),
+        };
+        const query = `
+                mutation {
+                  createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
+                    vars,
+                  )}) {
+                    id
+                  }
+                }
+              `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+      });
+
+      it('Invalid source: BadRequest', async () => {
+        const vars = {
+          orderId: 'Invalid uuid',
+          source: '1', // Invalid source
+        };
+        const query = `
+                mutation {
+                  createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
+                    vars,
+                  )}) {
+                    id
+                  }
+                }
+              `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
+      });
+
+      it('Order not exists: NotFound', async () => {
+        const vars = {
+          orderId: v4(),
+          source: v4(),
+        };
+        const query = `
+                mutation {
+                  createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
+                    vars,
+                  )}) {
+                    id
+                  }
+                }
+              `;
+        const response = await gCall(query, generateCookie());
+        expect(response.body.errors[0].message).toBe(
+          new NotFoundException().message,
+        );
+      });
+
+      it('Not Document Owner: Forbidden', async () => {
+        const vars = {
+          orderId: order.id,
+          source: v4(),
+        };
+
+        const query = `
+                mutation {
+                  createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
+                    vars,
+                  )}) {
+                    id
+                  }
+                }
+              `;
+
+        // Update document
+        order.status = OrderStatus.Cancelled;
+        order.version++;
+        await orderRepository.save(order);
+
+        expect(
+          (await gCall(query, generateCookie())).body.errors[0].message,
+        ).toBe(new ForbiddenException().message);
+      });
+
+      it('Order is in Cancelled or Complete State: BadRequest', async () => {
+        const vars = {
+          orderId: order.id,
+          source: v4(),
+        };
+
+        const jwtPayload: JwtPayload = {
+          sub: order.userId,
+          iat: Date.now(),
+          username: 'user-name',
+        };
+
+        const query = `
+                mutation {
+                  createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
+                    vars,
+                  )}) {
+                    id
+                  }
+                }
+              `;
+
+        // Update document
+        order.status = OrderStatus.Cancelled;
+        order.version++;
+        await orderRepository.save(order);
+
+        expect(
+          (await gCall(query, generateCookie(jwtPayload))).body.errors[0]
+            .message,
+        ).toBe(new BadRequestException().message);
+
+        // Update document
+        order.status = OrderStatus.Complete;
+        order.version++;
+        await orderRepository.save(order);
+
+        expect(
+          (await gCall(query, generateCookie(jwtPayload))).body.errors[0]
+            .message,
+        ).toBe(new BadRequestException().message);
+      });
+
+      describe('CreateStripeCharge', () => {
+        it('Response and create Document', async () => {
+          const vars = {
+            orderId: order.id,
+            source: v4(),
+          };
+
+          const jwtPayload: JwtPayload = {
+            sub: order.userId,
+            iat: Date.now(),
+            username: 'user-name',
+          };
+
+          const query = `
+                mutation {
+                  createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
+                    vars,
+                  )}) {
+                    id
+                    order {
+                      id
+                    }
+                  }
+                }
+              `;
+          // Check response
+          const response = await gCall(query, generateCookie(jwtPayload));
+          expect(response.body.data.createStripeCharge.id).toBeDefined();
+          expect(response.body.data.createStripeCharge.order.id).toBe(order.id);
+
+          // Check created document
+          expect(
+            await chargeRepository.findOne(
+              response.body.data.createStripeCharge.id,
+            ),
+          ).toBeDefined();
+        });
+
+        it('Update order status', async () => {
+          const vars = {
+            orderId: order.id,
+            source: v4(),
+          };
+
+          const jwtPayload: JwtPayload = {
+            sub: order.userId,
+            iat: Date.now(),
+            username: 'user-name',
+          };
+
+          const query = `
+                mutation {
+                  createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
+                    vars,
+                  )}) {
+                    id
+                    order {
+                      id
+                    }
+                  }
+                }
+              `;
+          await gCall(query, generateCookie(jwtPayload));
+
+          expect((await orderRepository.findOne(order.id)).status).toBe(
+            OrderStatus.Complete,
+          );
+        });
+      });
+
+        it('Stripe Charge', async () => {
+          const vars = {
+            orderId: order.id,
+            source: v4(),
+          };
+
+          const jwtPayload: JwtPayload = {
+            sub: order.userId,
+            iat: Date.now(),
+            username: 'user-name',
+          };
+
+          const query = `
+                mutation {
+                  createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
+                    vars,
+                  )}) {
+                    id
+                    order {
+                      id
+                    }
+                  }
+                }
+              `;
+
+          await gCall(query, generateCookie(jwtPayload));
+
+          expect(stripe.charges.create).toHaveBeenCalled();
+          expect(
+            (stripe.charges.create as jest.Mock).mock.calls[0][0].source,
+          ).toBe(vars.source);
+        });
+
+        it('Publish event', async () => {
+          const vars = {
+            orderId: order.id,
+            source: v4(),
+          };
+
+          const jwtPayload: JwtPayload = {
+            sub: order.userId,
+            iat: Date.now(),
+            username: 'user-name',
+          };
+
+          const query = `
+                mutation {
+                  createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
+                    vars,
+                  )}) {
+                    id
+                    order {
+                      id
+                    }
+                  }
+                }
+              `;
+
+          await gCall(query, generateCookie(jwtPayload));
+
+          expect(stan.instance.publish).toHaveBeenCalled();
+          expect(
+            JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1])
+              .id,
+          ).toBe(order.id);
+          expect(
+            JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1])
+              .version,
+          ).toBe(2);
+        });
+    });
   });
 });

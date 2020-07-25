@@ -66,6 +66,7 @@
 [X] Delete stan events on listener test or maybe setup jest afterEach db cleanup hook
 [] Typescript check on create replicated record service which id not manually provided
 [] Write tests around the service that have to inject id manually on created template like https://github.com/tajpouria/stub/master/tree/packages/charge/src/charges/charges.service.ts
+[] Fix test converges
 
 ### Expiation
 [X] Go report https://goreportcard.com/
@@ -75,6 +76,7 @@
 [] Publish order complete stan event after creating a charge that links order and to charge together
 [] Maybe Publish order cancelled stan event after creating a failed charge that links order and to charge charge together or simply publish order cancelled stan event on charge fail
 [] Make sure to updating charge status to complete after successfully charge
+[] Add createZarinpal mutation
 
 ## Client
 [-] MAYBE Fix next finicky file change detection

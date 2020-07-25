@@ -6,6 +6,8 @@ import { OrderCompletedStanEvent } from '../stan-events/entity/order-completed-s
 
 // @ts-ignore
 jest.mock('../shared/stan');
+// @ts-ignore
+jest.mock('../charges/shared/stripe');
 
 // @ts-ignore
 afterEach(async () => {

@@ -2,9 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type OrderEntity {
+  id: String!
+  userId: String!
+  status: String!
+  price: Float!
+}
+
 type ChargeEntity {
   id: String!
   userId: String!
+  order: OrderEntity!
 }
 
 type Query {
@@ -13,9 +21,10 @@ type Query {
 }
 
 type Mutation {
-  createCharge(createChargeInput: CreateChargeInput!): ChargeEntity!
+  createStripeCharge(createStripeChargeInput: CreateStripeChargeInput!): ChargeEntity!
 }
 
-input CreateChargeInput {
+input CreateStripeChargeInput {
   orderId: String!
+  source: String!
 }

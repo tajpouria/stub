@@ -33,9 +33,9 @@ export class OrderCompletedStanEvent implements OrderCompletedEventData {
   @AfterInsert()
   async publishStanEvent() {
     try {
-      const { id } = this;
+      const { id, version } = this;
 
-      await orderCompletedPublisher.publish({ id });
+      await orderCompletedPublisher.publish({ id, version });
       this.published = true;
     } catch (error) {
       logger.error(new Error(error));

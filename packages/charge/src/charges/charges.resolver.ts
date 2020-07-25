@@ -2,9 +2,16 @@ import {
   UseGuards,
   NotFoundException,
   ForbiddenException,
+  InternalServerErrorException,
+  BadRequestException,
 } from '@nestjs/common';
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { Logger, JwtPayload, ValidationPipe } from '@tajpouria/stub-common';
+import {
+  Logger,
+  JwtPayload,
+  ValidationPipe,
+  OrderStatus,
+} from '@tajpouria/stub-common';
 import { GqlAuthGuard } from 'src/auth/gql-auth-guard';
 
 import { OrderEntity } from 'src/orders/entity/order.entity';
@@ -14,7 +21,12 @@ import { DatabaseTransactionService } from 'src/database-transaction/database-tr
 import { GqlJwtPayloadExtractor } from 'src/auth/gql-jwt-payload-extractor';
 import { ChargesService } from 'src/charges/charges.service';
 import { ChargeEntity } from 'src/charges/entity/charge.entity';
-import { createChargeDto, CreateChargeInput } from 'src/charges/dto/create-charge.dto';
+import {
+  createStripeChargeDto,
+  CreateStripeChargeInput,
+} from 'src/charges/dto/create-charge.dto';
+import { stripe } from 'src/charges/shared/stripe';
+import { OrderCompletedStanEvent } from '../stan-events/entity/order-completed-stan-event.entity';
 
 @Resolver(of => OrderEntity)
 export class ChargesResolver {
@@ -52,61 +64,68 @@ export class ChargesResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => ChargeEntity)
-  async createCharge(
-    @Args('createChargeInput', new ValidationPipe(createChargeDto))
-    { orderId }: CreateChargeInput,
+  async createStripeCharge(
+    @Args('createStripeChargeInput', new ValidationPipe(createStripeChargeDto))
+    { orderId, source }: CreateStripeChargeInput,
     @GqlJwtPayloadExtractor() jwtPayload: JwtPayload,
   ) {
-    // const {
-    //   ordersService: ticketsService,
-    //   chargesService: ordersService,
-    //   stanEventsService,
-    //   databaseTransactionService,
-    //   logger,
-    // } = this;
-    // try {
-    //   // Verify document existence
-    //   const ticket = await ticketsService.findOne(ticketId);
-    //   if (!ticket) return new NotFoundException();
-    //   // Verify ticket is not already reserved
-    //   const isReserved = await ticketsService.isReserved(ticket);
-    //   if (isReserved) return new BadRequestException();
-    //   // Set Expiration Date
-    //   const expirationDate = new Date();
-    //   expirationDate.setSeconds(
-    //     expirationDate.getSeconds() + +ORDER_EXPIRATION_WINDOW_SECONDS,
-    //   );
-    //   // Create record
-    //   const order = ordersService.createOne({
-    //     status: OrderStatus.Created,
-    //     userId: jwtPayload.sub,
-    //     expiresAt: expirationDate.toISOString(),
-    //     ticket,
-    //   });
-    //   // Create event
-    //   const { id, expiresAt, status, userId, version } = order;
-    //   const orderCreatedStanEvent = stanEventsService.createOneOrderCreated({
-    //     id,
-    //     expiresAt,
-    //     status,
-    //     userId,
-    //     version,
-    //     ticket: {
-    //       id: ticket.id,
-    //       price: ticket.price,
-    //       timestamp: ticket.timestamp,
-    //       title: ticket.title,
-    //       userId: ticket.userId,
-    //     },
-    //   });
-    //   //Save record and event in context of one database transaction
-    //   const [createdOrder] = await databaseTransactionService.process<
-    //     [OrderEntity, OrderCreatedStanEvent]
-    //   >([order, 'save'], [orderCreatedStanEvent, 'save']);
-    //   return createdOrder;
-    // } catch (error) {
-    //   logger.error(new Error(error));
-    //   return new InternalServerErrorException();
-    // }
+    const {
+      ordersService,
+      chargesService,
+      stanEventsService,
+      databaseTransactionService,
+      logger,
+    } = this;
+
+    try {
+      // Verify document existence
+      const order = await ordersService.findOne({ id: orderId });
+      if (!order) return new NotFoundException();
+
+      // Verify document ownership
+      const isDocOwner = order.userId === jwtPayload.sub;
+      if (!isDocOwner) return new ForbiddenException();
+
+      // Should not charge for cancelled or complete orders
+      if (
+        order.status === OrderStatus.Cancelled ||
+        order.status === OrderStatus.Complete
+      )
+        return new BadRequestException();
+
+      // Charging
+      const chargeData = await stripe.charges.create({
+        currency: 'usd',
+        amount: order.price * 100,
+        source,
+      });
+
+      // Create record
+      const charge = chargesService.createOne({
+        id: chargeData.id,
+        userId: jwtPayload.sub,
+        order,
+      });
+
+      // Update order
+      order.status = OrderStatus.Complete;
+      order.version++;
+
+      // Create event
+      const { id, version } = order;
+      const orderCompletedStanEvent = stanEventsService.createOneOrderCompleted(
+        { id, version },
+      );
+
+      // Save record, event, order in context of one database transaction
+      const [createdCharge] = await databaseTransactionService.process<
+        [ChargeEntity, OrderCompletedStanEvent, OrderEntity]
+      >([charge, 'save'], [orderCompletedStanEvent, 'save'], [order, 'save']);
+
+      return createdCharge;
+    } catch (error) {
+      logger.error(new Error(error));
+      return new InternalServerErrorException();
+    }
   }
 }
