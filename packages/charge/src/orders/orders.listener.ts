@@ -39,13 +39,15 @@ export class OrdersListener {
 
       // Create and save the document
       const { id, status, ticket, userId, version } = data;
-      await ordersService.createOne({
-        id,
-        status,
-        price: ticket.price,
-        userId,
-        version,
-      });
+      await ordersService.saveOne(
+        ordersService.createOne({
+          id,
+          status,
+          price: ticket.price,
+          userId,
+          version,
+        }),
+      );
 
       msg.ack();
     } catch (error) {

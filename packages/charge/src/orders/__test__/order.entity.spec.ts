@@ -7,7 +7,7 @@ import { OrderStatus } from '@tajpouria/stub-common';
 import { AppModule } from 'src/app.module';
 import { OrderEntity } from 'src/orders/entity/order.entity';
 
-describe('tickets.entity (unit)', () => {
+describe('order.entity (unit)', () => {
   let app: INestApplication, repository: Repository<OrderEntity>;
 
   beforeAll(async () => {

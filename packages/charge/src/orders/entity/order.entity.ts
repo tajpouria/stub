@@ -17,7 +17,7 @@ export class OrderEntity {
 
   // Details
   @Field()
-  @Column({ default: OrderStatus.Created })
+  @Column()
   status: OrderStatus;
 
   @Field()
