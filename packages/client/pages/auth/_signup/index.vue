@@ -190,8 +190,8 @@ export default Vue.extend({
     margin-top: 3%;
     width: 100%;
 
-    > span > span {
-      margin-bottom: 2%;
+    > div {
+      margin-bottom: 1%;
     }
 
     > button {

@@ -1,6 +1,8 @@
 import validator from 'validator';
 
-const { USERNAME_PATTERN, PASSWORD_PATTERN } = process.env;
+const USERNAME_PATTERN = '/.{3,30}$/',
+  PASSWORD_PATTERN = '^(?=.*[0-9])(?=.*[a-z]).{6,32}$',
+  URL_PATTERN = '/((http|https)://?)[^s()<>]+(?:([wd]+)|([^[:punct:]s]|/?))/';
 
 export const hasErrors = (fieldsError: Record<string, string>) =>
   Object.keys(fieldsError).some((field) => fieldsError[field]);

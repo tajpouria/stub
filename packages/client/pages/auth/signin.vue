@@ -147,7 +147,7 @@ export default Vue.extend({
     margin-top: 3%;
     width: 100%;
 
-    > span > span {
+    > div {
       margin-bottom: 2%;
     }
 
