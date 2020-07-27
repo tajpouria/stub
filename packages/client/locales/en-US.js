@@ -1,6 +1,7 @@
 export default {
   page: {
     index: { welcome: 'Welcome', 'stub-alt': 'stub' },
+
     auth: {
       signup: {
         'sign up for stub': 'Sign up for Stub',
@@ -14,7 +15,7 @@ export default {
         'repeat password': 'Repeat password',
         'signup-btn': 'Sign up',
         'user agreement':
-          'By purchasing or signing in, you agree to our user agreement and acknowledge our privacy notice.',
+          'By purchasing or signing up, you agree to our user agreement and acknowledge our privacy notice.',
         'contact with friends': 'Connect with friends on Stub',
         'have a stub account': 'Have a Stub account?',
         signin: 'Sign in',
@@ -25,15 +26,34 @@ export default {
       },
 
       signin: {
-        'sign in to stub': 'Sign in to StubHub',
+        'sign in to stub': 'Sign in to Stub',
         'username or email': 'Username or email',
         password: 'Password',
+        'user agreement':
+          'By purchasing or signing in, you agree to our user agreement and acknowledge our privacy notice.',
         'signin-btn': 'Sign in',
         'contact with friends': 'Connect with friends on Stub',
         'new to stub': 'New to Stub?',
         'create account': 'Create Account',
         'invalid email or password': 'Invalid email or password',
         'welcome back': 'Welcome Back',
+      },
+    },
+
+    ads: {
+      new: {
+        'register free advertisement': 'Register free advertisement',
+        map: 'Map',
+        'adding a photo will': 'Adding a photo will triple your ad views.',
+        price: 'Price',
+        picture: 'Ad picture',
+        'upload hint': 'Click or drag picture to this area',
+        title: 'Ad title',
+        'in ad title': 'In ad title mention certain points.',
+        description: 'Ad description',
+        'in ad description':
+          "In ad's description Write details and highlights completely and accurately.",
+        register: 'Register ad',
       },
     },
   },
@@ -43,8 +63,8 @@ export default {
       'sign in': 'Sign in',
       'my tickets': 'My tickets',
       sell: 'Sell',
-      english: 'en',
-      farsi: 'فا',
+      english: 'English',
+      farsi: 'فارسی',
       profile: 'Profile',
       'sign out': 'Sign out',
     },

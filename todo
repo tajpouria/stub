@@ -89,6 +89,7 @@
 [X] Fix SignUp mobile view
 [X] Username and Password regex env var
 [] Not Receiving email? try again page
-[] A better default header
+[X] A better default header
+[X] A better default footer
 [] forgotPassword
 [] End to end testing

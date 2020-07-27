@@ -19,6 +19,7 @@
     "ant-design-vue": "^1.6.2",
     "nuxt": "^2.13.0",
     "nuxt-i18n": "^6.12.2",
+    "nuxt-leaflet": "^0.0.21",
     "progressive-image": "^1.2.0",
     "validator": "^13.1.1"
   },

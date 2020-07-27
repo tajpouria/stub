@@ -52,6 +52,9 @@
           {{ $t('page.auth.signin.signin-btn') }}
         </a-button>
       </a-form>
+      <small class="mt1 text-center">
+        {{ $t('page.auth.signin.user agreement') }}
+      </small>
 
       <p class="m1">
         <b> {{ $t('page.auth.signin.contact with friends') }} </b>

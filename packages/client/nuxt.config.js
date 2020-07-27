@@ -41,7 +41,7 @@ export default {
       {
         rel: 'stylesheet',
         type: 'text/css',
-        href: 'https://fonts.googleapis.com/css?family=Prompt&display=swap',
+        href: 'https://fonts.googleapis.com/css?family=Raleway&display=swap',
       },
       {
         rel: 'stylesheet',
@@ -90,6 +90,7 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/auth',
     '@nuxtjs/style-resources',
+    'nuxt-leaflet',
     [
       'nuxt-i18n',
       {

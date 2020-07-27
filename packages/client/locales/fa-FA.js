@@ -26,8 +26,8 @@ export default {
       'sign in': 'ورود',
       'my tickets': 'بلیط های من',
       sell: 'فروش',
-      english: 'en',
-      farsi: 'فا',
+      english: 'English',
+      farsi: 'فارسی',
     },
   },
 

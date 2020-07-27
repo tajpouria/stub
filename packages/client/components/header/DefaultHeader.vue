@@ -2,42 +2,42 @@
   <header class="header-default">
     <div class="header-default__container">
       <nuxt-link :to="links.index">
-        <picture>
-          <source
-            media="(max-width: 768px)"
-            srcset="~/static/pics/layout/stub_logo_1x.png"
-          />
-          <source
-            media="(min-width: 769px)"
-            srcset="~/static/pics/layout/stub_logo_2x.png"
-          />
-          <img
-            src="~/static/pics/layout/stub_logo_2x.png"
-            :alt="$t('page.index.stub-alt')"
-            class="header-default__logo"
-            height="80"
-            width="80"
-          /> </picture
-      ></nuxt-link>
+        <img
+          src="~/static/pics/layout/stub_header_logo.png"
+          :alt="$t('page.index.stub-alt')"
+          class="header-default__logo"
+          height="80"
+          width="80"
+        />
+      </nuxt-link>
 
-      <a-input-search
-        placeholder="input search text"
-        class="header-default__input-search"
-      />
-
-      <a-menu mode="horizontal" class="header-default__menu-container">
-        <a-menu-item key="1">
+      <a-menu mode="horizontal" class="header-default__menu">
+        <a-menu-item key="1" class="header-default__menu-item">
           {{ $t('layout.default.sell') }}
         </a-menu-item>
-        <a-menu-item key="2">
+
+        <a-menu-item key="2" class="header-default__menu-item">
           {{ $t('layout.default.my tickets') }}
         </a-menu-item>
-        <a-menu-item key="3">
+
+        <a-menu-item key="3" class="header-default__menu-item">
+          <nuxt-link v-if="$i18n.locale !== 'en'" :to="switchLocalePath('en')">
+            {{ $t('layout.default.english') }}
+            <a-icon type="global" />
+          </nuxt-link>
+          <nuxt-link v-if="$i18n.locale !== 'fa'" :to="switchLocalePath('fa')">
+            {{ $t('layout.default.farsi') }}
+            <a-icon type="global" />
+          </nuxt-link>
+        </a-menu-item>
+
+        <a-menu-item key="4" class="header-default__menu-item">
           <nuxt-link v-if="!$auth.user" :to="links.signin">
             {{ $t('layout.default.sign in') }}
           </nuxt-link>
         </a-menu-item>
-        <a-menu-item key="4">
+
+        <a-menu-item key="5" class="header-default__menu-item">
           <a-popover
             v-if="$auth.user"
             :title="$auth.user.email"
@@ -75,7 +75,6 @@
 import Vue from 'vue';
 
 import links from '~/constants/links';
-import { errorParser } from '~/utils/notification';
 
 export default Vue.extend({
   data() {
@@ -102,15 +101,16 @@ export default Vue.extend({
     flex-wrap: nowrap;
     align-items: center;
     background-color: white;
+    justify-content: space-around;
+    max-height: 8rem;
 
     @include respond(tab-port) {
-      flex-wrap: wrap;
       justify-content: space-between;
     }
   }
 
   &__logo {
-    width: 10rem;
+    width: 20rem;
     height: auto;
 
     @include btn-effect;
@@ -119,30 +119,24 @@ export default Vue.extend({
     }
   }
 
-  &__input-search {
-    max-width: 45rem;
-    margin: 0 1%;
-    height: 5rem;
-
-    @include respond(tab-port) {
-      order: 2;
-      max-width: none;
-      margin: 1% 5%;
-    }
-  }
-
-  &__menu-container {
+  &__menu {
     display: flex;
     justify-content: space-between;
     align-items: center;
     min-width: 40rem;
-    margin: 0 2%;
-    margin-left: auto;
+    margin: 0 4%;
 
     @include respond(phone) {
       height: 3%;
       flex: 1;
+      margin: 0;
     }
+  }
+
+  &__menu-item {
+    text-align: center;
+    margin: 0 2%;
+    font-size: 1.5rem;
   }
 
   &__user-avatar {
