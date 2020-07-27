@@ -1,12 +1,14 @@
 <template>
   <a-layout-footer class="default-footer">
-    Stub ©2020 Created by
-    <a target="_blank" href="https://github.com/tajpouria">@tajpouria</a>
+    <p>
+      Copyright ©2020 Stub. Created by
+      <a target="_blank" href="https://github.com/tajpouria">@tajpouria</a>
+    </p>
   </a-layout-footer>
 </template>
 <style lang="scss" scoped>
 .default-footer {
   background-color: white;
-  font-size: 1.5rem;
+  text-align: center;
 }
 </style>

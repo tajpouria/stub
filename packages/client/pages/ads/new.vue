@@ -5,8 +5,8 @@
         <b>{{ $t('page.ads.new.register free advertisement') }}</b>
       </h1>
 
-      <a-form @submit.prevent="handleSubmit" :form="form">
-        <a-form-item :label="$t('page.ads.new.map')">
+      <a-form @submit.prevent="handleSubmit" :form="form" class="new-ads__form">
+        <a-form-item :label="$t('page.ads.new.map')" class="new-ads__form-item">
           <div class="new-ads__map-container">
             <no-ssr>
               <l-map :zoom="11" :center="[35.6892, 51.389]">
@@ -19,37 +19,47 @@
           </div>
         </a-form-item>
 
-        <a-form-item :label="$t('page.ads.new.price')">
+        <a-form-item
+          :label="$t('page.ads.new.picture')"
+          class="new-ads__form-item"
+        >
+          <a-upload-dragger
+            v-decorator="[
+              'picture',
+              {
+                valuePropName: 'fileList',
+                getValueFromEvent: normFile,
+              },
+            ]"
+          >
+            <p class="ant-upload-drag-icon">
+              <a-icon type="picture" />
+            </p>
+            <p class="ant-upload-text">{{ $t('page.ads.new.upload hint') }}</p>
+            <p class="ant-upload-hint">
+              {{ $t('page.ads.new.adding a photo will') }}
+            </p>
+          </a-upload-dragger>
+        </a-form-item>
+
+        <a-form-item
+          :label="$t('page.ads.new.price')"
+          class="new-ads__form-item"
+        >
           <CurrencyInput v-model="price" currency="USD" />
         </a-form-item>
 
-        <a-form-item :label="$t('page.ads.new.picture')">
-          <div>
-            <a-upload-dragger
-              v-decorator="[
-                'picture',
-                {
-                  valuePropName: 'fileList',
-                  getValueFromEvent: normFile,
-                },
-              ]"
-            >
-              <p>
-                <a-icon type="inbox" />
-              </p>
-              <p>{{ $t('page.ads.new.upload hint') }}</p>
-              <small>{{ $t('page.ads.new.adding a photo will') }}</small>
-            </a-upload-dragger>
-          </div>
-        </a-form-item>
-
-        <a-form-item :label="$t('page.ads.new.title')">
+        <a-form-item
+          :label="$t('page.ads.new.title')"
+          class="new-ads__form-item"
+        >
           <a-input
             v-decorator="[
               'title',
               {
                 rules: [
                   {
+                    required: true,
                     validator: validationRules.required(
                       $t('validation.required'),
                     ),
@@ -61,13 +71,18 @@
           >
           </a-input>
         </a-form-item>
-        <a-form-item :label="$t('page.ads.new.description')">
+
+        <a-form-item
+          :label="$t('page.ads.new.description')"
+          class="new-ads__form-item"
+        >
           <a-textarea
             v-decorator="[
               'description',
               {
                 rules: [
                   {
+                    required: true,
                     validator: validationRules.required(
                       $t('validation.required'),
                     ),
@@ -76,14 +91,17 @@
               },
             ]"
             :placeholder="$t('page.ads.new.in ad description')"
-            :auto-size="{ minRows: 4, maxRows: 6 }"
+            :auto-size="{ minRows: 3, maxRows: 10 }"
           />
+        </a-form-item>
+        <a-form-item class="new-ads__form-item">
           <a-button
             :disabled="hasErrors(form.getFieldsError())"
             :loading="loading"
             html-type="submit"
             type="primary"
           >
+            <a-icon type="upload" />
             {{ $t('page.ads.new.register') }}
           </a-button>
         </a-form-item>
@@ -133,7 +151,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .new-ads {
   &__map-container {
-    height: 35vh;
+    height: 28vh;
     width: 80vw;
     max-width: 700px;
     max-height: 400px;
@@ -141,9 +159,15 @@ export default Vue.extend({
     @include respond(tab-port) {
       width: 85vw;
     }
-
     @include respond(phone) {
       width: 95vw;
+    }
+  }
+
+  &__form-item {
+    margin-top: 1%;
+    @include respond(phone) {
+      margin-top: 2%;
     }
   }
 }

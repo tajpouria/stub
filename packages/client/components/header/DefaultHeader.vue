@@ -135,7 +135,7 @@ export default Vue.extend({
 
   &__menu-item {
     text-align: center;
-    margin: 0 2%;
+    margin: auto;
     font-size: 1.5rem;
   }
 

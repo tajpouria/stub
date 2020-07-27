@@ -20,15 +20,11 @@ export class Ticket {
   title: string;
 
   @Field()
-  @Column('float')
+  @Column('float') // USD
   price: number;
 
-  @Field(type => Int)
-  @Column('int', { default: 1 })
-  quantity: number;
-
   @Field()
-  @Column({ nullable: true })
+  @Column('blob')
   description: string;
 
   @Field()
@@ -37,7 +33,7 @@ export class Ticket {
 
   // Date
   @Field()
-  @Column('bigint')
+  @Column('bigint', { default: Date.now })
   timestamp: number;
 
   // Location

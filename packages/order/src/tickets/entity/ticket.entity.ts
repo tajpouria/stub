@@ -31,10 +31,6 @@ export class TicketEntity implements TicketCreatedEventData {
   title: string;
 
   @Field()
-  @Column({ nullable: true })
-  description: string;
-
-  @Field()
   @Column('float') // USD
   price: number;
 

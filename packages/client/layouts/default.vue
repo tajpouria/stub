@@ -1,6 +1,6 @@
 <template>
   <a-layout class="default-layout">
-    <Announce />
+    <Announce v-if="notToIncludeHeader" />
     <DefaultHeader v-if="notToIncludeHeader" />
     <LineProgress :loading="loading" />
     <a-layout-content class="default-layout__content-container">
