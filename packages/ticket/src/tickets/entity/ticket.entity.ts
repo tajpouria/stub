@@ -28,8 +28,8 @@ export class Ticket {
   description: string;
 
   @Field()
-  @Column({ default: ticketsConstants.defaultPictureURL })
-  pictureURL: string;
+  @Column('blob', { default: ticketsConstants.defaultPictureURL })
+  imageUrl: string;
 
   // Date
   @Field()

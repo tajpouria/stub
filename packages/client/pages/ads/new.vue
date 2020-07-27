@@ -5,6 +5,8 @@
         <b>{{ $t('page.ads.new.register free advertisement') }}</b>
       </h1>
 
+      <a-divider />
+
       <a-form @submit.prevent="handleSubmit" :form="form" class="new-ads__form">
         <a-form-item :label="$t('page.ads.new.map')" class="new-ads__form-item">
           <div class="new-ads__map-container">
@@ -23,24 +25,10 @@
           :label="$t('page.ads.new.picture')"
           class="new-ads__form-item"
         >
-          <a-upload-dragger
-            v-decorator="[
-              'picture',
-              {
-                valuePropName: 'fileList',
-                getValueFromEvent: normFile,
-              },
-            ]"
-          >
-            <p class="ant-upload-drag-icon">
-              <a-icon type="picture" />
-            </p>
-            <p class="ant-upload-text">{{ $t('page.ads.new.upload hint') }}</p>
-            <p class="ant-upload-hint">
-              {{ $t('page.ads.new.adding a photo will') }}
-            </p>
-          </a-upload-dragger>
+          <ImgUploadInput :setImageUrl="setImageUrl" />
         </a-form-item>
+
+        <a-divider />
 
         <a-form-item
           :label="$t('page.ads.new.price')"
@@ -115,6 +103,7 @@ import Vue from 'vue';
 
 import PrimaryCentredCard from '~/components/card/PrimaryCentredCard';
 import CurrencyInput from '~/components/input/CurrencyInput';
+import ImgUploadInput from '~/components/input/ImgUploadInput';
 import links from '~/constants/links';
 import { hasErrors, validationRules } from '~/utils/form';
 import { errorParser } from '~/utils/notification';
@@ -126,20 +115,36 @@ export default Vue.extend({
       validationRules,
       links,
       price: 0,
+      imageUrl: null,
     };
   },
+
   components: {
     PrimaryCentredCard,
     CurrencyInput,
+    ImgUploadInput,
   },
+
   methods: {
+    setImageUrl(imageUrl) {
+      this.imageUrl = imageUrl;
+    },
     async handleSubmit() {
-      this.form.validateFields(async (error, values) => {});
+      this.form.validateFields(async (error, values) => {
+        const { price, imageUrl } = this;
+        console.info(error, {
+          ...values,
+          price,
+          imageUrl,
+        });
+      });
     },
   },
+
   beforeCreate() {
     this.form = this.$form.createForm(this, { name: 'new-ads-form' });
   },
+
   computed: {
     loading() {
       return !!this.$store.state.loading.isLoading;

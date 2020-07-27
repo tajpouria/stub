@@ -47,7 +47,6 @@ export default {
         'adding a photo will': 'Adding a photo will triple your ad views.',
         price: 'Price',
         picture: 'Ad picture',
-        'upload hint': 'Click or drag picture to this area',
         title: 'Ad title',
         'in ad title': 'In ad title mention certain points.',
         description: 'Ad description',
@@ -55,6 +54,14 @@ export default {
           "In ad's description Write details and highlights completely and accurately.",
         register: 'Register ad',
       },
+    },
+  },
+
+  component: {
+    imgUploadInput: {
+      'upload hint': 'Upload',
+      'invalid format': 'Invalid file Format',
+      'less than 2mb': 'File size should be less than 2 mb',
     },
   },
 
