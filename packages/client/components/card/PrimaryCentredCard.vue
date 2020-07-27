@@ -19,7 +19,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .primary-centred-card {
-  @include absolute-center;
   min-width: 320px;
 
   > :first-child {

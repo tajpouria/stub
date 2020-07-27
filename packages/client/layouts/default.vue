@@ -42,14 +42,17 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .default-layout {
-  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-height: 100vh;
 
   &__content-container {
     position: relative;
     background-color: var(--bg-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>
