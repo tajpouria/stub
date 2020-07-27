@@ -145,9 +145,10 @@ describe('app.controller (e2e)', () => {
       it('Ticket', async () => {
         const vars = {
           title: 'hello',
+          description: 'hello',
           price: 99.99,
-          latitude: 12.1,
-          longitude: 14.2,
+          lat: 12.1,
+          lng: 14.2,
           timestamp: 1593781663193,
           userId: 'mock20%id',
         };
@@ -173,9 +174,10 @@ describe('app.controller (e2e)', () => {
       it('Unauthorized: Unauthorized', async () => {
         const vars = {
           title: 'hello',
+          description: 'hello',
           price: 99.99,
-          latitude: 12.1,
-          longitude: 14.2,
+          lat: 12.1,
+          lng: 14.2,
           timestamp: 1593781663193,
         };
 
@@ -194,9 +196,10 @@ describe('app.controller (e2e)', () => {
         // Invalid Title
         let vars = {
           title: '',
+          description: 'hello',
           price: 99.99,
-          latitude: 12.1,
-          longitude: 14.2,
+          lat: 12.1,
+          lng: 14.2,
           timestamp: Date.now(),
         };
 
@@ -216,9 +219,10 @@ describe('app.controller (e2e)', () => {
         // Invalid price
         let vars = {
           title: 'hello',
+          description: 'hello',
           price: 0,
-          latitude: 12.1,
-          longitude: 14.2,
+          lat: 12.1,
+          lng: 14.2,
           timestamp: Date.now(),
         };
 
@@ -257,9 +261,10 @@ describe('app.controller (e2e)', () => {
         // Invalid pictureURL
         let vars = {
           title: 'hello',
+          description: 'hello',
           price: 100,
-          latitude: -12.1,
-          longitude: 15.3,
+          lat: -12.1,
+          lng: 15.3,
           timestamp: Date.now(),
           pictureURL: 'abc',
         };
@@ -278,7 +283,7 @@ describe('app.controller (e2e)', () => {
         // Invalid description
         vars = Object.assign(vars, {
           pictureURL: 'https://google.com',
-          description: '',
+          description: 'hello',
         });
 
         query = `
@@ -314,9 +319,10 @@ describe('app.controller (e2e)', () => {
       it('Create ticket', async () => {
         const vars = {
           title: 'one',
+          description: 'hello',
           price: 100,
-          latitude: -12.1,
-          longitude: 15.3,
+          lat: -12.1,
+          lng: 15.3,
           timestamp: Date.now(),
         };
 
@@ -335,9 +341,10 @@ describe('app.controller (e2e)', () => {
       it('Publish event', async () => {
         const vars = {
           title: 'two',
+          description: 'hello',
           price: 100,
-          latitude: -12.1,
-          longitude: 15.3,
+          lat: -12.1,
+          lng: 15.3,
           timestamp: Date.now(),
         };
 
@@ -369,9 +376,10 @@ describe('app.controller (e2e)', () => {
       beforeEach(async () => {
         const vars = {
           title: 'hello',
+          description: 'hello',
           price: 100,
-          latitude: -12.1,
-          longitude: 15.3,
+          lat: -12.1,
+          lng: 15.3,
           timestamp: Date.now(),
           userId,
         };
@@ -401,9 +409,10 @@ describe('app.controller (e2e)', () => {
         // Invalid Title
         let vars = {
           title: '',
+          description: 'hello',
           price: 99.99,
-          latitude: 12.1,
-          longitude: 14.2,
+          lat: 12.1,
+          lng: 14.2,
           timestamp: Date.now(),
         };
 
@@ -425,9 +434,10 @@ describe('app.controller (e2e)', () => {
         // Invalid price
         let vars = {
           title: 'hello',
+          description: 'hello',
           price: 0,
-          latitude: 12.1,
-          longitude: 14.2,
+          lat: 12.1,
+          lng: 14.2,
           timestamp: Date.now(),
         };
 
@@ -468,9 +478,10 @@ describe('app.controller (e2e)', () => {
         // Invalid pictureURL
         let vars = {
           title: 'hello',
+          description: 'hello',
           price: 100,
-          latitude: -12.1,
-          longitude: 15.3,
+          lat: -12.1,
+          lng: 15.3,
           timestamp: Date.now(),
           pictureURL: 'abc',
         };
@@ -672,9 +683,10 @@ describe('app.controller (e2e)', () => {
       beforeEach(async () => {
         const vars = {
           title: 'hello',
+          description: 'hello',
           price: 100,
-          latitude: -12.1,
-          longitude: 15.3,
+          lat: -12.1,
+          lng: 15.3,
           timestamp: Date.now(),
           userId,
         };

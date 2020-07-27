@@ -11,7 +11,11 @@
         <a-form-item :label="$t('page.ads.new.map')" class="new-ads__form-item">
           <div class="new-ads__map-container">
             <no-ssr>
-              <l-map :zoom="11" :center="[35.6892, 51.389]">
+              <l-map
+                :zoom="11"
+                @click="handleMapClick"
+                :center="[35.6892, 51.389]"
+              >
                 <l-tile-layer
                   url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
                 ></l-tile-layer>
@@ -104,7 +108,7 @@ import Vue from 'vue';
 import PrimaryCentredCard from '~/components/card/PrimaryCentredCard';
 import CurrencyInput from '~/components/input/CurrencyInput';
 import ImgUploadInput from '~/components/input/ImgUploadInput';
-import links from '~/constants/links';
+import apis from '~/constants/apis';
 import { hasErrors, validationRules } from '~/utils/form';
 import { errorParser } from '~/utils/notification';
 
@@ -113,9 +117,11 @@ export default Vue.extend({
     return {
       hasErrors,
       validationRules,
-      links,
       price: 0,
       imageUrl: null,
+      address: null,
+      lat: null,
+      lng: null,
     };
   },
 
@@ -129,13 +135,26 @@ export default Vue.extend({
     setImageUrl(imageUrl) {
       this.imageUrl = imageUrl;
     },
+    async handleMapClick(event) {
+      const { lat, lng } = event.latlng;
+      this.lat = lat;
+      this.lng = lng;
+
+      // const { status, data } = await this.$axios.get(
+      //   apis.thirdParty.getPlace(lat, lng),
+      // );
+
+      // console.info(status, data);
+    },
     async handleSubmit() {
       this.form.validateFields(async (error, values) => {
-        const { price, imageUrl } = this;
+        const { price, imageUrl, lat, lng } = this;
         console.info(error, {
           ...values,
           price,
           imageUrl,
+          lat,
+          lng,
         });
       });
     },

@@ -33,9 +33,10 @@ describe('tickets.service (unit)', () => {
   beforeEach(async () => {
     const vars = {
       title: 'hello',
+      description: 'hello',
       price: 100,
-      latitude: -12.1,
-      longitude: 15.3,
+      lat: -12.1,
+      lng: 15.3,
       timestamp: Date.now(),
       userId: 'someID',
     };
@@ -59,9 +60,10 @@ describe('tickets.service (unit)', () => {
   it('createOne(): Create ticket template', async () => {
     const newTicket = service.createOne({
       title: 'new Title',
+      description: 'hello',
       price: 100,
-      latitude: -12.1,
-      longitude: 15.3,
+      lat: -12.1,
+      lng: 15.3,
       timestamp: Date.now(),
       userId: 'someID',
     });

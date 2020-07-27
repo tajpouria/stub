@@ -13,8 +13,8 @@ export class CreateTicketInput {
   @Field({ nullable: true })
   quantity?: number;
 
-  @Field({ nullable: true })
-  description?: string;
+  @Field()
+  description: string;
 
   @Field({ nullable: true })
   pictureURL?: string;
@@ -25,10 +25,10 @@ export class CreateTicketInput {
 
   // Location
   @Field()
-  latitude: number;
+  lat: number;
 
   @Field()
-  longitude: number;
+  lng: number;
 
   @Field({ nullable: true })
   address?: string;
@@ -47,13 +47,14 @@ export const createTicketDto = Joi.object<CreateTicketInput>({
   quantity: Joi.number().greater(0),
   description: Joi.string()
     .min(3)
-    .max(255),
+    .max(1000)
+    .required(),
   pictureURL: Joi.string().pattern(new RegExp(URL_PATTERN)),
   timestamp: Joi.number()
     .greater(Date.now())
     .required(),
-  latitude: Joi.number().required(),
-  longitude: Joi.number().required(),
+  lat: Joi.number().required(),
+  lng: Joi.number().required(),
   address: Joi.string()
     .min(3)
     .max(255),

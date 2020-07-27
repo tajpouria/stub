@@ -55,11 +55,12 @@ describe('tickets.listener (unit)', () => {
         repository.create({
           id: v4(),
           title: 'hello',
+          description: 'hello',
           price: 99.99,
           timestamp: 1593781663193,
           userId: 'user-id',
-          latitude: 1241.2,
-          longitude: 124.4,
+          lat: 1241.2,
+          lng: 124.4,
         }),
       );
     });
@@ -156,11 +157,12 @@ describe('tickets.listener (unit)', () => {
         repository.create({
           id: v4(),
           title: 'hello',
+          description: 'hello',
           price: 99.99,
           timestamp: 1593781663193,
           userId: 'user-id',
-          latitude: 1241.2,
-          longitude: 124.4,
+          lat: 1241.2,
+          lng: 124.4,
           lastOrderId: v4(),
         }),
       );

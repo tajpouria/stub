@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, VersionColumn } from 'typeorm';
-import { Field, ObjectType, Int } from '@nestjs/graphql';
-import { ticketsConstants } from 'src/tickets/constants';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 @Entity()
@@ -28,7 +27,7 @@ export class Ticket {
   description: string;
 
   @Field()
-  @Column('blob', { default: ticketsConstants.defaultPictureURL })
+  @Column('blob', { nullable: true })
   imageUrl: string;
 
   // Date
@@ -39,11 +38,11 @@ export class Ticket {
   // Location
   @Field()
   @Column('float')
-  latitude: number;
+  lat: number;
 
   @Field()
   @Column('float')
-  longitude: number;
+  lng: number;
 
   @Field()
   @Column({ nullable: true })

@@ -25,10 +25,10 @@ export class UpdateTicketInput {
 
   // Location
   @Field({ nullable: true })
-  latitude?: number;
+  lat?: number;
 
   @Field({ nullable: true })
-  longitude?: number;
+  lng?: number;
 
   @Field({ nullable: true })
   address?: string;
@@ -47,8 +47,8 @@ export const updateTicketDto = Joi.object<UpdateTicketInput>({
     .max(255),
   pictureURL: Joi.string().pattern(new RegExp(URL_PATTERN)),
   timestamp: Joi.number().greater(Date.now()),
-  latitude: Joi.number(),
-  longitude: Joi.number(),
+  lat: Joi.number(),
+  lng: Joi.number(),
   address: Joi.string()
     .min(3)
     .max(255),

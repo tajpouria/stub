@@ -7,12 +7,11 @@ type Ticket {
   userId: String!
   title: String!
   price: Float!
-  quantity: Int!
   description: String!
-  pictureURL: String!
+  imageUrl: String!
   timestamp: Float!
-  latitude: Float!
-  longitude: Float!
+  lat: Float!
+  lng: Float!
   address: String!
   lastOrderId: String!
 }
@@ -32,11 +31,11 @@ input CreateTicketInput {
   title: String!
   price: Float!
   quantity: Float
-  description: String
+  description: String!
   pictureURL: String
   timestamp: Float!
-  latitude: Float!
-  longitude: Float!
+  lat: Float!
+  lng: Float!
   address: String
 }
 
@@ -47,7 +46,7 @@ input UpdateTicketInput {
   description: String
   pictureURL: String
   timestamp: Float
-  latitude: Float
-  longitude: Float
+  lat: Float
+  lng: Float
   address: String
 }
