@@ -6,9 +6,16 @@
       </h1>
 
       <a-divider />
-
       <a-form @submit.prevent="handleSubmit" :form="form" class="new-ads__form">
-        <a-form-item :label="$t('page.ads.new.map')" class="new-ads__form-item">
+        <a-form-item
+          :label="$t('page.ads.new.address')"
+          class="new-ads__form-item"
+        >
+          <div class="new-ads__map-address-container">
+            <a-spin :spinning="loading">
+              {{ address }}
+            </a-spin>
+          </div>
           <div class="new-ads__map-container">
             <no-ssr>
               <l-map
@@ -19,7 +26,7 @@
                 <l-tile-layer
                   url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
                 ></l-tile-layer>
-                <l-marker :lat-lng="[35.6892, 51.389]"></l-marker>
+                <l-marker :lat-lng="[lat, lng]"></l-marker>
               </l-map>
             </no-ssr>
           </div>
@@ -34,35 +41,40 @@
 
         <a-divider />
 
-        <a-form-item
-          :label="$t('page.ads.new.price')"
-          class="new-ads__form-item"
-        >
-          <CurrencyInput v-model="price" currency="USD" />
-        </a-form-item>
+        <a-row type="flex" justify="space-between">
+          <a-col :lg="11" :md="11" :sm="24" :xs="24">
+            <a-form-item
+              :label="$t('page.ads.new.price')"
+              class="new-ads__form-item"
+            >
+              <CurrencyInput v-model="price" currency="USD" />
+            </a-form-item>
+          </a-col>
 
-        <a-form-item
-          :label="$t('page.ads.new.title')"
-          class="new-ads__form-item"
-        >
-          <a-input
-            v-decorator="[
-              'title',
-              {
-                rules: [
+          <a-col :lg="11" :md="11" :sm="24" :xs="24">
+            <a-form-item
+              :label="$t('page.ads.new.title')"
+              class="new-ads__form-item"
+            >
+              <a-input
+                v-decorator="[
+                  'title',
                   {
-                    required: true,
-                    validator: validationRules.required(
-                      $t('validation.required'),
-                    ),
+                    rules: [
+                      {
+                        validator: validationRules.required(
+                          $t('validation.required'),
+                        ),
+                      },
+                    ],
                   },
-                ],
-              },
-            ]"
-            :placeholder="$t('page.ads.new.in ad title')"
-          >
-          </a-input>
-        </a-form-item>
+                ]"
+                :placeholder="$t('page.ads.new.in ad title')"
+              >
+              </a-input>
+            </a-form-item>
+          </a-col>
+        </a-row>
 
         <a-form-item
           :label="$t('page.ads.new.description')"
@@ -74,7 +86,6 @@
               {
                 rules: [
                   {
-                    required: true,
                     validator: validationRules.required(
                       $t('validation.required'),
                     ),
@@ -91,7 +102,6 @@
             :disabled="hasErrors(form.getFieldsError())"
             :loading="loading"
             html-type="submit"
-            type="primary"
           >
             <a-icon type="upload" />
             {{ $t('page.ads.new.register') }}
@@ -119,9 +129,9 @@ export default Vue.extend({
       validationRules,
       price: 0,
       imageUrl: null,
-      address: null,
-      lat: null,
-      lng: null,
+      address: 'تهران، میدان حر',
+      lat: 35.6892,
+      lng: 51.389,
     };
   },
 
@@ -140,21 +150,24 @@ export default Vue.extend({
       this.lat = lat;
       this.lng = lng;
 
-      // const { status, data } = await this.$axios.get(
-      //   apis.thirdParty.getPlace(lat, lng),
-      // );
+      const { status, data } = await this.$axios.get(
+        apis.thirdParty.getPlace(lat, lng),
+      );
 
-      // console.info(status, data);
+      if (status === 200) this.address = data.display_text;
     },
     async handleSubmit() {
       this.form.validateFields(async (error, values) => {
-        const { price, imageUrl, lat, lng } = this;
-        console.info(error, {
+        if (error) return;
+
+        const { price, imageUrl, lat, lng, address } = this;
+        console.info({
           ...values,
           price,
           imageUrl,
           lat,
           lng,
+          address,
         });
       });
     },
@@ -175,7 +188,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .new-ads {
   &__map-container {
-    height: 28vh;
+    height: 29vh;
     width: 80vw;
     max-width: 700px;
     max-height: 400px;
@@ -188,8 +201,13 @@ export default Vue.extend({
     }
   }
 
+  &__map-address-container {
+    text-align: center;
+    @include flash-card;
+  }
+
   &__form-item {
-    margin-top: 1%;
+    margin-top: .7%;
     @include respond(phone) {
       margin-top: 2%;
     }

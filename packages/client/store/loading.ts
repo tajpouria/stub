@@ -9,6 +9,10 @@ export const state = (): LoaderState => ({
 });
 
 export const mutations: MutationTree<LoaderState> = {
-  START_LOADING: (state) => !state.isLoading,
-  FINISH_LOADING: (state) => !state.isLoading,
+  START_LOADING: (state) => {
+    state.isLoading = true;
+  },
+  FINISH_LOADING: (state) => {
+    state.isLoading = false;
+  },
 };

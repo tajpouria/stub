@@ -12,7 +12,7 @@ export default {
 
   thirdParty: {
     getPlace(lat, long) {
-      return `https://api.divar.ir/v5/places/find?lat=${lat}&long=${long}`;
+      return `https://cors-anywhere.herokuapp.com/https://api.divar.ir/v5/places/find?lat=${lat}&long=${long}`;
     },
   },
 };

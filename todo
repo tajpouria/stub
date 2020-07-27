@@ -92,4 +92,5 @@
 [X] A better default header
 [X] A better default footer
 [] forgotPassword
-[] End to end testing
+[-] End to end testing
+[X] Fix top bar loading

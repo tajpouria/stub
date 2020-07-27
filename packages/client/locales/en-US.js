@@ -43,7 +43,7 @@ export default {
     ads: {
       new: {
         'register free advertisement': 'Register free advertisement',
-        map: 'Map',
+        address: 'Address',
         'adding a photo will': 'Adding a photo will triple your ad views.',
         price: 'Price',
         picture: 'Ad picture',
