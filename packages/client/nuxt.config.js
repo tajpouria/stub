@@ -63,6 +63,10 @@ export default {
     scss: ['./assets/scss/*.scss'],
   },
 
+  router: {
+    middleware: ['ssr-cookie'],
+  },
+
   plugins: [
     '~/plugins/antd-ui',
     '~/plugins/axios',
