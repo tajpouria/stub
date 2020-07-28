@@ -18,21 +18,31 @@ build:
             dest: .
           - src: "src/**/*.html"
             dest: .
-    - image: tajpouria/stub-client-service
-      context: packages/client
+    - image: tajpouria/stub-ticket-service
+      context: packages/ticket
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "**/*.js"
+          - src: "src/**/*.ts"
             dest: .
-          - src: "**/*.ts"
+          - src: "src/**/*.gql"
             dest: .
-          - src: "**/*.vue"
-            dest: .
-          - src: "assets/**/*.*"
-            dest: .
-          - src: "static/**/*.*"
-            dest: .
-          - src: "locales/*.json"
-            dest: .
+    # - image: tajpouria/stub-client-service
+    #   context: packages/client
+    #   docker:
+    #     dockerfile: Dockerfile
+    #   sync:
+    #     manual:
+    #       - src: "**/*.js"
+    #         dest: .
+    #       - src: "**/*.ts"
+    #         dest: .
+    #       - src: "**/*.vue"
+    #         dest: .
+    #       - src: "assets/**/*.*"
+    #         dest: .
+    #       - src: "static/**/*.*"
+    #         dest: .
+    #       - src: "locales/*.json"
+    #         dest: .

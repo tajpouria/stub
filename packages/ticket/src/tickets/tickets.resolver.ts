@@ -35,13 +35,11 @@ export class TicketsResolver {
 
   private readonly logger = Logger(`${process.cwd()}/logs/tickets-resolver`);
 
-  @UseGuards(GqlAuthGuard)
   @Query(returns => [Ticket])
   async tickets() {
     return this.ticketsService.findAll();
   }
 
-  @UseGuards(GqlAuthGuard)
   @Query(returns => Ticket)
   async ticket(@Args('id') id: string) {
     const doc = await this.ticketsService.findOne({ id });

@@ -14,7 +14,11 @@ spec:
             backend:
               serviceName: auth-clusterip
               servicePort: 4000
-          - path: /?(.*)
+          - path: /api/ticket/?(.*)
             backend:
-              serviceName: client-clusterip
-              servicePort: 3000
+              serviceName: ticket-clusterip
+              servicePort: 5000
+          # - path: /?(.*)
+          #   backend:
+          #     serviceName: client-clusterip
+          #     servicePort: 3000

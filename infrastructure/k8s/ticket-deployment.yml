@@ -22,23 +22,29 @@ spec:
               value: "Ticket"
             - name: NODE_ENV
               value: "development"
+            - name: HOST
+              value: "https://stub.dev"
             - name: PORT
               value: "5000"
             - name: SESSION_NAME
-              value: session
+              value: "session"
             - name: ORM_CONFIG
-              value: '{"type": "mysql","host": "ticket-mysql-clusterip","port": 3306,"username": "root","password": "root","database": "ticket"}'
+              value: '{"type": "mysql","host": "ticket-mysql-clusterip","port": 3306,"username": "root","password": "root","database": "main"}'
             - name: URL_PATTERN
               value: "/((http|https)://?)[^s()<>]+(?:([wd]+)|([^[:punct:]s]|/?))/"
+            - name: NATS_URL
+              value: "http://stub-nats-clusterip:4222"
+            - name: NATS_CLUSTER_ID
+              value: "stub"
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: stub-secret
                   key: JWT_SECRET
-            - name: NATS_CLIENT_ID
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
 ---
 apiVersion: v1
 kind: Service

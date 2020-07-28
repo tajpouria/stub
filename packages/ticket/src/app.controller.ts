@@ -1,7 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 
-@Controller('/api/ticket')
+const { NAME } = process.env;
+
+@Controller(`/api/${NAME}`)
 export class AppController {
   constructor(private readonly appService: AppService) {}
 

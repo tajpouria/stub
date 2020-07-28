@@ -6,10 +6,11 @@ import cookieSession from 'cookie-session';
 import { AppModule } from 'src/app.module';
 import { signUpUser, redis } from 'src/.jest/utils';
 
+const { SESSION_NAME } = process.env;
+
 describe('app.controller (e2e)', () => {
   let app: INestApplication;
 
-  const { SESSION_NAME } = process.env;
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],

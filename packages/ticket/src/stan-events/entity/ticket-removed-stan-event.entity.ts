@@ -10,8 +10,10 @@ import {
   TicketRemovedEventData,
   Logger,
   publishUnpublishedStanEvents,
+  TicketRemovedPublisher,
 } from '@tajpouria/stub-common';
-import { ticketRemovedPublisher } from 'src/tickets/shared/ticket-removed-publisher';
+
+import { stan } from 'src/shared/stan';
 
 const logger = Logger(process.cwd() + '/logs/stan/ticket-removed-stan-event');
 
@@ -34,7 +36,7 @@ export class TicketRemovedStanEvent implements TicketRemovedEventData {
     try {
       const { id, version } = this;
 
-      await ticketRemovedPublisher.publish({ id, version });
+      await new TicketRemovedPublisher(stan.instance).publish({ id, version });
       this.published = true;
     } catch (error) {
       logger.error(new Error(error));
@@ -46,7 +48,7 @@ export class TicketRemovedStanEvent implements TicketRemovedEventData {
     try {
       await publishUnpublishedStanEvents(
         getConnection().getRepository(TicketRemovedStanEvent),
-        ticketRemovedPublisher,
+        new TicketRemovedPublisher(stan.instance),
       );
     } catch (error) {
       logger.error(new Error(error));

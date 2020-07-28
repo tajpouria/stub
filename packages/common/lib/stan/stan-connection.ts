@@ -18,9 +18,11 @@ export class StanConnection {
     this.sc = nodeNatsConnect(clusterID, clientID, { url });
 
     return new Promise((res, rej) => {
-      this.sc!.on('connect', (err) => {
-        if (err) return rej(err);
+      this.sc!.on('connect', () => {
         res();
+      });
+      this.sc!.on('error', (err) => {
+        rej(err);
       });
     });
   }

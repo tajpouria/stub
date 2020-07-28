@@ -17,20 +17,13 @@ import { v4 } from 'uuid';
 
 import { AppModule } from 'src/app.module';
 import { Ticket } from 'src/tickets/entity/ticket.entity';
-import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-stan-event.entity';
-import { TicketUpdatedStanEvent } from 'src/stan-events/entity/ticket-updated-stan-event.entity';
-import { TicketRemovedStanEvent } from 'src/stan-events/entity/ticket-removed-stan-event.entity';
 // __mocks__
 import { stan } from 'src/shared/stan';
 
-const { SESSION_NAME, JWT_SECRET } = process.env;
+const { NAME, SESSION_NAME, JWT_SECRET } = process.env;
 
 describe('app.controller (e2e)', () => {
-  let app: INestApplication,
-    ticketRepository: Repository<Ticket>,
-    ticketCreatedStanEventRepository: Repository<TicketCreatedStanEvent>,
-    ticketUpdatedStanEventRepository: Repository<TicketUpdatedStanEvent>,
-    ticketRemovedStanEventRepository: Repository<TicketRemovedStanEvent>;
+  let app: INestApplication, ticketRepository: Repository<Ticket>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -49,22 +42,13 @@ describe('app.controller (e2e)', () => {
     await app.init();
 
     ticketRepository = getConnection().getRepository(Ticket);
-    ticketCreatedStanEventRepository = getConnection().getRepository(
-      TicketCreatedStanEvent,
-    );
-    ticketUpdatedStanEventRepository = getConnection().getRepository(
-      TicketUpdatedStanEvent,
-    );
-    ticketRemovedStanEventRepository = getConnection().getRepository(
-      TicketRemovedStanEvent,
-    );
   });
 
   afterAll(async () => {
     await app.close();
   });
 
-  describe('Hello Ticket! (/api/ticket)', () => {
+  describe(`Hello Ticket! (/api/${NAME})`, () => {
     it('GET: 200', async () => {
       await request(app.getHttpServer())
         .get('/api/ticket')
@@ -74,7 +58,7 @@ describe('app.controller (e2e)', () => {
 
   const gCall = (query: string, cookie = ['']) =>
     request(app.getHttpServer())
-      .post('/graphql')
+      .post(`api/${NAME}/graphql`)
       .set('Cookie', cookie)
       .send({
         operationName: null,
@@ -83,21 +67,8 @@ describe('app.controller (e2e)', () => {
 
   const generateCookie = cookieGeneratorFactory(SESSION_NAME, JWT_SECRET);
 
-  describe('POST /graphql', () => {
+  describe(`POST api/${NAME}/graphql`, () => {
     describe('query tickets', () => {
-      it('Unauthorized: Unauthorized', async () => {
-        const query = `
-          {
-            tickets {
-              id
-            }
-          }
-        `;
-
-        const response = await gCall(query);
-        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
-      });
-
       it('Tickets', async () => {
         const query = `
           {
@@ -114,19 +85,6 @@ describe('app.controller (e2e)', () => {
     });
 
     describe('query ticket(id)', () => {
-      it('Unauthorized: Unauthorized', async () => {
-        const query = `
-          {
-            ticket(id: "abc1") {
-              id
-            }
-          }
-        `;
-
-        const response = await gCall(query);
-        expect(response.body.errors[0].message).toBe(HttpMessage.UNAUTHORIZED);
-      });
-
       it('Document not exists: Not Found', async () => {
         const query = `
           {

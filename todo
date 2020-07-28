@@ -67,6 +67,8 @@
 [X] Typescript check on create replicated record service which id not manually provided
 [X] Write tests around the service that have to inject id manually on created template like https://github.com/tajpouria/stub/master/tree/packages/charge/src/charges/charges.service.ts
 [] Fix test converges
+[] Fix order and charge NATS connection issues (update @tajpouria/stub-common to v1.25.0 then delete publisher and listeners from shared and connect to NATS before creating the app) 
+[] Fix order and charge hello end graphql end point and fix app.controller.spec on each one (should follow /api/${NAME} and /api/${NAME} pattern)
 
 ### Expiation
 [X] Go report https://goreportcard.com/

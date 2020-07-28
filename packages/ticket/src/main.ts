@@ -10,8 +10,8 @@ async function bootstrap() {
   objectContainsAll(
     process.env,
     [
-      'NODE_ENV',
       'NAME',
+      'NODE_ENV',
       'HOST',
       'PORT',
       'SESSION_NAME',
@@ -34,29 +34,29 @@ async function bootstrap() {
   } = process.env;
 
   try {
-    const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  await stan.connect({
+    clusterID: NATS_CLUSTER_ID,
+    clientID: NATS_CLIENT_ID,
+    url: NATS_URL,
+  });
 
-    app.disable('x-powered-by');
-    app.use(
-      cookieSession({
-        name: SESSION_NAME,
-        signed: false,
-        httpOnly: true,
-        secure: NODE_ENV === 'production',
-      }),
-    );
+  process.on('SIGTERM', () => stan.instance.close());
+  process.on('SIGINT', () => stan.instance.close());
+  stan.instance.on('close', () => process.exit(0));
 
-    await stan.connect({
-      clusterID: NATS_CLUSTER_ID,
-      clientID: NATS_CLIENT_ID,
-      url: NATS_URL,
-    });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-    process.on('SIGTERM', () => stan.instance.close());
-    process.on('SIGINT', () => stan.instance.close());
-    stan.instance.on('close', () => process.exit(0));
+  app.disable('x-powered-by');
+  app.use(
+    cookieSession({
+      name: SESSION_NAME,
+      signed: false,
+      httpOnly: true,
+      secure: NODE_ENV === 'production',
+    }),
+  );
 
-    await app.listen(PORT);
+  await app.listen(PORT);
   } catch (error) {
     console.error(error);
   }

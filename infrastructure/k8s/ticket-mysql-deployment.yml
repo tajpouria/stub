@@ -22,7 +22,7 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               value: "root"
             - name: MYSQL_DATABASE
-              value: "ticket"
+              value: "main"
 ---
 apiVersion: v1
 kind: Service

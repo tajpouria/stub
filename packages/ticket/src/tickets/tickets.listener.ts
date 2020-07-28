@@ -4,15 +4,18 @@ import {
   StanListenerOnMessageCallback,
   OrderCreatedEventData,
   OrderCancelledEventData,
+  OrderCreatedListener,
+  OrderCancelledListener,
 } from '@tajpouria/stub-common';
 
 import { TicketsService } from 'src/tickets/tickets.service';
-import { orderCancelledListener } from 'src/tickets/shared/order-cancelled-listener';
+// import { orderCancelledListener } from 'src/tickets/shared/order-cancelled-listener';
 import { Ticket } from 'src/tickets/entity/ticket.entity';
 import { TicketUpdatedStanEvent } from 'src/stan-events/entity/ticket-updated-stan-event.entity';
 import { StanEventsService } from 'src/stan-events/stan-events.service';
 import { DatabaseTransactionService } from 'src/database-transaction/database-transaction.service';
-import { orderCreatedListener } from 'src/tickets/shared/order-created-listener';
+// import { orderCreatedListener } from 'src/tickets/shared/order-created-listener';
+import { stan } from 'src/shared/stan';
 
 const { NAME, NODE_ENV } = process.env;
 
@@ -28,8 +31,13 @@ export class TicketsListener {
     const { onOrderCreated, onOrderCancelled } = this;
     // Initialize listeners
     if (NODE_ENV !== 'test') {
-      orderCreatedListener.listen(NAME).onMessage(onOrderCreated);
-      orderCancelledListener.listen(NAME).onMessage(onOrderCancelled);
+      new OrderCreatedListener(stan.instance)
+        .listen(NAME)
+        .onMessage(onOrderCreated);
+
+      new OrderCancelledListener(stan.instance)
+        .listen(NAME)
+        .onMessage(onOrderCancelled);
     }
   }
 

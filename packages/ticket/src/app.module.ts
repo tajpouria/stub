@@ -13,13 +13,14 @@ import { TicketCreatedStanEvent } from 'src/stan-events/entity/ticket-created-st
 import { TicketUpdatedStanEvent } from 'src/stan-events/entity/ticket-updated-stan-event.entity';
 import { TicketRemovedStanEvent } from 'src/stan-events/entity/ticket-removed-stan-event.entity';
 
-const { NODE_ENV, ORM_CONFIG } = process.env;
+const { NAME, ORM_CONFIG } = process.env;
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req }) => ({ req }),
+      path: `/api/${NAME}/graphql`,
     }),
     TypeOrmModule.forRoot({
       ...JSON.parse(ORM_CONFIG),
@@ -31,7 +32,7 @@ const { NODE_ENV, ORM_CONFIG } = process.env;
       ],
       subscribers: [UpdateIfCurrentSubscriber],
       synchronize: true,
-      logging: NODE_ENV === 'development' ? true : ['error'],
+      logging: ['error'],
     }),
 
     AuthModule,

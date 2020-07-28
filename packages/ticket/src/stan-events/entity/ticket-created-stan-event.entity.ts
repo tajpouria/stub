@@ -10,9 +10,11 @@ import {
   TicketCreatedEventData,
   Logger,
   publishUnpublishedStanEvents,
+  TicketCreatedPublisher,
 } from '@tajpouria/stub-common';
 
-import { ticketCreatedPublisher } from 'src/tickets/shared/ticket-created-publisher';
+// import { ticketCreatedPublisher } from 'src/tickets/shared/ticket-created-publisher';
+import { stan } from 'src/shared/stan';
 
 const logger = Logger(process.cwd() + '/logs/stan/ticket-created-stan-event');
 
@@ -49,7 +51,7 @@ export class TicketCreatedStanEvent implements TicketCreatedEventData {
     try {
       const { id, version, userId, timestamp, title, price } = this;
 
-      await ticketCreatedPublisher.publish({
+      await new TicketCreatedPublisher(stan.instance).publish({
         id,
         version,
         userId,
@@ -68,7 +70,7 @@ export class TicketCreatedStanEvent implements TicketCreatedEventData {
     try {
       await publishUnpublishedStanEvents(
         getConnection().getRepository(TicketCreatedStanEvent),
-        ticketCreatedPublisher,
+        new TicketCreatedPublisher(stan.instance),
       );
     } catch (error) {
       logger.error(new Error(error));
