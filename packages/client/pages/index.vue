@@ -3,9 +3,21 @@
     <h1>{{ $t('page.index.welcome') }}</h1>
   </main>
 </template>
-<script lang="ts">
+<script>
 import Vue from 'vue';
+import Component from '~/plugins/nuxt-class-component';
 
-export default Vue.extend({});
+import TicketsGQL from '~/apollo/ticket/tickets.graphql';
+
+@Component({
+  apollo: {
+    tickets: {
+      query: TicketsGQL,
+      prefetch: true,
+    },
+    $client: 'ticket',
+  },
+})
+export default class IndexPage extends Vue {}
 </script>
 <style></style>

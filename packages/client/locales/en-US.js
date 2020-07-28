@@ -80,7 +80,7 @@ export default {
   validation: {
     required: 'This field is required',
     email: 'Email is not valid',
-    username: 'At least 3 and Maximum 12 characters',
+    username: 'At least 3 and Maximum 30 characters',
     password: 'At least 6 characters, At least one digit',
     'repeat-password-not-match': 'Make sure passwords match',
   },

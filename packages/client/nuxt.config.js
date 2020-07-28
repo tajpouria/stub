@@ -1,22 +1,20 @@
 import apis from './constants/apis';
 
-const { NAME, SHORT_NAME, DESCRIPTION, HOST, INGRESS_NGINX_HOST } = process.env;
+const {
+  NAME,
+  SHORT_NAME,
+  DESCRIPTION,
+  // TODO: Delete or Make sure to override by k8s envVars when running it inside the pod
+  HOST = 'http://localhost:8989/http://stub.dev',
+  INGRESS_NGINX_HOST = 'http://localhost:8989/http://stub.dev',
+  TICKET_GQL_HOST = 'http://stub.dev/api/ticket/graphql',
+} = process.env;
 
 export default {
-  /*
-   ** Nuxt rendering mode
-   ** See https://nuxtjs.org/api/configuration-mode
-   */
   mode: 'universal',
-  /*
-   ** Nuxt target
-   ** See https://nuxtjs.org/api/configuration-target
-   */
+
   target: 'server',
-  /*
-   ** Headers of the page
-   ** See https://nuxtjs.org/api/configuration-head
-   */
+
   head: {
     title: NAME || '',
     meta: [
@@ -36,6 +34,7 @@ export default {
         sizes: '192x192',
       },
     ],
+
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
@@ -50,9 +49,7 @@ export default {
       },
     ],
   },
-  /*
-   ** Global CSS
-   */
+
   css: [
     '~assets/scss/_base.scss',
     '~assets/scss/_typography.scss',
@@ -61,36 +58,28 @@ export default {
     '~assets/scss/_space.scss',
     'ant-design-vue/dist/antd.css',
   ],
-  /**
-   * Load style recourses
-   */
+
   styleResources: {
     scss: ['./assets/scss/*.scss'],
   },
-  /*
-   ** Plugins to load before mounting the App
-   ** https://nuxtjs.org/guide/plugins
-   */
-  plugins: ['~/plugins/antd-ui', '~/plugins/axios'],
-  /*
-   ** Auto import components
-   ** See https://nuxtjs.org/api/configuration-components
-   */
+
+  plugins: [
+    '~/plugins/antd-ui',
+    '~/plugins/axios',
+    '~/plugins/nuxt-class-component',
+  ],
+
   components: true,
-  /*
-   ** Nuxt.js dev-modules
-   */
+
   buildModules: ['@nuxt/typescript-build'],
-  /*
-   ** Nuxt.js modules
-   */
+
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/auth',
     '@nuxtjs/style-resources',
     'nuxt-leaflet',
+    '@nuxtjs/apollo',
     [
       'nuxt-i18n',
       {
@@ -112,24 +101,25 @@ export default {
       },
     ],
   ],
-  /*
-   ** Axios module configuration
-   ** See https://axios.nuxtjs.org/options
-   */
+  apollo: {
+    clientConfigs: {
+      default: {
+        httpEndpoint: TICKET_GQL_HOST,
+      },
+      ticket: {
+        httpEndpoint: TICKET_GQL_HOST,
+      },
+    },
+  },
+
   axios: {
-    https: true,
     baseURL: INGRESS_NGINX_HOST || '',
     browserBaseURL: HOST || '',
     retry: { retries: 3 },
   },
-  /*
-   ** Build configuration
-   ** See https://nuxtjs.org/api/configuration-build/
-   */
+
   build: {},
-  /**
-   * PWA configuration
-   */
+
   pwa: {
     manifest: {
       name: NAME || '',
@@ -151,9 +141,7 @@ export default {
       display: 'standalone',
     },
   },
-  /**
-   * Authentication configuration
-   */
+
   auth: {
     strategies: {
       local: {
@@ -164,8 +152,6 @@ export default {
         },
         tokenRequired: false,
         tokenType: false,
-        // globalToken: true,
-        // autoFetchUser: true
       },
     },
   },

@@ -37,11 +37,11 @@ spec:
             - name: REDIS_EXPIRY_SECONDS
               value: "10800" # 3 Hours
             - name: USERNAME_PATTERN
-              value: "/.{3,30}$/"
+              value: ".{3,30}$"
             - name: PASSWORD_PATTERN
               value: "^(?=.*[0-9])(?=.*[a-z]).{6,32}$"
             - name: URL_PATTERN
-              value: "/((http|https)://?)[^s()<>]+(?:([wd]+)|([^[:punct:]s]|/?))/"
+              value: "((http|https)://?)[^s()<>]+(?:([wd]+)|([^[:punct:]s]|/?))"
             - name: MAILER
               valueFrom:
                 secretKeyRef:

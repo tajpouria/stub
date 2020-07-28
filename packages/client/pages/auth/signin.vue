@@ -124,7 +124,7 @@ export default Vue.extend({
           message: this.$t('page.auth.signin.welcome back'),
         });
 
-        this.$router.push({ path: links, index });
+        this.$router.push({ path: links.index });
       });
     },
   },

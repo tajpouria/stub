@@ -12,10 +12,15 @@
     "experimentalDecorators": true,
     "baseUrl": "./",
     "paths": {
-      "~/*": ["./*"],
-      "@/*": ["./*"]
+      "~/*": ["./*"]
     },
-    "types": ["@types/node", "@nuxt/types", "nuxt-i18n", "nuxt-leaflet"]
+    "types": [
+      "@types/node",
+      "@nuxt/types",
+      "nuxt-i18n",
+      "nuxt-leaflet",
+      "vue-apollo/types"
+    ]
   },
   "exclude": ["node_modules", ".nuxt", "dist"]
 }

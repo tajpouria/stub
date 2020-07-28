@@ -114,6 +114,7 @@
 
 <script>
 import Vue from 'vue';
+import Component from '~/plugins/nuxt-class-component';
 
 import PrimaryCentredCard from '~/components/card/PrimaryCentredCard';
 import CurrencyInput from '~/components/input/CurrencyInput';
@@ -122,7 +123,7 @@ import apis from '~/constants/apis';
 import { hasErrors, validationRules } from '~/utils/form';
 import { errorParser } from '~/utils/notification';
 
-export default Vue.extend({
+@Component({
   data() {
     return {
       hasErrors,
@@ -182,7 +183,8 @@ export default Vue.extend({
       return !!this.$store.state.loading.isLoading;
     },
   },
-});
+})
+export default class NewAdPage extends Vue {}
 </script>
 
 <style lang="scss" scoped>
@@ -207,7 +209,7 @@ export default Vue.extend({
   }
 
   &__form-item {
-    margin-top: .7%;
+    margin-top: 0.7%;
     @include respond(phone) {
       margin-top: 2%;
     }

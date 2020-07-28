@@ -30,7 +30,7 @@ async function bootstrap() {
     'Does not exists on process.env',
   );
 
-  const { NAME, VERSION, PORT, SESSION_NAME, NODE_ENV } = process.env;
+  const { NAME, VERSION, PORT, SESSION_NAME } = process.env;
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
@@ -46,8 +46,6 @@ async function bootstrap() {
     cookieSession({
       name: SESSION_NAME,
       signed: false,
-      httpOnly: true,
-      secure: NODE_ENV === 'production',
     }),
   );
 

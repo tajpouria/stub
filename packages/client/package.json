@@ -9,21 +9,31 @@
     "export": "nuxt-ts export",
     "serve": "nuxt-ts serve",
     "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "lint": "yarn lint:js"
+    "lint": "yarn lint:js",
+    "gen": "npm-run-all gen:*",
+    "gen:ticket": "graphql-codegen --config ticket-codegen.yml"
   },
   "dependencies": {
     "@nuxt/typescript-runtime": "^0.4.10",
+    "@nuxtjs/apollo": "^4.0.1-rc.1",
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.11.0",
     "@nuxtjs/pwa": "^3.0.0-beta.20",
     "ant-design-vue": "^1.6.2",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-client": "^2.6.10",
+    "graphql": "^15.3.0",
     "nuxt": "^2.13.0",
     "nuxt-i18n": "^6.12.2",
     "nuxt-leaflet": "^0.0.21",
-    "progressive-image": "^1.2.0",
-    "validator": "^13.1.1"
+    "validator": "^13.1.1",
+    "vue-class-component": "^7.2.5"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^1.17.6",
+    "@graphql-codegen/typescript": "^1.17.6",
+    "@graphql-codegen/typescript-graphql-files-modules": "^1.17.6",
+    "@graphql-codegen/typescript-operations": "^1.17.6",
     "@nuxt/typescript-build": "^1.0.3",
     "@nuxtjs/eslint-config": "^3.0.0",
     "@nuxtjs/eslint-config-typescript": "^2.0.0",
@@ -40,6 +50,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^26.0.1",
     "node-sass": "^4.14.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
     "sass-loader": "^8.0.2",
     "ts-jest": "^26.1.0"

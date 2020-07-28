@@ -23,11 +23,11 @@ export class Ticket {
   price: number;
 
   @Field()
-  @Column('blob')
+  @Column('longtext')
   description: string;
 
   @Field()
-  @Column('blob', { nullable: true })
+  @Column('longtext', { nullable: true })
   imageUrl: string;
 
   // Date

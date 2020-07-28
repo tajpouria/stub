@@ -1,0 +1,15 @@
+{
+  tickets {
+    id
+    userId
+    title
+    price
+    description
+    imageUrl
+    timestamp
+    address
+    lat
+    lng
+    lastOrderId
+  }
+}
