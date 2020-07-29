@@ -82,7 +82,7 @@ export default class TicketCard extends Vue {}
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(white, 0.3);
+    background-color: rgba(white, 0.5);
   }
 
   &__detail-lock {

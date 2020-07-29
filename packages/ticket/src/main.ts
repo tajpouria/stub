@@ -34,29 +34,29 @@ async function bootstrap() {
   } = process.env;
 
   try {
-  await stan.connect({
-    clusterID: NATS_CLUSTER_ID,
-    clientID: NATS_CLIENT_ID,
-    url: NATS_URL,
-  });
+    await stan.connect({
+      clusterID: NATS_CLUSTER_ID,
+      clientID: NATS_CLIENT_ID,
+      url: NATS_URL,
+    });
 
-  process.on('SIGTERM', () => stan.instance.close());
-  process.on('SIGINT', () => stan.instance.close());
-  stan.instance.on('close', () => process.exit(0));
+    process.on('SIGTERM', () => stan.instance.close());
+    process.on('SIGINT', () => stan.instance.close());
+    stan.instance.on('close', () => process.exit(0));
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.disable('x-powered-by');
-  app.use(
-    cookieSession({
-      name: SESSION_NAME,
-      signed: false,
-      httpOnly: true,
-      secure: NODE_ENV === 'production',
-    }),
-  );
+    app.disable('x-powered-by');
+    app.use(
+      cookieSession({
+        name: SESSION_NAME,
+        signed: false,
+        httpOnly: true,
+        secure: NODE_ENV === 'production',
+      }),
+    );
 
-  await app.listen(PORT);
+    await app.listen(PORT);
   } catch (error) {
     console.error(error);
   }

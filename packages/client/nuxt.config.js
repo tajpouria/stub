@@ -5,8 +5,8 @@ const {
   SHORT_NAME,
   DESCRIPTION,
   // TODO: Delete or Make sure to override by k8s envVars when running it inside the pod
-  HOST = 'http://localhost:8989/http://stub.dev',
-  INGRESS_NGINX_HOST = 'http://localhost:8989/http://stub.dev',
+  HOST = 'http://stub.dev',
+  INGRESS_NGINX_HOST = 'http://stub.dev',
   TICKET_GQL_HOST = 'http://stub.dev/api/ticket/graphql',
 } = process.env;
 
@@ -71,6 +71,7 @@ export default {
     '~/plugins/antd-ui',
     '~/plugins/axios',
     '~/plugins/nuxt-class-component',
+    { src: '~/plugins/infinite-loading', ssr: false },
   ],
 
   components: true,
@@ -84,6 +85,7 @@ export default {
     '@nuxtjs/style-resources',
     'nuxt-leaflet',
     '@nuxtjs/apollo',
+    '@nuxtjs/proxy',
     [
       'nuxt-i18n',
       {
@@ -105,21 +107,38 @@ export default {
       },
     ],
   ],
+  proxy: {
+    '/api/': {
+      target: HOST,
+      pathRewrite: {
+        '^/api/': '/api/',
+      },
+      changeOrigin: true,
+    },
+  },
   apollo: {
+    watchLoading: '~/plugins/apollo-watch-loading-handler.js',
+    errorHandler: '~/plugins/apollo-error-handler.js',
     clientConfigs: {
       default: {
         httpEndpoint: TICKET_GQL_HOST,
       },
       ticket: {
         httpEndpoint: TICKET_GQL_HOST,
+        httpLinkOptions: {
+          fetchOptions: {
+            mode: 'no-cors',
+          },
+        },
       },
     },
   },
 
   axios: {
-    baseURL: INGRESS_NGINX_HOST || '',
-    browserBaseURL: HOST || '',
+    // baseURL: INGRESS_NGINX_HOST || '',
+    // browserBaseURL: HOST || '',
     retry: { retries: 3 },
+    proxy: true,
   },
 
   build: {},

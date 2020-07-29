@@ -12,6 +12,8 @@
       >
         <TicketCard :ticket="t" />
       </a-col>
+      <infinite-loading spinner="spiral" @infinite="infiniteScroll">
+      </infinite-loading>
     </a-row>
   </PrimaryCentredCard>
 </template>
@@ -30,7 +32,7 @@ import TicketCard from '~/components/card/TicketCard';
   },
   data() {
     return {
-      take: 25,
+      take: 21,
     };
   },
   apollo: {
@@ -42,6 +44,11 @@ import TicketCard from '~/components/card/TicketCard';
       },
     },
     $client: 'ticket',
+  },
+  methods: {
+    infiniteScroll(infLoading) {
+      setTimeout(() => {}, 500);
+    },
   },
 })
 export default class AdsPage extends Vue {}

@@ -1,0 +1,15 @@
+query Ticket($id: String!) {
+  ticket(id: $id) {
+    id
+    title
+    price
+    imageUrl
+    timestamp
+    address
+    lastOrderId
+    userId
+    description
+    lat
+    lng
+  }
+}
