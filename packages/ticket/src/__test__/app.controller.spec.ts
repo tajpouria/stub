@@ -58,7 +58,7 @@ describe('app.controller (e2e)', () => {
 
   const gCall = (query: string, cookie = ['']) =>
     request(app.getHttpServer())
-      .post(`api/${NAME}/graphql`)
+      .post(`/api/${NAME}/graphql`)
       .set('Cookie', cookie)
       .send({
         operationName: null,

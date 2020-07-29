@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOneOptions } from 'typeorm';
+import { Repository, FindOneOptions, FindManyOptions } from 'typeorm';
 import { v4 } from 'uuid';
 
 import { Ticket } from 'src/tickets/entity/ticket.entity';
@@ -13,8 +13,8 @@ export class TicketsService {
     private ticketRepository: Repository<Ticket>,
   ) {}
 
-  findAll(): Promise<Ticket[]> {
-    return this.ticketRepository.find();
+  findAll(take: number): Promise<Ticket[]> {
+    return this.ticketRepository.find({ take });
   }
 
   findOne(where: FindOneOptions<Ticket>['where']): Promise<Ticket | undefined> {

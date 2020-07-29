@@ -5,7 +5,7 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Int } from '@nestjs/graphql';
 import { JwtPayload, ValidationPipe, Logger } from '@tajpouria/stub-common';
 import { GqlAuthGuard } from 'src/auth/gql-auth-guard';
 
@@ -36,8 +36,10 @@ export class TicketsResolver {
   private readonly logger = Logger(`${process.cwd()}/logs/tickets-resolver`);
 
   @Query(returns => [Ticket])
-  async tickets() {
-    return this.ticketsService.findAll();
+  async tickets(
+    @Args('take', { type: () => Int, defaultValue: 16 }) take: number = 16,
+  ) {
+    return this.ticketsService.findAll(take);
   }
 
   @Query(returns => Ticket)

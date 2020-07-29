@@ -17,7 +17,7 @@ type Ticket {
 }
 
 type Query {
-  tickets: [Ticket!]!
+  tickets(take: Int = 16): [Ticket!]!
   ticket(id: String!): Ticket!
 }
 

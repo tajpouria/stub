@@ -45,7 +45,7 @@ describe('tickets.service (unit)', () => {
   });
 
   it('findAll(): Retrieve tickets', async () => {
-    const tickets = await service.findAll();
+    const tickets = await service.findAll(16);
 
     expect(tickets.length).toBeDefined();
     expect(tickets[0].title).toBe(doc.title);
