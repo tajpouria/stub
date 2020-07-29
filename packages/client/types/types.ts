@@ -61,7 +61,6 @@ export type MutationRemoveTicketArgs = {
 export type CreateTicketInput = {
   title: Scalars['String'];
   price: Scalars['Float'];
-  quantity?: Maybe<Scalars['Float']>;
   description: Scalars['String'];
   pictureURL?: Maybe<Scalars['String']>;
   timestamp: Scalars['Float'];
@@ -73,7 +72,6 @@ export type CreateTicketInput = {
 export type UpdateTicketInput = {
   title?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
-  quantity?: Maybe<Scalars['Float']>;
   description?: Maybe<Scalars['String']>;
   pictureURL?: Maybe<Scalars['String']>;
   timestamp?: Maybe<Scalars['Float']>;

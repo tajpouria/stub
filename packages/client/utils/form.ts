@@ -1,8 +1,5 @@
 import validator from 'validator';
-
-const USERNAME_PATTERN = '.{3,30}$',
-  PASSWORD_PATTERN = '^(?=.*[0-9])(?=.*[a-z]).{6,32}$',
-  URL_PATTERN = '((http|https)://?)[^s()<>]+(?:([wd]+)|([^[:punct:]s]|/?))';
+import { regexPattern } from '~/constants/app';
 
 export const hasErrors = (fieldsError: Record<string, string>) =>
   Object.keys(fieldsError).some((field) => fieldsError[field]);
@@ -30,7 +27,7 @@ export const validationRules: Record<
   username: (message: string) => (_, value, callback) => {
     value = value ?? '';
 
-    if (!validator.matches(value, new RegExp(USERNAME_PATTERN!)))
+    if (!validator.matches(value, new RegExp(regexPattern.username)))
       return callback(message);
     callback();
   },
@@ -38,7 +35,7 @@ export const validationRules: Record<
   password: (message: string) => (_, value, callback) => {
     value = value ?? '';
 
-    if (!validator.matches(value, new RegExp(PASSWORD_PATTERN!)))
+    if (!validator.matches(value, new RegExp(regexPattern.password)))
       return callback(message);
     callback();
   },

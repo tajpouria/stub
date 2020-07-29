@@ -10,9 +10,6 @@ export class CreateTicketInput {
   @Field()
   price: number;
 
-  @Field({ nullable: true })
-  quantity?: number;
-
   @Field()
   description: string;
 
@@ -44,7 +41,6 @@ export const createTicketDto = Joi.object<CreateTicketInput>({
   price: Joi.number()
     .greater(0)
     .required(),
-  quantity: Joi.number().greater(0),
   description: Joi.string()
     .min(3)
     .max(1000)

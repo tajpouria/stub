@@ -1,22 +1,45 @@
 <template>
-  <main>
-    <p v-for="t in tickets" :key="t.id">{{ t.title }}-{{ t.address }}
-
-        <img :src="t.imageUrl"/>
-    </p>
-  </main>
+  <PrimaryCentredCard>
+    <a-row :gutter="10">
+      <a-col
+        v-for="t in tickets"
+        :key="t.id"
+        :xs="24"
+        :sm="24"
+        :md="12"
+        :lg="8"
+        :xl="8"
+      >
+        <TicketCard :ticket="t" />
+      </a-col>
+    </a-row>
+  </PrimaryCentredCard>
 </template>
 <script>
 import Vue from 'vue';
 import Component from '~/plugins/nuxt-class-component';
 
-import TicketsGQL from '~/apollo/ticket/tickets.graphql';
+import PrimaryCentredCard from '~/components/card/PrimaryCentredCard';
+import TicketsGQL from '~/apollo/ticket/Tickets.graphql';
+import TicketCard from '~/components/card/TicketCard';
 
 @Component({
+  components: {
+    PrimaryCentredCard,
+    TicketCard,
+  },
+  data() {
+    return {
+      take: 25,
+    };
+  },
   apollo: {
     tickets: {
       query: TicketsGQL,
       prefetch: true,
+      variables() {
+        return { take: this.take };
+      },
     },
     $client: 'ticket',
   },

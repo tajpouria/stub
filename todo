@@ -97,3 +97,6 @@
 [-] End to end testing
 [X] Fix top bar loading
 [] SingUp redirect to `checkout your mail box user email` page
+[] Get rid of gql-codegen
+[] Hide default header on scroll down just on ads and ads/:id
+[] Delete unused css

@@ -68,6 +68,7 @@
         </a-menu-item>
       </a-menu>
     </div>
+    <a-divider />
   </header>
 </template>
 

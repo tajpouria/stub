@@ -26,9 +26,9 @@ export class Ticket {
   @Column('longtext')
   description: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column('longtext', { nullable: true })
-  imageUrl: string;
+  imageUrl?: string;
 
   // Date
   @Field()
@@ -44,14 +44,14 @@ export class Ticket {
   @Column('float')
   lng: number;
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ nullable: true })
-  address: string;
+  address?: string;
 
   // Order
-  @Field()
+  @Field({ nullable: true })
   @Column({ nullable: true, default: null })
-  lastOrderId: string; // If lastOrderId == null means document is not locked otherwise consider as lock document
+  lastOrderId?: string; // If lastOrderId == null means document is not locked otherwise consider as lock document
 
   // Version
   // Hidden Field

@@ -6,4 +6,6 @@ export default {
   signin: '/auth/signin',
 
   profile: '/user/profile',
+
+  ads: '/ads',
 };

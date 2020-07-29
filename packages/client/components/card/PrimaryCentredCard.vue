@@ -1,5 +1,5 @@
 <template>
-  <a-card class="primary-centred-card">
+  <a-card :bordered="false" class="primary-centred-card">
     <div class="primary-centred-card__card">
       <slot />
     </div>
@@ -20,6 +20,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .primary-centred-card {
   min-width: 320px;
+  max-width: 1250px;
 
   > :first-child {
     @include respond(phone) {

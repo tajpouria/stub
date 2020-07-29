@@ -173,7 +173,7 @@ describe('app.controller (e2e)', () => {
         expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
       });
 
-      it('Invalid price or timestamp or quantity: Bad Request Exception', async () => {
+      it('Invalid price or timestamp: Bad Request Exception', async () => {
         // Invalid price
         let vars = {
           title: 'hello',
@@ -199,16 +199,6 @@ describe('app.controller (e2e)', () => {
         vars = Object.assign(vars, {
           price: '100',
           timestamp: 100,
-        });
-
-        response = await gCall(query, generateCookie());
-        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
-
-        // Invalid quantity
-        vars = Object.assign(vars, {
-          price: '100',
-          timestamp: Date.now(),
-          quantity: 0,
         });
 
         response = await gCall(query, generateCookie());
@@ -388,7 +378,7 @@ describe('app.controller (e2e)', () => {
         expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
       });
 
-      it('Invalid price or timestamp or quantity: Bad Request Exception', async () => {
+      it('Invalid price or timestamp: Bad Request Exception', async () => {
         // Invalid price
         let vars = {
           title: 'hello',
@@ -416,16 +406,6 @@ describe('app.controller (e2e)', () => {
         vars = Object.assign(vars, {
           price: '100',
           timestamp: 100,
-        });
-
-        response = await gCall(query, generateCookie());
-        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
-
-        // Invalid quantity
-        vars = Object.assign(vars, {
-          price: '100',
-          timestamp: Date.now(),
-          quantity: 0,
         });
 
         response = await gCall(query, generateCookie());

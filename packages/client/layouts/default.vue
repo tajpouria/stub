@@ -49,7 +49,7 @@ export default Vue.extend({
 
   &__content-container {
     position: relative;
-    background-color: var(--bg-light);
+    background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;
