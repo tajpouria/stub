@@ -1,6 +1,6 @@
 <template>
   <nuxt-link :to="`${links.ads}/${ticket.id}`">
-    <a-card hoverable class="ticket-card">
+    <div class="ticket-card">
       <img
         :src="ticket.imageUrl ? ticket.imageUrl : base64src.noPic"
         :alt="ticket.title"
@@ -8,15 +8,30 @@
         height="128"
         width="128"
       />
-      <div>
-        <h3>{{ ticket.title }}</h3>
-        <div class="ticket-card__detail-continer">
-          <p>{{ ticket.address }}</p>
-          <p>${{ ticket.price }} USD</p>
-          <p>{{ elapsedTime }}</p>
+      <div class="ticket-card__detail-container">
+        <h2 class="ticket-card__detail-title">{{ ticket.title }}</h2>
+        <div class="ticket-card__detail-lock-container">
+          <a-tooltip
+            placement="topLeft"
+            :title="$t('component.ticketCard.locked')"
+          >
+            <a-icon
+              v-if="ticket.lastOrderId"
+              type="lock"
+              class="ticket-card__detail-lock"
+            />
+          </a-tooltip>
+        </div>
+
+        <div>
+          <p>
+            <b>${{ ticket.price }} USD</b>
+          </p>
+          <p class="ticket-card__detail-alpha">{{ ticket.address }}</p>
+          <p class="ticket-card__detail-beta">{{ elapsedTime }}</p>
         </div>
       </div>
-    </a-card>
+    </div>
   </nuxt-link>
 </template>
 <script>
@@ -47,12 +62,41 @@ export default class TicketCard extends Vue {}
 
 <style lang="scss">
 .ticket-card {
-  .ant-card-body {
-    display: flex;
-    justify-content: space-between;
-    padding: 5% 1%;
-  }
+  @include border-drawing;
+  position: relative;
   margin-bottom: 3%;
+  display: flex;
+  justify-content: space-between;
+  padding: 3% 3%;
+  width: 100%;
+
+  &__detail-container {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    justify-content: space-between;
+  }
+
+  &__detail-lock-container {
+    @include absolute-expand;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(white, 0.3);
+  }
+
+  &__detail-lock {
+    color: var(--txt-primary);
+    font-size: 3.5rem;
+  }
+
+  &__detail-alpha {
+    color: var(--txt-dark);
+  }
+
+  &__detail-beta {
+    color: var(--txt-grey-dark-2);
+  }
 
   &__img {
     @include slightly-curved;

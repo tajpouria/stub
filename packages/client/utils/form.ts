@@ -47,4 +47,20 @@ export const validationRules: Record<
     if (value !== target) return callback(message);
     callback();
   },
+
+  ticketTitle: (message: string) => (_, value, callback) => {
+    value = value ?? '';
+
+    if (!validator.matches(value, new RegExp(regexPattern.ticketTitle)))
+      return callback(message);
+    callback();
+  },
+
+  ticketDescription: (message: string) => (_, value, callback) => {
+    value = value ?? '';
+
+    if (!validator.matches(value, new RegExp(regexPattern.ticketDescription)))
+      return callback(message);
+    callback();
+  },
 };

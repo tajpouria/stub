@@ -62,8 +62,8 @@
                   {
                     rules: [
                       {
-                        validator: validationRules.required(
-                          $t('validation.required'),
+                        validator: validationRules.ticketTitle(
+                          $t('validation.ticketTitle'),
                         ),
                       },
                     ],
@@ -86,8 +86,8 @@
               {
                 rules: [
                   {
-                    validator: validationRules.required(
-                      $t('validation.required'),
+                    validator: validationRules.ticketDescription(
+                      $t('validation.ticketDescription'),
                     ),
                   },
                 ],

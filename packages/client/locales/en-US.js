@@ -63,6 +63,9 @@ export default {
       'invalid format': 'Invalid file Format',
       'less than 2mb': 'File size should be less than 2 mb',
     },
+    ticketCard: {
+      locked: 'Currently reserved by someone else',
+    },
   },
 
   layout: {
@@ -83,5 +86,7 @@ export default {
     username: 'At least 3 and Maximum 30 characters',
     password: 'At least 6 characters, At least one digit',
     'repeat-password-not-match': 'Make sure passwords match',
+    ticketTitle: 'At least 3 and Maximum 22 characters',
+    ticketDescription: 'At least 3 and Maximum 255 characters',
   },
 };

@@ -36,7 +36,7 @@ const { URL_PATTERN } = process.env;
 export const createTicketDto = Joi.object<CreateTicketInput>({
   title: Joi.string()
     .min(3)
-    .max(30)
+    .max(22)
     .required(),
   price: Joi.number()
     .greater(0)

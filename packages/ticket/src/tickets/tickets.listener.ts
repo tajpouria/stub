@@ -9,12 +9,10 @@ import {
 } from '@tajpouria/stub-common';
 
 import { TicketsService } from 'src/tickets/tickets.service';
-// import { orderCancelledListener } from 'src/tickets/shared/order-cancelled-listener';
 import { Ticket } from 'src/tickets/entity/ticket.entity';
 import { TicketUpdatedStanEvent } from 'src/stan-events/entity/ticket-updated-stan-event.entity';
 import { StanEventsService } from 'src/stan-events/stan-events.service';
 import { DatabaseTransactionService } from 'src/database-transaction/database-transaction.service';
-// import { orderCreatedListener } from 'src/tickets/shared/order-created-listener';
 import { stan } from 'src/shared/stan';
 
 const { NAME, NODE_ENV } = process.env;
