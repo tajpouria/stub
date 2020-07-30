@@ -1,6 +1,6 @@
 <template>
   <PrimaryCentredCard>
-    <a-row :gutter="10">
+    <a-row :gutter="10" class="ads-index__container">
       <a-col
         v-for="t in tickets"
         :key="t.id"
@@ -32,7 +32,7 @@ import TicketCard from '~/components/card/TicketCard';
   },
   data() {
     return {
-      take: 21,
+      take: 35,
     };
   },
   apollo: {
@@ -53,4 +53,14 @@ import TicketCard from '~/components/card/TicketCard';
 })
 export default class AdsPage extends Vue {}
 </script>
-<style></style>
+<style lang="scss" scoped>
+.ads-index {
+  &__container {
+    @include respond(phone) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}
+</style>

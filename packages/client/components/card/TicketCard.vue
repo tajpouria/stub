@@ -10,16 +10,16 @@
       />
       <div class="ticket-card__detail-container">
         <h2 class="ticket-card__detail-title">{{ ticket.title }}</h2>
-        <div class="ticket-card__detail-lock-container">
+        <!-- TODO: !ticket.lastOrderId => ticket.lastOrderId--->
+        <div
+          v-if="!ticket.lastOrderId"
+          class="ticket-card__detail-lock-container"
+        >
           <a-tooltip
             placement="topLeft"
             :title="$t('component.ticketCard.locked')"
           >
-            <a-icon
-              v-if="ticket.lastOrderId"
-              type="lock"
-              class="ticket-card__detail-lock"
-            />
+            <a-icon type="lock" class="ticket-card__detail-lock" />
           </a-tooltip>
         </div>
 
@@ -70,6 +70,10 @@ export default class TicketCard extends Vue {}
   padding: 3% 3%;
   width: 100%;
 
+  @include respond(tab-port) {
+    max-width: 415px;
+  }
+
   &__detail-container {
     display: flex;
     flex-direction: column;
@@ -88,6 +92,10 @@ export default class TicketCard extends Vue {}
   &__detail-lock {
     color: var(--txt-primary);
     font-size: 3.5rem;
+  }
+
+  &__detail-title {
+    line-height: 2rem;
   }
 
   &__detail-alpha {

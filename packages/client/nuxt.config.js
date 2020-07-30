@@ -5,9 +5,11 @@ const {
   SHORT_NAME,
   DESCRIPTION,
   // TODO: Delete or Make sure to override by k8s envVars when running it inside the pod
-  HOST = 'http://stub.dev',
-  INGRESS_NGINX_HOST = 'http://stub.dev',
-  TICKET_GQL_HOST = 'http://stub.dev/api/ticket/graphql',
+  SERVER_HOST = 'http://stub.dev',
+  CLIENT_HOST = 'http://localhost:3000',
+  TICKET_GQL_PATH = '/api/ticket/graphql',
+  ORDER_GQL_PATH = '/api/order/graphql',
+  CHARGE_GQL_PATH = '/api/charge/graphql',
 } = process.env;
 
 export default {
@@ -109,9 +111,30 @@ export default {
   ],
   proxy: {
     '/api/': {
-      target: HOST,
+      target: SERVER_HOST,
       pathRewrite: {
         '^/api/': '/api/',
+      },
+      changeOrigin: true,
+    },
+    [TICKET_GQL_PATH]: {
+      target: SERVER_HOST,
+      pathRewrite: {
+        [`^${TICKET_GQL_PATH}`]: TICKET_GQL_PATH,
+      },
+      changeOrigin: true,
+    },
+    [ORDER_GQL_PATH]: {
+      target: SERVER_HOST,
+      pathRewrite: {
+        [`^${ORDER_GQL_PATH}`]: ORDER_GQL_PATH,
+      },
+      changeOrigin: true,
+    },
+    [CHARGE_GQL_PATH]: {
+      target: SERVER_HOST,
+      pathRewrite: {
+        [`^${CHARGE_GQL_PATH}`]: CHARGE_GQL_PATH,
       },
       changeOrigin: true,
     },
@@ -121,22 +144,21 @@ export default {
     errorHandler: '~/plugins/apollo-error-handler.js',
     clientConfigs: {
       default: {
-        httpEndpoint: TICKET_GQL_HOST,
+        httpEndpoint: `USE FOLLOWING CLIENTS`,
       },
       ticket: {
-        httpEndpoint: TICKET_GQL_HOST,
-        httpLinkOptions: {
-          fetchOptions: {
-            mode: 'no-cors',
-          },
-        },
+        httpEndpoint: `${CLIENT_HOST}${TICKET_GQL_PATH}`,
+      },
+      order: {
+        httpEndpoint: `${CLIENT_HOST}${ORDER_GQL_PATH}`,
+      },
+      charge: {
+        httpEndpoint: `${CLIENT_HOST}${CHARGE_GQL_PATH}`,
       },
     },
   },
 
   axios: {
-    // baseURL: INGRESS_NGINX_HOST || '',
-    // browserBaseURL: HOST || '',
     retry: { retries: 3 },
     proxy: true,
   },

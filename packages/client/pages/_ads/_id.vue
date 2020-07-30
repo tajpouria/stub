@@ -1,5 +1,11 @@
 <template>
-  <PrimaryCentredCard> id</PrimaryCentredCard>
+  <PrimaryCentredCard>
+    <div v-if="ticket">
+      <p>{{ ticket.title }}</p>
+      <p>{{ ticket.description }}</p>
+    </div>
+    <div v-else>Not found!</div>
+  </PrimaryCentredCard>
 </template>
 <script>
 import Vue from 'vue';
@@ -20,7 +26,6 @@ import TicketCard from '~/components/card/TicketCard';
   apollo: {
     ticket: {
       query: TicketGQL,
-      prefetch: true,
       variables() {
         return { id: this.$route.params.id };
       },

@@ -97,15 +97,15 @@
 
 /* 
  Media queries manager
- 0 - 600px phone
- 600px - 900px tab-port
+ 0 - 690px phone
+ 690px - 900px tab-port
  900px - 1200px tab-land
  1200px - 1800px normal styles
  1200px large-desktop desktops
 */
 @mixin respond($breakpoint) {
   @if $breakpoint == phone {
-    @media only screen and (max-width: 37.5em) {
+    @media only screen and (max-width: 48.09em) {
       @content;
     }
   }
