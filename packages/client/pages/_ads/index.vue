@@ -1,20 +1,25 @@
 <template>
   <PrimaryCentredCard>
-    <a-row :gutter="10" class="ads-index__container">
-      <a-col
-        v-for="t in tickets"
-        :key="t.id"
-        :xs="24"
-        :sm="24"
-        :md="12"
-        :lg="8"
-        :xl="8"
-      >
-        <TicketCard :ticket="t" />
-      </a-col>
-      <infinite-loading spinner="spiral" @infinite="infiniteScroll">
+    <section class="ads-index">
+      <a-row :gutter="10" class="ads-index__container">
+        <a-col
+          v-for="t in tickets"
+          :key="t.id"
+          :xs="24"
+          :sm="24"
+          :md="12"
+          :lg="8"
+          :xl="8"
+        >
+          <TicketCard :ticket="t" />
+        </a-col>
+      </a-row>
+
+      <infinite-loading spinner="waveDots" @infinite="infiniteScroll">
+        <div slot="no-more">{{ $t('page.ads.index.no more data') }}</div>
+        <div slot="no-results">{{ $t('page.ads.index.no results') }}</div>
       </infinite-loading>
-    </a-row>
+    </section>
   </PrimaryCentredCard>
 </template>
 <script>
@@ -24,6 +29,7 @@ import Component from '~/plugins/nuxt-class-component';
 import PrimaryCentredCard from '~/components/card/PrimaryCentredCard';
 import TicketsGQL from '~/apollo/ticket/Tickets.graphql';
 import TicketCard from '~/components/card/TicketCard';
+import { isMobile } from '~/utils/info';
 
 @Component({
   components: {
@@ -32,7 +38,7 @@ import TicketCard from '~/components/card/TicketCard';
   },
   data() {
     return {
-      take: 35,
+      take: this.$device.isMobile ? 12 : 21,
     };
   },
   apollo: {
@@ -46,8 +52,16 @@ import TicketCard from '~/components/card/TicketCard';
     $client: 'ticket',
   },
   methods: {
-    infiniteScroll(infLoading) {
-      setTimeout(() => {}, 500);
+    infiniteScroll($infLoading) {
+      setTimeout(() => {
+        this.take += this.$device.isMobile ? 8 : 12;
+        if (!this.loading) $infLoading.loaded();
+      }, 1000);
+    },
+  },
+  computed: {
+    loading() {
+      return !!this.$store.state.loading.isLoading;
     },
   },
 })

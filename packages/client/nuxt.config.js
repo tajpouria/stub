@@ -88,6 +88,7 @@ export default {
     'nuxt-leaflet',
     '@nuxtjs/apollo',
     '@nuxtjs/proxy',
+    '@nuxtjs/device',
     [
       'nuxt-i18n',
       {

@@ -101,3 +101,5 @@
 [] Hide default header on scroll down just on ads and ads/:id
 [] Delete unused css
 [] Check out firefox 
+[] Some how call inf loader.complete
+[] Fix ads/index iPad view

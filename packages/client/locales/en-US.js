@@ -41,6 +41,11 @@ export default {
     },
 
     ads: {
+      index: {
+        'no more data': 'No more date',
+        'no results': 'no-results',
+      },
+
       new: {
         'register free advertisement': 'Register free advertisement',
         address: 'Address',
