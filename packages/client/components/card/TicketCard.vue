@@ -70,10 +70,6 @@ export default class TicketCard extends Vue {}
   padding: 3% 3%;
   width: 100%;
 
-  @include respond(tab-port) {
-    max-width: 415px;
-  }
-
   &__detail-container {
     display: flex;
     flex-direction: column;

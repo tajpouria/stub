@@ -96,10 +96,10 @@
 [] forgotPassword
 [-] End to end testing
 [X] Fix top bar loading
-[] SingUp redirect to `checkout your mail box user email` page
+[] SignUp redirect to `checkout your mail box user email` page
 [] Get rid of gql-codegen
 [] Hide default header on scroll down just on ads and ads/:id
 [] Delete unused css
 [] Check out firefox 
 [] Some how call inf loader.complete
-[] Fix ads/index iPad view
+[X] Fix ads/index iPad view

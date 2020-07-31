@@ -5,11 +5,10 @@
         <a-col
           v-for="t in tickets"
           :key="t.id"
-          :xs="24"
-          :sm="24"
           :md="12"
           :lg="8"
           :xl="8"
+          class="ads-index__item"
         >
           <TicketCard :ticket="t" />
         </a-col>
@@ -74,6 +73,12 @@ export default class AdsPage extends Vue {}
       display: flex;
       flex-direction: column;
       align-items: center;
+    }
+  }
+
+  &__item {
+    @include respond(phone) {
+      width: 100%;
     }
   }
 }
