@@ -1,4 +1,0 @@
-[build]
-  base = "packages/client"
-  publish = "dist/"
-  command = "npm run build --target static && npm run export"
