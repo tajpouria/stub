@@ -205,8 +205,8 @@ describe('app.controller (e2e)', () => {
         expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
       });
 
-      it('Invalid pictureURL or description or address: Bad Request Exception', async () => {
-        // Invalid pictureURL
+      it('Invalid imageUrl or description or address: Bad Request Exception', async () => {
+        // Invalid imageUrl
         let vars = {
           title: 'hello',
           description: 'hello',
@@ -214,7 +214,7 @@ describe('app.controller (e2e)', () => {
           lat: -12.1,
           lng: 15.3,
           timestamp: Date.now(),
-          pictureURL: 'abc',
+          imageUrl: '',
         };
 
         let query = `
@@ -230,8 +230,8 @@ describe('app.controller (e2e)', () => {
 
         // Invalid description
         vars = Object.assign(vars, {
-          pictureURL: 'https://google.com',
-          description: 'hello',
+          imageUrl: 'sth',
+          description: 'he',
         });
 
         query = `
@@ -247,7 +247,7 @@ describe('app.controller (e2e)', () => {
 
         // Invalid address
         vars = Object.assign(vars, {
-          pictureURL: 'https://google.com',
+          imageUrl: 'https://google.com',
           description: 'valid description',
           address: '',
         });
@@ -412,8 +412,8 @@ describe('app.controller (e2e)', () => {
         expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
       });
 
-      it('Invalid pictureURL or description or address: Bad Request Exception', async () => {
-        // Invalid pictureURL
+      it('Invalid imageUrl or description or address: Bad Request Exception', async () => {
+        // Invalid imageUrl
         let vars = {
           title: 'hello',
           description: 'hello',
@@ -421,7 +421,7 @@ describe('app.controller (e2e)', () => {
           lat: -12.1,
           lng: 15.3,
           timestamp: Date.now(),
-          pictureURL: 'abc',
+          imageUrl: 'abc',
         };
 
         let query = `
@@ -439,7 +439,7 @@ describe('app.controller (e2e)', () => {
 
         // Invalid description
         vars = Object.assign(vars, {
-          pictureURL: 'https://google.com',
+          imageUrl: 'https://google.com',
           description: '',
         });
 
@@ -456,7 +456,7 @@ describe('app.controller (e2e)', () => {
 
         // Invalid address
         vars = Object.assign(vars, {
-          pictureURL: 'https://google.com',
+          imageUrl: 'https://google.com',
           description: 'valid description',
           address: '',
         });

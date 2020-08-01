@@ -14,7 +14,7 @@ export class UpdateTicketInput {
   description?: string;
 
   @Field({ nullable: true })
-  pictureURL?: string;
+  imageUrl?: string;
 
   // Date
   @Field({ nullable: true })
@@ -41,7 +41,7 @@ export const updateTicketDto = Joi.object<UpdateTicketInput>({
   description: Joi.string()
     .min(3)
     .max(255),
-  pictureURL: Joi.string().pattern(new RegExp(URL_PATTERN)),
+  imageUrl: Joi.string().pattern(new RegExp(URL_PATTERN)),
   timestamp: Joi.number().greater(Date.now()),
   lat: Joi.number(),
   lng: Joi.number(),

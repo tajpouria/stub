@@ -8,12 +8,12 @@ type Ticket {
   title: String!
   price: Float!
   description: String!
-  imageUrl: String!
+  imageUrl: String
   timestamp: Float!
   lat: Float!
   lng: Float!
-  address: String!
-  lastOrderId: String!
+  address: String
+  lastOrderId: String
 }
 
 type Query {
@@ -30,10 +30,9 @@ type Mutation {
 input CreateTicketInput {
   title: String!
   price: Float!
-  quantity: Float
   description: String!
-  pictureURL: String
-  timestamp: Float!
+  imageUrl: String
+  timestamp: Float
   lat: Float!
   lng: Float!
   address: String
@@ -42,9 +41,8 @@ input CreateTicketInput {
 input UpdateTicketInput {
   title: String
   price: Float
-  quantity: Float
   description: String
-  pictureURL: String
+  imageUrl: String
   timestamp: Float
   lat: Float
   lng: Float
