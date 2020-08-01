@@ -15,7 +15,6 @@ type OrderCreatedStanEventData struct {
 
 // OnOrderCreatedStanEvent Invoke the callback function on associated stan event
 func OnOrderCreatedStanEvent(sc stan.Conn, cb func(data OrderCreatedStanEventData, m *stan.Msg)) {
-
 	js, jsErr := ioutil.ReadFile("utils/order-created-event-schema.json")
 	if jsErr != nil {
 		panic(jsErr.Error())

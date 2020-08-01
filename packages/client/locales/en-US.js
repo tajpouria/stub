@@ -60,14 +60,21 @@ export default {
         register: 'Register ad',
         'ticket registered': 'Ad Registered With title:',
       },
+
+      id: {
+        purchase: 'Purchase',
+        'show on map': 'Show on map',
+        address: 'Address',
+        price: 'Price',
+      },
     },
   },
 
   component: {
     imgUploadInput: {
       'upload hint': 'Upload',
-      'invalid format': 'Invalid file Format',
-      'less than 15k': "File size should be less than '15 kilobyte'",
+      'invalid format': "Invalid file format.Expected 'jpeg/jpg/png'",
+      'less than 50k': "File size should be less than '50 kiloByte'",
     },
     ticketCard: {
       locked: 'Currently reserved by someone else',

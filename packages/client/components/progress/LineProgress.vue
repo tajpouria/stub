@@ -25,6 +25,7 @@ export default Vue.extend({
 
 <style lang="scss">
 .line-progress {
+  display: inline;
   .ant-progress-outer {
     display: grid;
   }

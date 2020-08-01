@@ -55,18 +55,21 @@ export default Vue.extend({
       }
     },
     beforeUpload(file) {
-      const isJpgOrPng =
-        file.type === 'image/jpeg' || file.type === 'image/png';
-      if (!isJpgOrPng) {
+      const isValidFormat =
+        file.type === 'image/jpeg' ||
+        file.type === 'image/jpg' ||
+        file.type === 'image/png' ||
+        file.type === 'image/webp';
+      if (!isValidFormat) {
         this.$message.error(this.$t('component.imgUploadInput.invalid format'));
       }
 
-      const isLt15K = file.size < 15 * 1000;
+      const isValidSize = file.size < 50 * 1000;
 
-      if (!isLt15K )
-        return this.$message.error(this.$t('component.imgUploadInput.less than 15k'));
+      if (!isValidSize)
+        this.$message.error(this.$t('component.imgUploadInput.less than 50k'));
 
-      return isJpgOrPng && isLt15K;
+      return isValidFormat && isValidSize;
     },
   },
 });

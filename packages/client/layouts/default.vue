@@ -1,8 +1,11 @@
 <template>
   <a-layout class="default-layout">
     <Announce v-if="notToIncludeHeader" />
+
     <DefaultHeader v-if="notToIncludeHeader" />
+
     <LineProgress :loading="loading" />
+
     <a-layout-content class="default-layout__content-container">
       <Nuxt />
     </a-layout-content>
