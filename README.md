@@ -12,6 +12,8 @@
 
 ### Ticket service [![Coverage Status](https://coveralls.io/repos/gitlab/tajpouria/stub-ticket/badge.svg?branch=master)](https://coveralls.io/gitlab/tajpouria/stub-ticket?branch=master)
 
+### Client [![Netlify Status](https://api.netlify.com/api/v1/badges/1ddee602-c042-4e47-bd2f-5d120f28e261/deploy-status)](https://app.netlify.com/sites/jovial-spence-9ab185/deploys)
+
 ## Package
 
 ### @tajpouria/stub-common [![](https://img.shields.io/npm/v/@tajpouria/stub-common)](https://www.npmjs.com/package/@tajpouria/stub-common)
