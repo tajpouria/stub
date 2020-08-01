@@ -32,9 +32,12 @@ export default Vue.extend({
       },
       set: function (modifiedValue) {
         let newValue = parseFloat(modifiedValue.replace(/[^\d\.]/g, ''));
-        if (isNaN(newValue)) {
+        if (!newValue) {
+          newValue = 1;
+        } else if (isNaN(newValue)) {
           newValue = 0;
         }
+
         this.$emit('input', newValue);
       },
     },

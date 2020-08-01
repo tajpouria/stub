@@ -58,6 +58,7 @@ export default {
         'in ad description':
           "In ad's description Write details and highlights completely and accurately.",
         register: 'Register ad',
+        'ticket registered': 'Ad Registered With title:',
       },
     },
   },
@@ -66,7 +67,7 @@ export default {
     imgUploadInput: {
       'upload hint': 'Upload',
       'invalid format': 'Invalid file Format',
-      'less than 2mb': 'File size should be less than 2 mb',
+      'less than 15k': "File size should be less than '15 kilobyte'",
     },
     ticketCard: {
       locked: 'Currently reserved by someone else',
@@ -92,6 +93,7 @@ export default {
     password: 'At least 6 characters, At least one digit',
     'repeat-password-not-match': 'Make sure passwords match',
     ticketTitle: 'At least 3 and Maximum 22 characters',
-    ticketDescription: 'At least 3 and Maximum 255 characters',
+    ticketDescription:
+      'At least 3 and Maximum 1000 characters, Without trailing spaces',
   },
 };

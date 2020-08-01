@@ -14,11 +14,11 @@ export class CreateTicketInput {
   description: string;
 
   @Field({ nullable: true })
-  pictureURL?: string;
+  imageUrl?: string;
 
   // Date
-  @Field()
-  timestamp: number;
+  @Field({ nullable: true })
+  timestamp?: number;
 
   // Location
   @Field()
@@ -31,8 +31,6 @@ export class CreateTicketInput {
   address?: string;
 }
 
-const { URL_PATTERN } = process.env;
-
 export const createTicketDto = Joi.object<CreateTicketInput>({
   title: Joi.string()
     .min(3)
@@ -43,15 +41,13 @@ export const createTicketDto = Joi.object<CreateTicketInput>({
     .required(),
   description: Joi.string()
     .min(3)
-    .max(1000)
+    .max(10000)
     .required(),
-  pictureURL: Joi.string().pattern(new RegExp(URL_PATTERN)),
-  timestamp: Joi.number()
-    .greater(Date.now())
-    .required(),
+  imageUrl: Joi.string(),
+  timestamp: Joi.number().greater(Date.now()),
   lat: Joi.number().required(),
   lng: Joi.number().required(),
   address: Joi.string()
     .min(3)
-    .max(255),
+    .max(1000),
 });

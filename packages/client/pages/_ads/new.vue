@@ -41,8 +41,8 @@
 
         <a-divider />
 
-        <a-row type="flex" justify="space-between">
-          <a-col :lg="11" :md="11" :sm="24" :xs="24">
+        <a-row :gutter="16" type="flex" justify="space-between">
+          <a-col :lg="12" :md="12" :sm="24" :xs="24">
             <a-form-item
               :label="$t('page.ads.new.price')"
               class="new-ads__form-item"
@@ -120,15 +120,17 @@ import PrimaryCentredCard from '~/components/card/PrimaryCentredCard';
 import CurrencyInput from '~/components/input/CurrencyInput';
 import ImgUploadInput from '~/components/input/ImgUploadInput';
 import apis from '~/constants/apis';
+import links from '~/constants/links';
 import { hasErrors, validationRules } from '~/utils/form';
-import { errorParser } from '~/utils/notification';
+import { gqlErrorParser } from '~/utils/notification';
+import CreateTicketGQL from '~/apollo/ticket/CreateTicket.graphql';
 
 @Component({
   data() {
     return {
       hasErrors,
       validationRules,
-      price: 0,
+      price: 1,
       imageUrl: null,
       address: 'تهران، میدان حر',
       lat: 35.6892,
@@ -161,15 +163,34 @@ import { errorParser } from '~/utils/notification';
       this.form.validateFields(async (error, values) => {
         if (error) return;
 
+        const { title, description } = values;
         const { price, imageUrl, lat, lng, address } = this;
-        console.info({
-          ...values,
+        const variables = {
+          title: title.trim(),
+          description: description.trim(),
           price,
-          imageUrl,
           lat,
           lng,
           address,
-        });
+        };
+        if (imageUrl) variables['imageUrl'] = imageUrl;
+
+        try {
+          const { data } = await this.$apollo.mutate({
+            mutation: CreateTicketGQL,
+            variables,
+            client: 'ticket',
+          });
+
+          this.$notification.info({
+            message: this.$t('page.ads.new.ticket registered'),
+            description: data.createTicket.title,
+          });
+
+          this.$router.push({ path: links.index });
+        } catch (message) {
+          this.$notification.error(message);
+        }
       });
     },
   },

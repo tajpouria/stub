@@ -10,9 +10,8 @@
       />
       <div class="ticket-card__detail-container">
         <h2 class="ticket-card__detail-title">{{ ticket.title }}</h2>
-        <!-- TODO: !ticket.lastOrderId => ticket.lastOrderId--->
         <div
-          v-if="!ticket.lastOrderId"
+          v-if="ticket.lastOrderId"
           class="ticket-card__detail-lock-container"
         >
           <a-tooltip
@@ -92,6 +91,7 @@ export default class TicketCard extends Vue {}
 
   &__detail-title {
     line-height: 2rem;
+    line-break: anywhere;
   }
 
   &__detail-alpha {

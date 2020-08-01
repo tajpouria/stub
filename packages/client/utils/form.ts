@@ -10,12 +10,16 @@ export const validationRules: Record<
     ...args: any
   ) => (rule: string, value: any, callback: (message?: string) => any) => void
 > = {
+  // Common
+
   required: (message: string) => (_, value, callback) => {
     value = value ?? '';
 
     if (validator.isEmpty(value)) return callback(message);
     callback();
   },
+
+  // Auth
 
   email: (message: string) => (_, value, callback) => {
     value = value ?? '';
@@ -27,7 +31,7 @@ export const validationRules: Record<
   username: (message: string) => (_, value, callback) => {
     value = value ?? '';
 
-    if (!validator.matches(value, new RegExp(regexPattern.username)))
+    if (!validator.matches(value.trim(), new RegExp(regexPattern.username)))
       return callback(message);
     callback();
   },
@@ -35,7 +39,7 @@ export const validationRules: Record<
   password: (message: string) => (_, value, callback) => {
     value = value ?? '';
 
-    if (!validator.matches(value, new RegExp(regexPattern.password)))
+    if (!validator.matches(value.trim(), new RegExp(regexPattern.password)))
       return callback(message);
     callback();
   },
@@ -48,10 +52,12 @@ export const validationRules: Record<
     callback();
   },
 
+  // Ticket
+
   ticketTitle: (message: string) => (_, value, callback) => {
     value = value ?? '';
 
-    if (!validator.matches(value, new RegExp(regexPattern.ticketTitle)))
+    if (!validator.matches(value.trim(), new RegExp(regexPattern.ticketTitle)))
       return callback(message);
     callback();
   },
@@ -59,7 +65,12 @@ export const validationRules: Record<
   ticketDescription: (message: string) => (_, value, callback) => {
     value = value ?? '';
 
-    if (!validator.matches(value, new RegExp(regexPattern.ticketDescription)))
+    if (
+      !validator.matches(
+        value.trim(),
+        new RegExp(regexPattern.ticketDescription),
+      )
+    )
       return callback(message);
     callback();
   },

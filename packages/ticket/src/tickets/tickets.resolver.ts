@@ -73,7 +73,7 @@ export class TicketsResolver {
       });
 
       // Create event
-      const { id, title, price, timestamp, userId, version } = ticket;
+      const { id, title, price, timestamp, userId, version, imageUrl } = ticket;
       const ticketCreatedStanEvent = stanEventsService.createOneTicketCreated({
         id,
         title,

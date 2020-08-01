@@ -40,6 +40,7 @@
 [X] Add optional orderId to ticket, ticket-updated and ticket-removed
 [X] Test stan.instance.publish mock function and make sure that it call with current **orderId** _stan.instance.publish.jest.mock.calls[0]_
 [X] Prevent user from update locked ticket And write test around 
+[] Should we delete url pattern?
 
 ## Order
 [X] Notice **UTC** expiration date

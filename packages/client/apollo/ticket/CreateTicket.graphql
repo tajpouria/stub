@@ -1,0 +1,23 @@
+mutation CreateTicket(
+  $title: String!
+  $price: Float!
+  $description: String!
+  $imageUrl: String
+  $lat: Float!
+  $lng: Float!
+  $address: String
+) {
+  createTicket(
+    createTicketInput: {
+      title: $title
+      price: $price
+      description: $description
+      imageUrl: $imageUrl
+      lat: $lat
+      lng: $lng
+      address: $address
+    }
+  ) {
+    title
+  }
+}

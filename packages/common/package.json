@@ -1,6 +1,6 @@
 {
   "name": "@tajpouria/stub-common",
-  "version": "1.25.0",
+  "version": "1.26.0",
   "main": "dist/index.js",
   "license": "MIT",
   "author": "Pouria Tajdivand<tajpouria.dev@gmail.com>",
@@ -35,6 +35,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tajpouria/stub/tree/master/packages/common"
+    "url": "https://github.com/tajpouria/stub/tree/master/packages/common"
   }
 }

@@ -31,8 +31,12 @@
           </nuxt-link>
         </a-menu-item>
 
-        <a-menu-item key="4" class="header-default__menu-item">
-          <nuxt-link v-if="!$auth.user" :to="links.signin">
+        <a-menu-item
+          v-if="!$auth.user"
+          key="4"
+          class="header-default__menu-item"
+        >
+          <nuxt-link :to="links.signin">
             {{ $t('layout.default.sign in') }}
           </nuxt-link>
         </a-menu-item>
@@ -43,7 +47,6 @@
             :title="$auth.user.email"
             trigger="click"
             placement="bottomLeft"
-            class="header-default__user-avatar"
           >
             <template slot="content">
               <p>
@@ -60,8 +63,7 @@
             <img
               :src="$auth.user.pictureURL"
               :alt="$auth.user.email"
-              width="40"
-              height="40"
+              class="header-default__user-avatar"
             />
           </a-popover>
           <a-icon v-else type="user" />

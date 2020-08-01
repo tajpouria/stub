@@ -60,11 +60,13 @@ export default Vue.extend({
       if (!isJpgOrPng) {
         this.$message.error(this.$t('component.imgUploadInput.invalid format'));
       }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.$message.error(this.$t('component.imgUploadInput.less than 2mb'));
-      }
-      return isJpgOrPng && isLt2M;
+
+      const isLt15K = file.size < 15 * 1000;
+
+      if (!isLt15K )
+        return this.$message.error(this.$t('component.imgUploadInput.less than 15k'));
+
+      return isJpgOrPng && isLt15K;
     },
   },
 });

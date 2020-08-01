@@ -4,9 +4,9 @@ export const base64src = {
 };
 
 export const regexPattern = {
-  username: '.{3,30}$',
+  username: '^(?=.{3,30}$).*$',
   password: '^(?=.*[0-9])(?=.*[a-z]).{6,32}$',
   url: '((http|https)://?)[^s()<>]+(?:([wd]+)|([^[:punct:]s]|/?))',
-  ticketTitle: '.{3,22}$',
-  ticketDescription: '.{3,255}$',
+  ticketTitle: '^(?=.{3,22}$).*',
+  ticketDescription: '.{3,1000}$',
 };

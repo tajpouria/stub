@@ -32,7 +32,7 @@ export class Ticket {
 
   // Date
   @Field()
-  @Column('bigint', { default: Date.now })
+  @Column('bigint')
   timestamp: number;
 
   // Location
