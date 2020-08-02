@@ -10,9 +10,10 @@ import {
   Logger,
   publishUnpublishedStanEvents,
   OrderCancelledEventData,
+  OrderCancelledPublisher,
 } from '@tajpouria/stub-common';
 
-import { orderCancelledPublisher } from 'src/orders/shared/order-cancelled-publisher';
+import { stan } from 'src/shared/stan';
 
 const logger = Logger(process.cwd() + '/logs/stan/order-created-stan-event');
 
@@ -35,7 +36,7 @@ export class OrderCancelledStanEvent implements OrderCancelledEventData {
     try {
       const { id, version } = this;
 
-      await orderCancelledPublisher.publish({ id, version });
+      await new OrderCancelledPublisher(stan.instance).publish({ id, version });
       this.published = true;
     } catch (error) {
       logger.error(new Error(error));
@@ -47,7 +48,7 @@ export class OrderCancelledStanEvent implements OrderCancelledEventData {
     try {
       await publishUnpublishedStanEvents(
         getConnection().getRepository(OrderCancelledStanEvent),
-        orderCancelledPublisher,
+        new OrderCancelledPublisher(stan.instance),
       );
     } catch (error) {
       logger.error(new Error(error));

@@ -5,12 +5,13 @@ import {
   TicketCreatedEventData,
   TicketUpdatedEventData,
   TicketRemovedEventData,
+  TicketCreatedListener,
+  TicketUpdatedListener,
+  TicketRemovedListener,
 } from '@tajpouria/stub-common';
 
 import { TicketsService } from 'src/tickets/tickets.service';
-import { ticketCreatedListener } from 'src/tickets/shared/ticket-created-listener';
-import { ticketUpdatedListener } from 'src/tickets/shared/ticket-updated-listener';
-import { ticketRemovedListener } from 'src/tickets/shared/ticket-removed-listener';
+import { stan } from 'src/shared/stan';
 
 const { NAME, NODE_ENV } = process.env;
 
@@ -22,9 +23,15 @@ export class TicketsListener {
     const { onTicketCreated, onTicketUpdated, onTicketRemoved } = this;
     // Initialize listeners
     if (NODE_ENV !== 'test') {
-      ticketCreatedListener.listen(NAME).onMessage(onTicketCreated);
-      ticketUpdatedListener.listen(NAME).onMessage(onTicketUpdated);
-      ticketRemovedListener.listen(NAME).onMessage(onTicketRemoved);
+      new TicketCreatedListener(stan.instance)
+        .listen(NAME)
+        .onMessage(onTicketCreated);
+      new TicketUpdatedListener(stan.instance)
+        .listen(NAME)
+        .onMessage(onTicketUpdated);
+      new TicketRemovedListener(stan.instance)
+        .listen(NAME)
+        .onMessage(onTicketRemoved);
     }
   }
 

@@ -13,14 +13,15 @@ import {
   Logger,
   publishUnpublishedStanEvents,
   OrderStatus,
+  OrderCreatedPublisher,
 } from '@tajpouria/stub-common';
 
-import { orderCreatedPublisher } from 'src/orders/shared/order-created-publisher';
 import { TicketEntity } from 'src/tickets/entity/ticket.entity';
-
-const logger = Logger(process.cwd() + '/logs/stan/order-created-stan-event');
+import { stan } from 'src/shared/stan';
 
 const { NODE_ENV } = process.env;
+
+const logger = Logger(process.cwd() + '/logs/stan/order-created-stan-event');
 
 @Entity()
 export class OrderCreatedStanEvent implements OrderCreatedEventData {
@@ -60,7 +61,7 @@ export class OrderCreatedStanEvent implements OrderCreatedEventData {
     const { id, version, userId, ticket, status, expiresAt } = this;
 
     try {
-      await orderCreatedPublisher.publish({
+      await new OrderCreatedPublisher(stan.instance).publish({
         id,
         version,
         userId,
@@ -85,7 +86,7 @@ export class OrderCreatedStanEvent implements OrderCreatedEventData {
     try {
       await publishUnpublishedStanEvents(
         getConnection().getRepository(OrderCreatedStanEvent),
-        orderCreatedPublisher,
+        new OrderCreatedPublisher(stan.instance),
       );
     } catch (error) {
       logger.error(new Error(error));

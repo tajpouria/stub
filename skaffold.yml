@@ -28,6 +28,16 @@ build:
             dest: .
           - src: "src/**/*.gql"
             dest: .
+    - image: tajpouria/stub-order-service
+      context: packages/order
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+          - src: "src/**/*.gql"
+            dest: .
     # - image: tajpouria/stub-client-service
     #   context: packages/client
     #   docker:

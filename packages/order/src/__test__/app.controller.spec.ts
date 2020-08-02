@@ -24,7 +24,7 @@ import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-
 // __mocks__
 import { stan } from 'src/shared/stan';
 
-const { SESSION_NAME, JWT_SECRET } = process.env;
+const { NAME, SESSION_NAME, JWT_SECRET } = process.env;
 
 describe('app.controller (e2e)', () => {
   let app: INestApplication,
@@ -63,17 +63,17 @@ describe('app.controller (e2e)', () => {
     await app.close();
   });
 
-  describe('Hello Order! (/api/order)', () => {
+  describe(`Hello ${NAME}! (/api/${NAME})`, () => {
     it('GET: 200', async () => {
       await request(app.getHttpServer())
-        .get('/api/order')
+        .get(`/api/${NAME}`)
         .expect(200);
     });
   });
 
   const gCall = (query: string, cookie = ['']) =>
     request(app.getHttpServer())
-      .post('/graphql')
+      .post(`/api/${NAME}/graphql`)
       .set('Cookie', cookie)
       .send({
         operationName: null,

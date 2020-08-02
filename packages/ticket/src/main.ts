@@ -17,7 +17,6 @@ async function bootstrap() {
       'SESSION_NAME',
       'JWT_SECRET',
       'ORM_CONFIG',
-      'URL_PATTERN',
       'NATS_CLUSTER_ID',
       'NATS_CLIENT_ID',
       'NATS_URL',

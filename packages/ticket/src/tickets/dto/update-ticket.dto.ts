@@ -31,8 +31,6 @@ export class UpdateTicketInput {
   address?: string;
 }
 
-const { URL_PATTERN } = process.env;
-
 export const updateTicketDto = Joi.object<UpdateTicketInput>({
   title: Joi.string()
     .min(3)
@@ -41,7 +39,7 @@ export const updateTicketDto = Joi.object<UpdateTicketInput>({
   description: Joi.string()
     .min(3)
     .max(255),
-  imageUrl: Joi.string().pattern(new RegExp(URL_PATTERN)),
+  imageUrl: Joi.string(),
   timestamp: Joi.number().greater(Date.now()),
   lat: Joi.number(),
   lng: Joi.number(),

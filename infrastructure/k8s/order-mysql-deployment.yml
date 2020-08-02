@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: order-mysql-pod
+  template:
+    metadata:
+      name: order-mysql
+      labels:
+        name: order-mysql-pod
+        tier: back-end
+    spec:
+      containers:
+        - name: order-mysql
+          image: mysql
+          args: ["--default-authentication-plugin=mysql_native_password"]
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root"
+            - name: MYSQL_DATABASE
+              value: "main"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-mysql-clusterip
+spec:
+  selector:
+    name: order-mysql-pod
+  ports:
+    - name: order-mysql
+      protocol: TCP
+      targetPort: 3306
+      port: 3306

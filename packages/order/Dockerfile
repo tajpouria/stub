@@ -8,4 +8,3 @@ RUN yarn
 EXPOSE 6000
 
 CMD ["yarn", "start:dev"]
-

@@ -4,15 +4,16 @@ import {
   StanListenerOnMessageCallback,
   OrderExpiredEventData,
   OrderStatus,
+  OrderExpiredListener,
+  OrderCompletedListener,
 } from '@tajpouria/stub-common';
 
-import { orderExpiredListener } from 'src/orders/shared/order-expired-listener';
 import { OrdersService } from 'src/orders/orders.service';
 import { StanEventsService } from 'src/stan-events/stan-events.service';
 import { DatabaseTransactionService } from 'src/database-transaction/database-transaction.service';
 import { OrderEntity } from 'src/orders/entity/order.entity';
 import { OrderCancelledStanEvent } from 'src/stan-events/entity/order-cancelled-stan-event.entity';
-import { orderCompletedListener } from './shared/order-completed-listener';
+import { stan } from 'src/shared/stan';
 
 const { NAME, NODE_ENV } = process.env;
 
@@ -28,8 +29,12 @@ export class OrdersListener {
     const { onOrderExpired, onOrderCompleted } = this;
     // Initialize listeners
     if (NODE_ENV !== 'test') {
-      orderExpiredListener.listen(NAME).onMessage(onOrderExpired);
-      orderCompletedListener.listen(NAME).onMessage(onOrderCompleted);
+      new OrderExpiredListener(stan.instance)
+        .listen(NAME)
+        .onMessage(onOrderExpired);
+      new OrderCompletedListener(stan.instance)
+        .listen(NAME)
+        .onMessage(onOrderCompleted);
     }
   }
 

@@ -1,35 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ticket
+  name: order
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: ticket-pod
+      name: order-pod
   template:
     metadata:
-      name: ticket
+      name: order
       labels:
-        name: ticket-pod
+        name: order-pod
         tier: back-end
     spec:
       containers:
-        - name: stub-ticket-service
-          image: tajpouria/stub-ticket-service
+        - name: stub-order-service
+          image: tajpouria/stub-order-service
           env:
             - name: NAME
-              value: "Ticket"
+              value: "Order"
             - name: NODE_ENV
               value: "development"
             - name: HOST
               value: "https://stub.dev"
             - name: PORT
-              value: "5000"
+              value: "6000"
             - name: SESSION_NAME
               value: "session"
             - name: ORM_CONFIG
-              value: '{"type": "mysql","host": "ticket-mysql-clusterip","port": 3306,"username": "root","password": "root","database": "main"}'
+              value: '{"type": "mysql","host": "order-mysql-clusterip","port": 3306,"username": "root","password": "root","database": "main"}'
             - name: NATS_URL
               value: "http://stub-nats-clusterip:4222"
             - name: NATS_CLUSTER_ID
@@ -47,12 +47,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ticket-clusterip
+  name: order-clusterip
 spec:
   selector:
-    name: ticket-pod
+    name: order-pod
   ports:
-    - name: ticket
+    - name: order
       protocol: TCP
-      targetPort: 5000
-      port: 5000
+      targetPort: 6000
+      port: 6000

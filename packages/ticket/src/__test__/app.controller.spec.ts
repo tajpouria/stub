@@ -413,37 +413,18 @@ describe('app.controller (e2e)', () => {
       });
 
       it('Invalid imageUrl or description or address: Bad Request Exception', async () => {
-        // Invalid imageUrl
+        // Invalid description
         let vars = {
           title: 'hello',
-          description: 'hello',
           price: 100,
           lat: -12.1,
           lng: 15.3,
           timestamp: Date.now(),
-          imageUrl: 'abc',
+          imageUrl: 'https://google.com',
+          description: '',
         };
 
         let query = `
-            mutation {
-              updateTicket(id: "NotExists", updateTicketInput: ${produceObjectVariable(
-                vars,
-              )}) {
-                id
-              }
-            }
-          `;
-
-        let response = await gCall(query, generateCookie());
-        expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
-
-        // Invalid description
-        vars = Object.assign(vars, {
-          imageUrl: 'https://google.com',
-          description: '',
-        });
-
-        query = `
             mutation {
               createTicket(createTicketInput: ${produceObjectVariable(vars)}) {
                 id
@@ -451,7 +432,7 @@ describe('app.controller (e2e)', () => {
             }
           `;
 
-        response = await gCall(query, generateCookie());
+        let response = await gCall(query, generateCookie());
         expect(response.body.errors[0].message).toBe(HttpMessage.BAD_REQUEST);
 
         // Invalid address
