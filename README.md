@@ -2,6 +2,8 @@
 
 **UNSTABLE DESIGN DOCUMENT** definitely will change along the way!
 
+Stub consists of a 7-tier micro-services application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them. This application works on the Any Kubernetes cluster.
+
 ## Services
 
 ### Authentication service [![Coverage Status](https://coveralls.io/repos/github/tajpouria/stub/badge.svg?branch=master)](https://coveralls.io/github/tajpouria/stub?branch=master)
@@ -10,7 +12,7 @@ Authenticate users using either local(email) or OAuth(Google) strategy, Send use
 
 ### Charge service [![Coverage Status](https://coveralls.io/repos/gitlab/tajpouria/stub-charge/badge.svg?branch=master)](https://coveralls.io/gitlab/tajpouria/stub-charge?branch=master)
 
-Responsible to create, store, and handling linking charge to locally replicated order instance, Charges the given credit card using stripe API with given amount and publish an 'order:completed' event.
+Responsible to create, store, and handling linking charge to locally replicated order instance, Charges the given credit card using Stripe API with given amount and publish an 'order:completed' event.
 
 ### Expiration service [![Go Report Card](https://goreportcard.com/badge/github.com/tajpouria/stub)](https://goreportcard.com/report/github.com/tajpouria/stub)
 
@@ -22,7 +24,7 @@ Responsible to create, store, and handling linking order to locally replicated t
 
 ### Ticket service [![Coverage Status](https://coveralls.io/repos/gitlab/tajpouria/stub-ticket/badge.svg?branch=master)](https://coveralls.io/gitlab/tajpouria/stub-ticket?branch=master)
 
-Responsible to create, store and managing ticket status (Created|Completed|Cancelled) by listening to order events and publish ticket updates.
+Responsible to create, store and synchronizing ticket status (Created|Completed|Cancelled) by listening to order events and publishing ticket updates.
 
 ### Client [![Netlify Status](https://api.netlify.com/api/v1/badges/1ddee602-c042-4e47-bd2f-5d120f28e261/deploy-status)](https://app.netlify.com/sites/stub-client/deploys)
 

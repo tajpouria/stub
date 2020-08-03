@@ -10,9 +10,10 @@ import {
   Logger,
   publishUnpublishedStanEvents,
   OrderCompletedEventData,
+  OrderCompletedPublisher,
 } from '@tajpouria/stub-common';
 
-import { orderCompletedPublisher } from 'src/orders/shared/order-completed-publisher';
+import { stan } from 'src/shared/stan';
 
 const logger = Logger(process.cwd() + '/logs/stan/order-completed-stan-event');
 
@@ -35,7 +36,7 @@ export class OrderCompletedStanEvent implements OrderCompletedEventData {
     try {
       const { id, version } = this;
 
-      await orderCompletedPublisher.publish({ id, version });
+      await new OrderCompletedPublisher(stan.instance).publish({ id, version });
       this.published = true;
     } catch (error) {
       logger.error(new Error(error));
@@ -47,7 +48,7 @@ export class OrderCompletedStanEvent implements OrderCompletedEventData {
     try {
       await publishUnpublishedStanEvents(
         getConnection().getRepository(OrderCompletedStanEvent),
-        orderCompletedPublisher,
+        new OrderCompletedPublisher(stan.instance),
       );
     } catch (error) {
       logger.error(new Error(error));

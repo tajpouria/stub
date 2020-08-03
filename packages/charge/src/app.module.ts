@@ -12,13 +12,14 @@ import { ChargeEntity } from 'src/charges/entity/charge.entity';
 import { ChargesModule } from 'src/charges/charges.module';
 import { OrderCompletedStanEvent } from 'src/stan-events/entity/order-completed-stan-event.entity';
 
-const { NODE_ENV, ORM_CONFIG } = process.env;
+const { NAME, NODE_ENV, ORM_CONFIG } = process.env;
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       context: ({ req }) => ({ req }),
+      path: `/api/${NAME}/graphql`,
     }),
     TypeOrmModule.forRoot({
       ...JSON.parse(ORM_CONFIG),
@@ -28,8 +29,8 @@ const { NODE_ENV, ORM_CONFIG } = process.env;
       logging: NODE_ENV === 'development' ? true : ['error'],
     }),
 
-    OrdersModule,
     ChargesModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,41 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: order
+  name: charge 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: order-pod
+      name: charge-pod
   template:
     metadata:
-      name: order
+      name: charge 
       labels:
-        name: order-pod
+        name: charge-pod
         tier: back-end
     spec:
       containers:
-        - name: stub-order-service
-          image: tajpouria/stub-order-service
+        - name: stub-charge-service
+          image: tajpouria/stub-charge-service
           env:
             - name: NAME
-              value: "Order"
+              value: "Charge"
             - name: NODE_ENV
               value: "development"
             - name: HOST
               value: "https://stub.dev"
             - name: PORT
-              value: "6000"
+              value: "7000"
             - name: SESSION_NAME
               value: "session"
             - name: ORM_CONFIG
-              value: '{"type": "mysql","host": "order-mysql-clusterip","port": 3306,"username": "root","password": "root","database": "main"}'
+              value: '{"type": "mysql","host": "charge-mysql-clusterip","port": 3306,"username": "root","password": "root","database": "main"}'
             - name: NATS_URL
               value: "http://stub-nats-clusterip:4222"
             - name: NATS_CLUSTER_ID
               value: "stub"
-            - name: ORDER_EXPIRATION_WINDOW_SECONDS
-              value: "900" # 15 minutes
             - name: NATS_CLIENT_ID
               valueFrom:
                 fieldRef:
@@ -45,16 +43,22 @@ spec:
                 secretKeyRef:
                   name: stub-secret
                   key: JWT_SECRET
+            - name: STRIPE_SECRET_KEY 
+              valueFrom:
+                secretKeyRef:
+                  name: stub-secret
+                  key: STRIPE_SECRET_KEY 
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: order-clusterip
+  name: charge-clusterip
 spec:
   selector:
-    name: order-pod
+    name: charge-pod
   ports:
-    - name: order
+    - name:charge 
       protocol: TCP
       targetPort: 6000
       port: 6000

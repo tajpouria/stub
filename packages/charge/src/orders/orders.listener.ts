@@ -5,11 +5,12 @@ import {
   OrderStatus,
   OrderCancelledEventData,
   OrderCreatedEventData,
+  OrderCreatedListener,
+  OrderCancelledListener,
 } from '@tajpouria/stub-common';
 
 import { OrdersService } from 'src/orders/orders.service';
-import { orderCreatedListener } from 'src/orders/shared/order-created-listener';
-import { orderCancelledListener } from 'src/orders/shared/order-cancelled-listener';
+import { stan } from 'src/shared/stan';
 
 const { NAME, NODE_ENV } = process.env;
 
@@ -21,8 +22,12 @@ export class OrdersListener {
     const { onOrderCreated, onOrderCancelled } = this;
     // Initialize listeners
     if (NODE_ENV !== 'test') {
-      orderCreatedListener.listen(NAME).onMessage(onOrderCreated);
-      orderCancelledListener.listen(NAME).onMessage(onOrderCancelled);
+      new OrderCreatedListener(stan.instance)
+        .listen(NAME)
+        .onMessage(onOrderCreated);
+      new OrderCancelledListener(stan.instance)
+        .listen(NAME)
+        .onMessage(onOrderCancelled);
     }
   }
 

@@ -24,6 +24,7 @@ async function bootstrap() {
     ],
     'Does not exists on process.env',
   );
+
   const {
     SESSION_NAME,
     NODE_ENV,
@@ -34,6 +35,16 @@ async function bootstrap() {
   } = process.env;
 
   try {
+    await stan.connect({
+      clusterID: NATS_CLUSTER_ID,
+      clientID: NATS_CLIENT_ID,
+      url: NATS_URL,
+    });
+
+    process.on('SIGTERM', () => stan.instance.close());
+    process.on('SIGINT', () => stan.instance.close());
+    stan.instance.on('close', () => process.exit(0));
+
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
     app.disable('x-powered-by');
@@ -45,16 +56,6 @@ async function bootstrap() {
         secure: NODE_ENV === 'production',
       }),
     );
-
-    await stan.connect({
-      clusterID: NATS_CLUSTER_ID,
-      clientID: NATS_CLIENT_ID,
-      url: NATS_URL,
-    });
-
-    process.on('SIGTERM', () => stan.instance.close());
-    process.on('SIGINT', () => stan.instance.close());
-    stan.instance.on('close', () => process.exit(0));
 
     await app.listen(PORT);
   } catch (error) {

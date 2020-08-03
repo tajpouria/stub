@@ -18,6 +18,10 @@ spec:
             backend:
               serviceName: ticket-clusterip
               servicePort: 5000
+          - path: /api/order/?(.*)
+            backend:
+              serviceName: order-clusterip
+              servicePort: 6000
           # - path: /?(.*)
           #   backend:
           #     serviceName: client-clusterip

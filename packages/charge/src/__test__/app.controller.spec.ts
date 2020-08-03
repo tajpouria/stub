@@ -24,7 +24,7 @@ import { ChargeEntity } from 'src/charges/entity/charge.entity';
 import { stan } from 'src/shared/stan';
 import { stripe } from 'src/charges/shared/stripe';
 
-const { SESSION_NAME, JWT_SECRET } = process.env;
+const { NAME, SESSION_NAME, JWT_SECRET } = process.env;
 
 describe('app.controller (e2e)', () => {
   let app: INestApplication,
@@ -55,17 +55,17 @@ describe('app.controller (e2e)', () => {
     await app.close();
   });
 
-  describe('Hello charge! (/api/charge)', () => {
+  describe(`Hello ${NAME}! (/api/${NAME})`, () => {
     it('GET: 200', async () => {
       await request(app.getHttpServer())
-        .get('/api/charge')
+        .get(`/api/${NAME}`)
         .expect(200);
     });
   });
 
   const gCall = (query: string, cookie = ['']) =>
     request(app.getHttpServer())
-      .post('/graphql')
+      .post(`/api/${NAME}/graphql`)
       .set('Cookie', cookie)
       .send({
         operationName: null,
@@ -413,19 +413,19 @@ describe('app.controller (e2e)', () => {
         });
       });
 
-        it('Stripe Charge', async () => {
-          const vars = {
-            orderId: order.id,
-            source: v4(),
-          };
+      it('Stripe Charge', async () => {
+        const vars = {
+          orderId: order.id,
+          source: v4(),
+        };
 
-          const jwtPayload: JwtPayload = {
-            sub: order.userId,
-            iat: Date.now(),
-            username: 'user-name',
-          };
+        const jwtPayload: JwtPayload = {
+          sub: order.userId,
+          iat: Date.now(),
+          username: 'user-name',
+        };
 
-          const query = `
+        const query = `
                 mutation {
                   createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
                     vars,
@@ -438,27 +438,27 @@ describe('app.controller (e2e)', () => {
                 }
               `;
 
-          await gCall(query, generateCookie(jwtPayload));
+        await gCall(query, generateCookie(jwtPayload));
 
-          expect(stripe.charges.create).toHaveBeenCalled();
-          expect(
-            (stripe.charges.create as jest.Mock).mock.calls[0][0].source,
-          ).toBe(vars.source);
-        });
+        expect(stripe.charges.create).toHaveBeenCalled();
+        expect(
+          (stripe.charges.create as jest.Mock).mock.calls[0][0].source,
+        ).toBe(vars.source);
+      });
 
-        it('Publish event', async () => {
-          const vars = {
-            orderId: order.id,
-            source: v4(),
-          };
+      it('Publish event', async () => {
+        const vars = {
+          orderId: order.id,
+          source: v4(),
+        };
 
-          const jwtPayload: JwtPayload = {
-            sub: order.userId,
-            iat: Date.now(),
-            username: 'user-name',
-          };
+        const jwtPayload: JwtPayload = {
+          sub: order.userId,
+          iat: Date.now(),
+          username: 'user-name',
+        };
 
-          const query = `
+        const query = `
                 mutation {
                   createStripeCharge(createStripeChargeInput: ${produceObjectVariable(
                     vars,
@@ -471,18 +471,17 @@ describe('app.controller (e2e)', () => {
                 }
               `;
 
-          await gCall(query, generateCookie(jwtPayload));
+        await gCall(query, generateCookie(jwtPayload));
 
-          expect(stan.instance.publish).toHaveBeenCalled();
-          expect(
-            JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1])
-              .id,
-          ).toBe(order.id);
-          expect(
-            JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1])
-              .version,
-          ).toBe(2);
-        });
+        expect(stan.instance.publish).toHaveBeenCalled();
+        expect(
+          JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1]).id,
+        ).toBe(order.id);
+        expect(
+          JSON.parse((stan.instance.publish as jest.Mock).mock.calls[0][1])
+            .version,
+        ).toBe(2);
+      });
     });
   });
 });

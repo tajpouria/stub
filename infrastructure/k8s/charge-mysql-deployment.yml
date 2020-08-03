@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: charge-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: charge-mysql-pod
+  template:
+    metadata:
+      name: charge-mysql
+      labels:
+        name: charge-mysql-pod
+        tier: back-end
+    spec:
+      containers:
+        - name: charge-mysql
+          image: mysql
+          args: ["--default-authentication-plugin=mysql_native_password"]
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root"
+            - name: MYSQL_DATABASE
+              value: "main"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: charge-mysql-clusterip
+spec:
+  selector:
+    name: charge-mysql-pod
+  ports:
+    - name: charge-mysql
+      protocol: TCP
+      targetPort: 3306
+      port: 3306
