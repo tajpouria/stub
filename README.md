@@ -1,4 +1,4 @@
-# Stub [![Build Status](https://travis-ci.org/tajpouria/stub.svg?branch=master)](https://travis-ci.org/tajpouria/stub) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9c9227f12d5949c0af19184e50ab8d16)](https://app.codacy.com/manual/tajpouria/stub?utm_source=github.com&utm_medium=referral&utm_content=tajpouria/stub&utm_campaign=Badge_Grade_Dashboard
+# Stub [![Build Status](https://travis-ci.org/tajpouria/stub.svg?branch=master)](https://travis-ci.org/tajpouria/stub) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9c9227f12d5949c0af19184e50ab8d16)](https://app.codacy.com/manual/tajpouria/stub?utm_source=github.com&utm_medium=referral&utm_content=tajpouria/stub&utm_campaign=Badge_Grade_Dashboard)
 
 Stub consists of a 7-tier micro-services application. The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them. This application works on the Any Kubernetes cluster.
 
